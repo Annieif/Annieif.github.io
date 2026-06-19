@@ -659,11 +659,19 @@ const I18N = {
       'creative coding','DIY','独立开发','JAVA','typescript','DESIGN','自由'
     ],
 
-    // ======== 在此编辑 About 卡片;留空数组则显示占位 ========
-    'about.cards': [],
+    // ======== 在此编辑 About 卡片(3 张);字段为 label / title / text ========
+    'about.cards': [
+      { label:'[ / label 01 ]', title:'[ 关于"我" ]', text:'[ 在此处填写介绍文字 / 第 1 段简介 ]' },
+      { label:'[ / label 02 ]', title:'[ 关于"Annieif" ]', text:'[ 在此处填写介绍文字 / 第 2 段简介 ]' },
+      { label:'[ / label 03 ]', title:'[ 其它 ]', text:'[ 在此处填写介绍文字 / 第 3 段简介 ]' }
+    ],
 
-    // ======== 在此编辑 Selected Works 条目;留空数组则显示占位 ========
-    'works.items': [],
+    // ======== 在此编辑 Selected Works 条目(会指向 works/001.html 等) ========
+    'works.items': [
+      { title:'[ 作品标题 01 ]', tag:'[ 标签 / 类型 01 ]', text:'[ 简短描述 01 — 这一段会显示在首页的作品行中 ]' },
+      { title:'[ 作品标题 02 ]', tag:'[ 标签 / 类型 02 ]', text:'[ 简短描述 02 — 这一段会显示在首页的作品行中 ]' },
+      { title:'[ 作品标题 03 ]', tag:'[ 标签 / 类型 03 ]', text:'[ 简短描述 03 — 这一段会显示在首页的作品行中 ]' }
+    ],
 
     'contact.title': '想说点什么?<br><em>随时 联系。</em>',
     'contact.github': 'GitHub · @Annieif',
@@ -703,9 +711,17 @@ const I18N = {
       'creative coding','DIY','independent','JAVA','typescript','DESIGN','freedom'
     ],
 
-    'about.cards': [],
+    'about.cards': [
+      { label:'[ / label 01 ]', title:'[ title 01 ]', text:'[ placeholder text / intro paragraph 1 ]' },
+      { label:'[ / label 02 ]', title:'[ title 02 ]', text:'[ placeholder text / intro paragraph 2 ]' },
+      { label:'[ / label 03 ]', title:'[ title 03 ]', text:'[ placeholder text / intro paragraph 3 ]' }
+    ],
 
-    'works.items': [],
+    'works.items': [
+      { title:'[ work title 01 ]', tag:'[ tag / type 01 ]', text:'[ short description — this line shows on the homepage list ]' },
+      { title:'[ work title 02 ]', tag:'[ tag / type 02 ]', text:'[ short description — this line shows on the homepage list ]' },
+      { title:'[ work title 03 ]', tag:'[ tag / type 03 ]', text:'[ short description — this line shows on the homepage list ]' }
+    ],
 
     'contact.title': 'Got something to say?<br><em>Just reach out.</em>',
     'contact.github': 'GitHub · @Annieif',
@@ -719,68 +735,150 @@ const I18N = {
    Rendering helpers.
    ===================================================== */
 function buildMarqueeHtml(items) {
-  // repeat the list twice so the CSS scroll loop is seamless
-  const make = () => items.map(w =>
-    `<span class="star">✦</span><span><em>${w}</em></span>`
-  ).join('');
-  return make() + make();
+  // Returns a DocumentFragment containing two copies of the items so the
+  // CSS marquee loop is seamless — stars + labels alternating.
+  const frag = document.createDocumentFragment();
+  const make = () => {
+    items.forEach(w => {
+      const star = document.createElement('span');
+      star.className = 'star';
+      star.textContent = '✦';
+      const label = document.createElement('span');
+      const em = document.createElement('em');
+      em.textContent = w;
+      label.appendChild(em);
+      frag.appendChild(star);
+      frag.appendChild(label);
+    });
+  };
+  make();
+  make();
+  return frag;
 }
 
 function buildTitleHtml(linesDict) {
-  // Build HTML for hero title with character spans for typewriter effect.
-  // Each line: array of segment objects { style: 'grad'|'reg'|'ac'|'indent', text }.
-  return linesDict.map(lineParts => {
-    const inner = lineParts.map(seg => {
+  // Build DOM nodes for the hero title: each line has segments with
+  // different styling ('grad' / 'reg' / 'ac'), and each character of text
+  // is wrapped in a .ch span so the typewriter effect can reveal them one
+  // by one.
+  const frag = document.createDocumentFragment();
+  linesDict.forEach(lineParts => {
+    const line = document.createElement('span');
+    line.className = 'title-line';
+    lineParts.forEach(seg => {
       if (seg.style === 'indent') {
-        return `<span style="display:inline-block;width:2ch">&nbsp;</span>`;
+        const sp = document.createElement('span');
+        sp.style.cssText = 'display:inline-block;width:2ch';
+        sp.textContent = '\u00A0';
+        line.appendChild(sp);
+        return;
       }
       const cls = seg.style === 'grad' ? 'seg-grad' :
                   seg.style === 'ac'   ? 'seg-ac'  : 'seg-reg';
-      const chars = seg.text.split('').map(c =>
-        `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`
-      ).join('');
-      return `<span class="${cls}">${chars}</span>`;
-    }).join('');
-    return `<span class="title-line">${inner}</span>`;
-  }).join('');
+      const segSpan = document.createElement('span');
+      segSpan.className = cls;
+      const text = seg.text || '';
+      for (let i = 0; i < text.length; i++) {
+        const c = document.createElement('span');
+        c.className = 'ch';
+        c.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+        segSpan.appendChild(c);
+      }
+      line.appendChild(segSpan);
+    });
+    frag.appendChild(line);
+  });
+  return frag;
 }
 
 /* =====================================================
    Content renderers.
    These pull from I18N[lang]['about.cards'] and ['works.items'].
+   Use DOM APIs (createElement / appendChild / textContent) so that
+   user-provided strings don't risk breaking the parser.
    ===================================================== */
 function renderAbout(cards) {
   if (!cards || !cards.length) {
-    return `<div class="about-card" style="justify-content:center;align-items:center;text-align:center">
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase">— to be added —</div>
-            </div>`;
+    const d = document.createElement('div');
+    d.className = 'about-card';
+    d.style.cssText = 'justify-content:center;align-items:center;text-align:center';
+    const inner = document.createElement('div');
+    inner.style.cssText = 'font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase';
+    inner.textContent = '— to be added —';
+    d.appendChild(inner);
+    return d;
   }
-  return cards.map((c, i) => `
-    <div class="about-card">
-      <div class="ac-label"><span>${c.label || ''}</span><span class="num">0${i+1}</span></div>
-      <h4>${c.title || ''}</h4>
-      <p>${c.text || ''}</p>
-    </div>
-  `).join('');
+  const frag = document.createDocumentFragment();
+  cards.forEach((c, i) => {
+    const a = document.createElement('a');
+    a.className = 'about-card';
+    a.href = 'about/index.html';
+    a.style.textDecoration = 'none';
+    a.style.color = 'inherit';
+
+    const label = document.createElement('div');
+    label.className = 'ac-label';
+    const s1 = document.createElement('span');
+    s1.textContent = c.label || '';
+    const s2 = document.createElement('span');
+    s2.className = 'num';
+    s2.textContent = '0' + (i + 1);
+    label.appendChild(s1);
+    label.appendChild(s2);
+
+    const h4 = document.createElement('h4');
+    h4.textContent = c.title || '';
+
+    const p = document.createElement('p');
+    p.textContent = c.text || '';
+
+    a.appendChild(label);
+    a.appendChild(h4);
+    a.appendChild(p);
+    frag.appendChild(a);
+  });
+  return frag;
 }
 
 function renderWorks(items) {
   if (!items || !items.length) {
-    return `<div style="padding:40px 8px;border-bottom:1px solid var(--line);text-align:center;
-               font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase">
-              — to be added —
-            </div>`;
+    const d = document.createElement('div');
+    d.style.cssText = 'padding:40px 8px;border-bottom:1px solid var(--line);text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase';
+    d.textContent = '— to be added —';
+    return d;
   }
-  return items.map((w, i) => {
+  const frag = document.createDocumentFragment();
+  items.forEach((w, i) => {
     const num = String(i + 1).padStart(3, '0');
-    return `
-      <div class="proj-item">
-        <div class="p-num">${num}</div>
-        <div class="p-title">${w.title || ''}</div>
-        <div class="p-tag">${w.tag || ''}</div>
-        <div class="p-desc">${w.text || ''}</div>
-      </div>`;
-  }).join('');
+    const a = document.createElement('a');
+    a.className = 'proj-item';
+    a.href = 'works/' + num + '.html';
+    a.style.textDecoration = 'none';
+    a.style.color = 'inherit';
+
+    const pNum = document.createElement('div');
+    pNum.className = 'p-num';
+    pNum.textContent = num;
+
+    const pTitle = document.createElement('div');
+    pTitle.className = 'p-title';
+    pTitle.textContent = w.title || '';
+
+    const pTag = document.createElement('div');
+    pTag.className = 'p-tag';
+    pTag.textContent = w.tag || '';
+
+    const pDesc = document.createElement('div');
+    pDesc.className = 'p-desc';
+    pDesc.textContent = w.text || '';
+
+    a.appendChild(pNum);
+    a.appendChild(pTitle);
+    a.appendChild(pTag);
+    a.appendChild(pDesc);
+    frag.appendChild(a);
+  });
+  return frag;
 }
 
 function setLang(lang) {
@@ -802,33 +900,43 @@ function setLang(lang) {
     if (dict[key] !== undefined) el.innerHTML = dict[key];
   });
 
-  // Marquee
+  // Marquee — DOM node version (buildMarqueeHtml returns DocumentFragment)
   const track = document.getElementById('marqueeTrack');
-  if (track) track.innerHTML = buildMarqueeHtml(dict['marquee.items']);
+  if (track) {
+    track.innerHTML = '';
+    track.appendChild(buildMarqueeHtml(dict['marquee.items']));
+  }
 
-  // About cards
+  // About cards (renderer returns DOM nodes)
   const aboutGrid = document.getElementById('aboutGrid');
-  if (aboutGrid) aboutGrid.innerHTML = renderAbout(dict['about.cards']);
+  if (aboutGrid) {
+    aboutGrid.innerHTML = '';
+    aboutGrid.appendChild(renderAbout(dict['about.cards']));
+  }
 
-  // Selected works list
+  // Selected works list (renderer returns DOM nodes)
   const projList = document.getElementById('projList');
-  if (projList) projList.innerHTML = renderWorks(dict['works.items']);
+  if (projList) {
+    projList.innerHTML = '';
+    projList.appendChild(renderWorks(dict['works.items']));
+  }
 
-  // Hero title — rebuild + re-run typewriter
+  // Hero title — DOM node version (buildTitleHtml returns DocumentFragment)
   const tw = document.getElementById('typewriter');
   if (tw) {
-    tw.innerHTML = buildTitleHtml(dict['hero.title.lines']);
+    tw.innerHTML = '';
+    tw.appendChild(buildTitleHtml(dict['hero.title.lines']));
     runTypewriter(tw, 85);
   }
 
-  // Quote — character-by-character, same as the title
+  // Quote — DOM node version (buildQuoteHtml returns DocumentFragment)
   const q = document.getElementById('quote');
   if (q) {
-    q.innerHTML = buildQuoteHtml(dict['hero.quote']);
+    q.innerHTML = '';
+    q.appendChild(buildQuoteHtml(dict['hero.quote']));
     const quoteChars = q.querySelectorAll('.ch');
     quoteChars.forEach((el, i) => {
-      el.classList.remove('on');
-      setTimeout(() => el.classList.add('on'), 1200 + i * 90); // starts after title starts
+      setTimeout(() => el.classList.add('on'), 1200 + i * 90);
     });
   }
 
@@ -842,10 +950,15 @@ function setLang(lang) {
 }
 
 function buildQuoteHtml(text) {
-  const chars = (text || '').split('').map(c =>
-    `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`
-  ).join('');
-  return chars;
+  const frag = document.createDocumentFragment();
+  const chars = text || '';
+  for (let i = 0; i < chars.length; i++) {
+    const span = document.createElement('span');
+    span.className = 'ch';
+    span.textContent = chars[i] === ' ' ? '\u00A0' : chars[i];
+    frag.appendChild(span);
+  }
+  return frag;
 }
 
 function runTypewriter(root, stepMs) {
