@@ -482,6 +482,69 @@
     .proj-item .p-desc{grid-area:desc}
   }
 
+  /* ============ INSIGHTS (stats + popular content) ============ */
+  .insights-grid{
+    display:grid;
+    grid-template-columns:1fr 1.2fr;
+    gap:48px;
+    align-items:start;
+  }
+  .insights-views{
+    border:1px solid var(--line);
+    padding:44px 32px 48px;
+    background:linear-gradient(180deg, rgba(122,180,216,.05), transparent 70%);
+    text-align:center;
+  }
+  .insights-views .k{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.24em;
+    color:var(--ink-faint);text-transform:uppercase;
+  }
+  .insights-views .big{
+    font-family:"Fraunces",serif;font-weight:900;
+    font-size:clamp(80px, 14vw, 220px);
+    line-height:.88;letter-spacing:-.035em;
+    color:var(--ink);
+    margin:18px 0 8px;
+  }
+  .insights-views .big em{
+    font-style:italic;font-family:"Cormorant Garamond",serif;font-weight:700;
+    color:var(--accent);
+  }
+  .insights-views .sub{
+    font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
+    font-size:clamp(18px,2vw,24px);line-height:1.35;color:var(--ink-dim);
+  }
+  .insights-popular .pop-title{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.24em;
+    color:var(--ink-faint);text-transform:uppercase;margin-bottom:20px;
+  }
+  .pop-list{border-top:1px solid var(--line)}
+  .pop-row{
+    display:grid;grid-template-columns:auto 1fr auto;gap:20px;
+    padding:20px 8px;border-bottom:1px solid var(--line);
+    align-items:baseline;
+    transition:padding .35s var(--ease),background .35s var(--ease);
+  }
+  .pop-row:hover{padding-left:24px;padding-right:24px;background:rgba(244,194,208,.05)}
+  .pop-row .p-num{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;color:var(--ink-faint);
+  }
+  .pop-row .p-title{
+    font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+    font-size:clamp(22px,2.4vw,32px);line-height:1.1;color:var(--ink);
+    transition:color .35s var(--ease);
+  }
+  .pop-row:hover .p-title{color:var(--accent)}
+  .pop-row .p-count{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;
+    color:var(--ink-faint);text-transform:uppercase;
+  }
+
+  @media (max-width:900px){
+    .insights-grid{grid-template-columns:1fr;gap:40px}
+    .insights-views{padding:32px 20px 36px}
+  }
+
   /* ============ CONTACT ============ */
   .contact{padding:130px 28px 90px;text-align:center}
   .contact h3{
@@ -548,6 +611,7 @@
       <div class="nav">
         <a href="#about" data-i18n="nav.about">关于</a>
         <a href="#projects" data-i18n="nav.works">作品</a>
+        <a href="#insights" data-i18n="nav.insights">数据</a>
         <a href="#contact" data-i18n="nav.contact">联系</a>
         <span class="lang-switch" id="langSwitch">
           <span class="btn active" data-lang="zh">中</span>
@@ -566,7 +630,8 @@
       <div class="right">
         <span>01&nbsp;/&nbsp;<span data-i18n="sec.about">ABOUT</span></span>
         <span>02&nbsp;/&nbsp;<span data-i18n="sec.works">WORKS</span></span>
-        <span>03&nbsp;/&nbsp;<span data-i18n="sec.contact">CONTACT</span></span>
+        <span>03&nbsp;/&nbsp;<span data-i18n="sec.insights">INSIGHTS</span></span>
+        <span>04&nbsp;/&nbsp;<span data-i18n="sec.contact">CONTACT</span></span>
       </div>
     </div>
   </nav>
@@ -599,10 +664,29 @@
   <div class="proj-list" id="projList"><!-- populated by JS --></div>
 </section>
 
+<!-- INSIGHTS -->
+<section id="insights">
+  <div class="sec-head">
+    <div class="label-left"><span class="num">03</span><span data-i18n="sec.insights">Insights</span></div>
+    <div class="sub" data-i18n-html="sec.insightsSub"></div>
+  </div>
+  <div class="insights-grid">
+    <div class="insights-views">
+      <div class="k" data-i18n="insights.viewsLabel">Total views in last 14 days</div>
+      <div class="big"><span data-countup="8427">0</span></div>
+      <div class="sub" data-i18n="insights.viewsSub">from visitors around the world</div>
+    </div>
+    <div class="insights-popular">
+      <div class="pop-title" data-i18n="insights.popularLabel">Popular content</div>
+      <div class="pop-list" id="popularList"><!-- populated by JS --></div>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact" class="contact">
   <div class="sec-head" style="justify-content:center;display:flex">
-    <div><span class="num">03</span><span data-i18n="sec.contact">Get in touch</span></div>
+    <div><span class="num">04</span><span data-i18n="sec.contact">Get in touch</span></div>
   </div>
   <h3 data-i18n-html="contact.title"></h3>
 
@@ -633,6 +717,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': '关于',
     'nav.works': '作品',
+    'nav.insights': '数据',
     'nav.contact': '联系',
     'meta.coord': '坐标',
     'meta.earth': '地球',
@@ -646,6 +731,11 @@ const I18N = {
     'sec.works': 'Selected Works',
     'sec.worksSub': '泼墨<em>造物</em>,笔下<em>生花</em>。',
     'sec.contact': 'Get in touch',
+    'sec.insights': 'Insights',
+    'sec.insightsSub': '数据里的<em>光与影</em>',
+    'insights.viewsLabel': '近 14 天 · 总访问量',
+    'insights.viewsSub': '来自世界各地的访客',
+    'insights.popularLabel': '热门内容',
     'slot.empty': '— 待补充 / to be added —',
 
     // Hero title = three lines.
@@ -675,6 +765,14 @@ const I18N = {
       { title:'[ 作品标题 03 ]', tag:'[ 标签 / 类型 03 ]', text:'[ 简短描述 03 — 这一段会显示在首页的作品行中 ]' }
     ],
 
+    // ======== 在此编辑 Popular content (insights 分区的热门内容) ========
+    'popular.items': [
+      { title:'[ 作品标题 01 ]', count:'1,284 views' },
+      { title:'[ 作品标题 02 ]', count:'968 views' },
+      { title:'[ 作品标题 03 ]', count:'742 views' },
+      { title:'[ 作品标题 04 ]', count:'519 views' }
+    ],
+
     'contact.title': '想说点什么?<br><em>随时 联系。</em>',
     'contact.github': 'GitHub · @Annieif',
     'contact.email': 'Email · Qianlovean@outlook.com',
@@ -687,6 +785,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': 'About',
     'nav.works': 'Works',
+    'nav.insights': 'Insights',
     'nav.contact': 'Contact',
     'meta.coord': 'Location',
     'meta.earth': 'Earth',
@@ -700,6 +799,11 @@ const I18N = {
     'sec.works': 'Selected Works',
     'sec.worksSub': 'Ink-splashed worlds,<br>pen-breath flowers bloom.',
     'sec.contact': 'Get in touch',
+    'sec.insights': 'Insights',
+    'sec.insightsSub': '<em>Light</em> and <em>shadows</em> in the data',
+    'insights.viewsLabel': 'Total views in last 14 days',
+    'insights.viewsSub': 'from visitors around the world',
+    'insights.popularLabel': 'Popular content',
     'slot.empty': '— to be added —',
 
     'hero.title.lines': [
@@ -723,6 +827,13 @@ const I18N = {
       { title:'[ work title 01 ]', tag:'[ tag / type 01 ]', text:'[ short description — this line shows on the homepage list ]' },
       { title:'[ work title 02 ]', tag:'[ tag / type 02 ]', text:'[ short description — this line shows on the homepage list ]' },
       { title:'[ work title 03 ]', tag:'[ tag / type 03 ]', text:'[ short description — this line shows on the homepage list ]' }
+    ],
+
+    'popular.items': [
+      { title:'[ work title 01 ]', count:'1,284 views' },
+      { title:'[ work title 02 ]', count:'968 views' },
+      { title:'[ work title 03 ]', count:'742 views' },
+      { title:'[ work title 04 ]', count:'519 views' }
     ],
 
     'contact.title': 'Got something to say?<br><em>Just reach out.</em>',
@@ -907,6 +1018,47 @@ function renderWorks(items) {
   return frag;
 }
 
+function renderPopular(items) {
+  if (!items || !items.length) {
+    const d = document.createElement('div');
+    d.style.cssText = 'padding:40px 8px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase';
+    d.textContent = '— to be added —';
+    return d;
+  }
+  const frag = document.createDocumentFragment();
+  items.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.className = 'pop-row';
+    const pNum = document.createElement('div');
+    pNum.className = 'p-num';
+    pNum.textContent = String(i + 1).padStart(2, '0');
+    const pTitle = document.createElement('div');
+    pTitle.className = 'p-title';
+    renderText(pTitle, p.title || '');
+    const pCount = document.createElement('div');
+    pCount.className = 'p-count';
+    pCount.textContent = p.count || '';
+    row.appendChild(pNum);
+    row.appendChild(pTitle);
+    row.appendChild(pCount);
+    frag.appendChild(row);
+  });
+  return frag;
+}
+
+function runCountUp(el, target, durationMs) {
+  if (!el) return;
+  const startTime = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 2.5);
+  function tick(now) {
+    const p = Math.min(1, (now - startTime) / durationMs);
+    const v = Math.floor(target * ease(p));
+    el.textContent = v.toLocaleString();
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
 function setLang(lang) {
   if (!I18N[lang]) return;
   const dict = I18N[lang];
@@ -946,6 +1098,19 @@ function setLang(lang) {
     projList.innerHTML = '';
     projList.appendChild(renderWorks(dict['works.items']));
   }
+
+  // Insights - popular content list
+  const popularList = document.getElementById('popularList');
+  if (popularList) {
+    popularList.innerHTML = '';
+    popularList.appendChild(renderPopular(dict['popular.items']));
+  }
+  // Insights - count-up animation for the views number
+  const counters = document.querySelectorAll('[data-countup]');
+  counters.forEach(el => {
+    const target = parseInt(el.getAttribute('data-countup'), 10);
+    if (!isNaN(target)) runCountUp(el, target, 1600);
+  });
 
   // Hero title — DOM node version (buildTitleHtml returns DocumentFragment)
   const tw = document.getElementById('typewriter');
