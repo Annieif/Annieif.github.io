@@ -295,14 +295,20 @@
   .seg-reg .ch{color:inherit}
   .seg-ac  .ch{color:inherit}
 
-  /* Caret / blinking cursor at end of typewriter */
+  /* Caret / blinking cursor at end of typewriter
+     Sits inline with the last line of the title; font-size is set to
+     match the scale of the (pink) accent segment so it lines up with
+     the surrounding text. */
   .caret{
-    display:inline-block;width:.04em;height:.82em;
+    display:inline-block;
+    vertical-align:-.12em;
+    font-size:clamp(80px, 13vw, 190px);
+    width:.08em;height:.85em;
     background:var(--accent);
-    margin-left:.06em;
-    transform:translateY(.05em);
+    margin-left:.05em;
     animation:blink 1s steps(1) infinite;
     opacity:0;
+    border-radius:1px;
   }
   .caret.on{opacity:1}
   @keyframes blink{50%{opacity:0}}
@@ -712,14 +718,15 @@ function runTypewriter(root, stepMs) {
     el.classList.remove('on'); // reset
     setTimeout(() => el.classList.add('on'), i * stepMs);
   });
-  // blink caret while typing
+  // Append caret at the end of the *last line* so it sits on the same
+  // baseline as the last character, not below the whole title.
+  const lines = root.querySelectorAll('.title-line');
+  const target = lines.length ? lines[lines.length - 1] : root;
+  // Remove any previous caret first
+  target.querySelectorAll(':scope > .caret').forEach(c => c.remove());
   const caret = document.createElement('span');
   caret.className = 'caret on';
-  caret.innerHTML = '&nbsp;';
-  // Remove any previous caret
-  const prevCaret = root.querySelector('.caret');
-  if (prevCaret) prevCaret.remove();
-  root.appendChild(caret);
+  target.appendChild(caret);
 }
 
 /* =====================================================
