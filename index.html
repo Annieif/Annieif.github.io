@@ -82,21 +82,39 @@
 
   .title-main{max-width:100%}
 
-  /* Typewriter: character spans.
-     The whole thing sits as one big editorial line.
-     Gradient "Annieif" + regular Fraunces for the rest. */
+  /* Title line container = one block per row */
   .title-line{
     display:block;
-    font-family:"Fraunces",serif;font-weight:700;
-    font-size:clamp(58px, 10vw, 150px);
     line-height:.92;
     letter-spacing:-.015em;
   }
-  .title-line.script-line{
+
+  /* Styled segments within a title line */
+  .seg-grad{
+    display:inline-block;
     font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:700;
-    font-size:clamp(100px, 17vw, 260px);
-    line-height:.82;letter-spacing:-.025em;
+    font-size:clamp(110px, 18vw, 260px);
+    line-height:.82;
+    letter-spacing:-.025em;
     font-feature-settings:"swsh","dlig";
+    background:linear-gradient(100deg, #8fb9d6 0%, #b9c4d9 45%, #e9c9d5 78%, #f4c2d0 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+  }
+
+  .seg-reg{
+    display:inline-block;
+    font-family:"Fraunces",serif;font-weight:700;
+    font-size:clamp(70px, 12vw, 180px);
+    color:var(--ink);
+  }
+
+  .seg-ac{
+    display:inline-block;
+    font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:700;
+    font-size:clamp(80px, 13vw, 190px);
+    color:var(--accent);
+    letter-spacing:-.01em;
   }
 
   /* Each character span - hidden until JS reveals it */
@@ -108,18 +126,15 @@
   }
   .ch.on{opacity:1;transform:translateY(0)}
 
-  /* Styled segment wrappers:
-     - .grad  = gradient (Annieif)
-     - .ac    = accent pink (造物者, 自由)
-     - .reg   = regular ink
-  */
+  /* Styled segment wrappers — fonts & colors are set on the segment itself above;
+     .ch inside inherits color. Gradient text needs re-application to char spans. */
   .seg-grad .ch{
-    background:linear-gradient(100deg, #8fb9d6 0%, #b9c4d9 40%, #e9c9d5 75%, #f4c2d0 100%);
+    background:linear-gradient(100deg, #8fb9d6 0%, #b9c4d9 45%, #e9c9d5 78%, #f4c2d0 100%);
     -webkit-background-clip:text;background-clip:text;
     -webkit-text-fill-color:transparent;color:transparent;
   }
-  .seg-ac .ch{color:var(--accent);font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:700;letter-spacing:-.01em}
-  .seg-reg .ch{color:var(--ink)}
+  .seg-ac .ch{ color:var(--accent); }
+  .seg-reg .ch{ color:var(--ink); }
 
   /* Caret / blinking cursor at end of typewriter */
   .caret{
@@ -166,8 +181,10 @@
     font-family:"Fraunces",serif;font-weight:500;font-size:18px;
     color:var(--ink-dim);letter-spacing:.02em;
   }
-  .marquee-track span em{font-style:italic;color:var(--ink)}
-  .marquee-track .star{color:var(--accent)}
+  .marquee-track .blue{color:var(--link);font-style:italic}
+  .marquee-track .pink{color:var(--accent);font-style:italic}
+  .marquee-track .star-blue{color:var(--link)}
+  .marquee-track .star-pink{color:var(--accent)}
   @keyframes scroll{to{transform:translateX(-50%)}}
 
   /* ============ SECTION COMMON ============ */
@@ -228,8 +245,9 @@
     .nav a{margin-left:14px}
     .meta-line{grid-template-columns:1fr 1fr;gap:8px;padding-top:10px;padding-bottom:10px}
     .meta-line .center{display:none}
-    .title-line{font-size:clamp(38px,8.5vw,80px)}
-    .title-line.script-line{font-size:clamp(64px,16vw,140px)}
+    .title-line .seg-grad{font-size:clamp(64px,16vw,140px)}
+    .title-line .seg-reg{font-size:clamp(46px,10vw,90px)}
+    .title-line .seg-ac{font-size:clamp(52px,11vw,100px)}
     .since{position:static;right:auto;bottom:auto;margin-top:40px;text-align:left;font-size:44px}
     section{padding:80px 18px}
     .sec-head{margin-bottom:40px}
@@ -279,11 +297,11 @@
   <div class="since">2026<small>Since&nbsp;·&nbsp;AD</small></div>
 </header>
 
-<!-- MARQUEE -->
+<!-- MARQUEE (alternating blue & pink) -->
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track">
-    <span class="star">✦</span><span><em>creative coding</em></span><span class="star">✦</span><span>DIY</span><span class="star">✦</span><span>独立开发</span><span class="star">✦</span><span>JAVA</span><span class="star">✦</span><span><em>typescript</em></span><span class="star">✦</span><span>DESIGN</span><span class="star">✦</span><span><em>自由</em></span><span class="star">✦</span>
-    <span class="star">✦</span><span><em>creative coding</em></span><span class="star">✦</span><span>DIY</span><span class="star">✦</span><span>独立开发</span><span class="star">✦</span><span>JAVA</span><span class="star">✦</span><span><em>typescript</em></span><span class="star">✦</span><span>DESIGN</span><span class="star">✦</span><span><em>自由</em></span><span class="star">✦</span>
+    <span class="star-blue">✦</span><span class="blue">creative coding</span><span class="star-pink">✦</span><span class="pink">DIY</span><span class="star-blue">✦</span><span class="blue">独立开发</span><span class="star-pink">✦</span><span class="pink">JAVA</span><span class="star-blue">✦</span><span class="blue">typescript</span><span class="star-pink">✦</span><span class="pink">DESIGN</span><span class="star-blue">✦</span><span class="blue">自由</span><span class="star-pink">✦</span>
+    <span class="star-blue">✦</span><span class="blue">creative coding</span><span class="star-pink">✦</span><span class="pink">DIY</span><span class="star-blue">✦</span><span class="blue">独立开发</span><span class="star-pink">✦</span><span class="pink">JAVA</span><span class="star-blue">✦</span><span class="blue">typescript</span><span class="star-pink">✦</span><span class="pink">DESIGN</span><span class="star-blue">✦</span><span class="blue">自由</span><span class="star-pink">✦</span>
   </div>
 </div>
 
@@ -319,7 +337,7 @@
   <div class="contact-links">
     <a href="https://github.com/Annieif" target="_blank" rel="noopener">GitHub · @Annieif</a>
     <span class="sep">/</span>
-    <a href="mailto:hello@annieif.dev">Email · hello@annieif.dev</a>
+    <a href="mailto:Qianlovean@outlook.com">Email · Qianlovean@outlook.com</a>
     <span class="sep">/</span>
     <a href="#">Website · annieif.dev</a>
     <span class="sep">/</span>
@@ -328,57 +346,52 @@
 </section>
 
 <script>
-  // ===== Typewriter: build HTML with per-char spans, then reveal.
-  // Segment 1 = "Annieif" (gradient script)
-  // Segment 2 = "—独立 " (regular Fraunces)
-  // Segment 3 = "造物者。" (accent pink italic)
-  // Segment 4 = "偏爱 " (regular)
-  // Segment 5 = "自由。" (accent pink italic)
+  // ===== Typewriter: builds multi-line title, then reveals char-by-char.
+  //  Line 1: "Annieif"                 — gradient script (largest)
+  //  Line 2: "—独立 " + "造物者。"     — ink + accent pink
+  //  Line 3: "偏爱 "  + "自由。"       — indented, ink + accent pink
   (function(){
     const root = document.getElementById('typewriter');
     if(!root) return;
 
-    const segments = [
-      { cls:'seg-grad script-line', text:'Annieif' },
-      { cls:'seg-reg',        text:'—独立 ' },
-      { cls:'seg-ac',         text:'造物者。' },
-      { cls:'seg-reg',        text:'偏爱 ' },
-      { cls:'seg-ac',         text:'自由。' },
+    const lines = [
+      { indent:0, parts:[ { cls:'seg-grad script-line', text:'Annieif' } ] },
+      { indent:0, parts:[ { cls:'seg-reg',     text:'—独立 ' }, { cls:'seg-ac', text:'造物者。' } ] },
+      { indent:2, parts:[ { cls:'seg-reg',     text:'偏爱 '   }, { cls:'seg-ac', text:'自由。'   } ] },
     ];
 
-    // Build HTML
     let html = '';
-    segments.forEach((seg, i)=>{
-      html += `<span class="title-line ${seg.cls}">`;
-      for(let c=0; c<seg.text.length; c++){
-        const ch = seg.text[c];
-        // Preserve whitespace as non-breaking-looking space
-        const safe = ch === ' ' ? '&nbsp;' : ch;
-        html += `<span class="ch">${safe}</span>`;
-      }
-      html += '</span>';
+    lines.forEach((line, li)=>{
+      const pad = line.indent > 0 ? `<span style="display:inline-block;width:${line.indent}ch">&nbsp;</span>` : '';
+      html += `<span class="title-line">${pad}`;
+      line.parts.forEach((seg)=>{
+        // apply segment class to a wrapper span; script-line also applies here for line 1
+        const segClass = seg.cls;
+        html += `<span class="${segClass}">`;
+        for(let c=0; c<seg.text.length; c++){
+          const ch = seg.text[c];
+          const safe = ch === ' ' ? '&nbsp;' : ch;
+          html += `<span class="ch">${safe}</span>`;
+        }
+        html += `</span>`;
+      });
+      html += `</span>`;
     });
-    // Blinking caret
     html += '<span class="caret">&nbsp;</span>';
-
     root.innerHTML = html;
 
-    // Reveal, one char at a time
+    // Reveal char-by-char
     const chars = root.querySelectorAll('.ch');
     const caret = root.querySelector('.caret');
     const quote = document.getElementById('quote');
-    const step = 85; // ms per character
+    const step = 85;
 
     chars.forEach((el, i)=>{
-      setTimeout(()=>{ el.classList.add('on'); }, i * step);
+      setTimeout(()=> el.classList.add('on'), i * step);
     });
 
-    // Turn caret on at start, leave blinking after typing finishes
-    setTimeout(()=>{ caret.classList.add('on'); }, 50);
-    // Fade in quote after typing finishes
-    setTimeout(()=>{
-      if(quote) quote.classList.add('on');
-    }, chars.length * step + 200);
+    setTimeout(()=> caret.classList.add('on'), 50);
+    setTimeout(()=> quote && quote.classList.add('on'), chars.length * step + 200);
   })();
 </script>
 </body>
