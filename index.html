@@ -95,7 +95,10 @@
     letter-spacing:-.015em;
   }
 
-  /* Styled segments within a title line */
+  /* Styled segments within a title line.
+     NOTE: gradient rules are applied to .ch spans (below), not the wrapper,
+     because -webkit-text-fill-color does not inherit across inline-blocks and
+     the child falls back to black (the default) on dark backgrounds. */
   .seg-grad{
     display:inline-block;
     font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:700;
@@ -103,7 +106,9 @@
     line-height:.82;
     letter-spacing:-.025em;
     font-feature-settings:"swsh","dlig";
-    padding: 0 .08em 0 .02em;  /* prevents 'f' tail being clipped on the right */
+    padding: 0 .08em 0 .02em;
+  }
+  .seg-grad .ch{
     background:linear-gradient(100deg, #8fb9d6 0%, #b9c4d9 45%, #e9c9d5 78%, #f4c2d0 100%);
     -webkit-background-clip:text;background-clip:text;
     -webkit-text-fill-color:transparent;color:transparent;
@@ -191,12 +196,32 @@
   /* ============ SECTION COMMON ============ */
   section{padding:130px 28px;position:relative;border-top:1px solid var(--line)}
   .sec-head{
-    display:flex;justify-content:space-between;align-items:baseline;
-    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;
+    display:grid;
+    grid-template-columns: auto 1fr;
+    gap: 40px;
+    align-items:end;
+    justify-content:space-between;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
     color:var(--ink-faint);text-transform:uppercase;
     margin-bottom:64px;
   }
   .sec-head .num{color:var(--accent);margin-right:10px}
+  /* Big right-side subheadline — "关于 / About me", "正在悄悄生长的一些东西" */
+  .sec-head .sub{
+    grid-column: 2;
+    text-align: right;
+    font-family:"Cormorant Garamond","Fraunces",serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(54px, 9vw, 140px);
+    line-height:.92;
+    letter-spacing:-.015em;
+    color:var(--ink);
+    text-transform:none;
+  }
+  .sec-head .sub em{
+    color:var(--accent);
+  }
 
   /* ============ ABOUT (empty) ============ */
   .about{padding-top:120px}
@@ -251,7 +276,8 @@
     .title-line .seg-ac{font-size:clamp(52px,11vw,100px)}
     .since{position:static;right:auto;bottom:auto;margin-top:40px;text-align:left;font-size:44px}
     section{padding:80px 18px}
-    .sec-head{margin-bottom:40px}
+    .sec-head{margin-bottom:40px;gap:24px}
+    .sec-head .sub{font-size:clamp(42px,11vw,90px)}
     .about-slot{min-height:180px}
     .contact{padding:80px 18px 50px}
     .contact-links{gap:16px}
@@ -306,7 +332,7 @@
 <section class="about" id="about">
   <div class="sec-head">
     <div><span class="num">01</span><span data-i18n="sec.about">About</span></div>
-    <div><span data-i18n="sec.aboutSub">关于 / About me</span></div>
+    <div class="sub" data-i18n-html="sec.aboutSub"></div>
   </div>
   <div class="about-slot"><span data-i18n="slot.empty">— 待补充 / to be added —</span></div>
 </section>
@@ -315,7 +341,7 @@
 <section id="projects">
   <div class="sec-head">
     <div><span class="num">02</span><span data-i18n="sec.works">Selected Works</span></div>
-    <div><span data-i18n="sec.worksSub">正在悄悄生长的一些东西</span></div>
+    <div class="sub" data-i18n-html="sec.worksSub"></div>
   </div>
   <div class="proj-list" id="projList">
     <div class="proj-slot">001 · —</div>
@@ -364,9 +390,9 @@ const I18N = {
     'meta.lang': 'ZH / EN',
     'meta.tagline': 'PERSONAL / PORTFOLIO / MMXXVI · 2026',
     'sec.about': 'About',
-    'sec.aboutSub': '关于 / About me',
+    'sec.aboutSub': '关于 / <em>About me</em>',
     'sec.works': 'Selected Works',
-    'sec.worksSub': '正在悄悄生长的一些东西',
+    'sec.worksSub': '正在悄悄<em>生长</em>的一些东西',
     'sec.contact': 'Get in touch',
     'slot.empty': '— 待补充 / to be added —',
 
@@ -406,9 +432,9 @@ const I18N = {
     'meta.lang': 'ZH / EN',
     'meta.tagline': 'PERSONAL / PORTFOLIO / MMXXVI · 2026',
     'sec.about': 'About',
-    'sec.aboutSub': 'About me',
+    'sec.aboutSub': '<em>关于</em> / About me',
     'sec.works': 'Selected Works',
-    'sec.worksSub': 'Things quietly growing',
+    'sec.worksSub': 'Some things <em>quietly growing</em>',
     'sec.contact': 'Get in touch',
     'slot.empty': '— to be added —',
 
