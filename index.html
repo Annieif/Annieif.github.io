@@ -314,7 +314,7 @@
   .caret.on{opacity:1}
   @keyframes blink{50%{opacity:0}}
 
-  /* Sub quote line below headline */
+  /* Sub quote line below headline — character-by-character reveal */
   .quote{
     margin-top:40px;
     max-width:460px;
@@ -323,9 +323,13 @@
     font-size:15px;line-height:1.55;
     padding-top:20px;
     border-top:1px solid var(--line);
-    opacity:0;transition:opacity 1s var(--ease);
   }
-  .quote.on{opacity:1}
+  .quote .ch{
+    display:inline;
+    opacity:0;
+    transition:opacity .3s var(--ease);
+  }
+  .quote .ch.on{opacity:1}
 
   /* Year, bottom-right of hero */
   .since{
@@ -648,7 +652,7 @@ const I18N = {
       [{ style:'reg', text:'—独立 ' }, { style:'ac', text:'造物者。' }],
       [{ style:'indent' }, { style:'reg', text:'偏爱 ' }, { style:'ac', text:'自由。' }]
     ],
-    'hero.quote': '“游戏开发、代码与审美。在自己的节奏里,构建有温度的工具和世界。”',
+    'hero.quote': '美中不足,好事多磨。',
 
     // ======== 在此编辑走马灯 ========
     'marquee.items': [
@@ -693,7 +697,7 @@ const I18N = {
       [{ style:'reg', text:'—independent ' }, { style:'ac', text:'maker.' }],
       [{ style:'indent' }, { style:'reg', text:'championing ' }, { style:'ac', text:'freedom.' }]
     ],
-    'hero.quote': '"Game development, code, and craft. Building tools and worlds with warmth, at my own pace."',
+    'hero.quote': 'Nothing is perfect; nothing comes easy.',
 
     'marquee.items': [
       'creative coding','DIY','independent','JAVA','typescript','DESIGN','freedom'
@@ -817,12 +821,15 @@ function setLang(lang) {
     runTypewriter(tw, 85);
   }
 
-  // Quote
+  // Quote — character-by-character, same as the title
   const q = document.getElementById('quote');
   if (q) {
-    q.textContent = dict['hero.quote'];
-    q.classList.remove('on');
-    requestAnimationFrame(() => q.classList.add('on'));
+    q.innerHTML = buildQuoteHtml(dict['hero.quote']);
+    const quoteChars = q.querySelectorAll('.ch');
+    quoteChars.forEach((el, i) => {
+      el.classList.remove('on');
+      setTimeout(() => el.classList.add('on'), 1200 + i * 90); // starts after title starts
+    });
   }
 
   // Update active state on language switcher
@@ -832,6 +839,13 @@ function setLang(lang) {
 
   // Persist choice
   try { localStorage.setItem('lang', lang); } catch(e) {}
+}
+
+function buildQuoteHtml(text) {
+  const chars = (text || '').split('').map(c =>
+    `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`
+  ).join('');
+  return chars;
 }
 
 function runTypewriter(root, stepMs) {
