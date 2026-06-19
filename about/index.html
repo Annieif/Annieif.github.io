@@ -14,23 +14,34 @@
       --ink-dim:#c4bfb4;
       --ink-faint:#6e6a62;
       --accent:#f4c2d0;
+      --accent-hover:#f9d6e0;
       --link:#7ab4d8;
       --line:rgba(232,228,221,.10);
+      --line-strong:rgba(232,228,221,.18);
+      --grain-opacity:.10;
+      --ease:cubic-bezier(.2,.8,.2,1);
     }
-    html,body{background:var(--bg);color:var(--ink);margin:0}
+    html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
     body{
       font-family:"Fraunces",serif;
       font-weight:400;
       min-height:100vh;
       position:relative;
       background:
-        radial-gradient(ellipse at 20% 10%, rgba(122,180,216,.12), transparent 55%),
+        radial-gradient(ellipse at 20% 10%, rgba(122,180,216,.14), transparent 55%),
         radial-gradient(ellipse at 85% 20%, rgba(244,194,208,.10), transparent 50%),
+        radial-gradient(ellipse at 50% 110%, rgba(122,180,216,.08), transparent 60%),
         #0a0a0a;
     }
-    /* starfield */
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:100;
+      opacity:var(--grain-opacity);mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    }
+
+    /* ============ STARFIELD ============ */
     .stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-    .stars .layer{position:absolute;inset:-20%}
+    .stars .layer{position:absolute;inset:-20%;animation:twinkle 5s ease-in-out infinite alternate}
     .stars .s1{
       background-image:
         radial-gradient(1px 1px at 20px 30px, #fff, transparent 60%),
@@ -38,104 +49,95 @@
         radial-gradient(1.5px 1.5px at 150px 60px, #e0dcd4, transparent 60%),
         radial-gradient(1px 1px at 220px 180px, #fff, transparent 60%),
         radial-gradient(1px 1px at 300px 40px, #8fb9d6, transparent 60%),
-        radial-gradient(1.5px 1.5px at 380px 220px, #fff, transparent 60%);
-      background-size:540px 400px;opacity:.85}
+        radial-gradient(1.5px 1.5px at 380px 220px, #fff, transparent 60%),
+        radial-gradient(1px 1px at 60px 260px, #f4c2d0, transparent 60%),
+        radial-gradient(1px 1px at 260px 320px, #fff, transparent 60%),
+        radial-gradient(1px 1px at 420px 100px, #fff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 500px 280px, #e0dcd4, transparent 60%);
+      background-size:540px 400px;opacity:.85;animation-duration:6s}
     .stars .s2{
       background-image:
         radial-gradient(1.5px 1.5px at 40px 50px, #fff, transparent 60%),
         radial-gradient(2px 2px at 180px 140px, #fff, transparent 60%),
         radial-gradient(1.5px 1.5px at 320px 80px, #f4c2d0, transparent 60%),
-        radial-gradient(2px 2px at 260px 240px, #8fb9d6, transparent 60%);
-      background-size:620px 600px;opacity:.65}
+        radial-gradient(2px 2px at 260px 240px, #8fb9d6, transparent 60%),
+        radial-gradient(1.5px 1.5px at 460px 180px, #fff, transparent 60%),
+        radial-gradient(2px 2px at 120px 320px, #fff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 540px 60px, #e0dcd4, transparent 60%),
+        radial-gradient(2px 2px at 220px 400px, #fff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 380px 480px, #f4c2d0, transparent 60%),
+        radial-gradient(2px 2px at 80px 520px, #8fb9d6, transparent 60%);
+      background-size:620px 600px;opacity:.65;animation-duration:8s;animation-delay:-2s}
     .stars .s3{
       background-image:
         radial-gradient(2.5px 2.5px at 100px 80px, #fff, transparent 60%),
         radial-gradient(3px 3px at 280px 180px, #8fb9d6, transparent 60%),
-        radial-gradient(2.5px 2.5px at 460px 280px, #f4c2d0, transparent 60%);
-      background-size:700px 800px;opacity:.55}
+        radial-gradient(2.5px 2.5px at 460px 280px, #f4c2d0, transparent 60%),
+        radial-gradient(3px 3px at 160px 420px, #fff, transparent 60%),
+        radial-gradient(2.5px 2.5px at 580px 520px, #fff, transparent 60%),
+        radial-gradient(3px 3px at 400px 680px, #e0dcd4, transparent 60%);
+      background-size:700px 800px;opacity:.55;animation-duration:11s;animation-delay:-4s}
+    @keyframes twinkle{from{opacity:.55}to{opacity:1}}
+
+    /* shooting stars */
+    .shooting-star{position:absolute;top:0;left:0;width:110px;height:1px;
+      background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.6) 45%, #fff 65%, rgba(122,180,216,0) 100%);
+      filter:drop-shadow(0 0 4px rgba(244,194,208,.45));
+      transform:rotate(18deg);border-radius:999px;opacity:0;animation:shoot 9s linear infinite}
+    .shooting-star.pink{background:linear-gradient(90deg, transparent 0%, rgba(249,214,224,.55) 45%, #f9d6e0 65%, rgba(249,214,224,0) 100%);filter:drop-shadow(0 0 5px rgba(244,194,208,.55));width:80px}
+    .shooting-star.blue{background:linear-gradient(90deg, transparent 0%, rgba(156,201,232,.55) 45%, #9cc9e8 65%, rgba(156,201,232,0) 100%);filter:drop-shadow(0 0 5px rgba(122,180,216,.55));width:95px}
+    @keyframes shoot{0%{transform:translate(-140px,-140px) rotate(18deg);opacity:0}3%{opacity:.9}11%{transform:translate(120vw,52vh) rotate(18deg);opacity:.9}13%{opacity:0}100%{opacity:0}}
+
+    a{color:inherit;text-decoration:none}
+
+    /* ============ CUSTOM CURSOR ============ */
+    .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;mix-blend-mode:difference;transform:translate3d(-50%,-50%,0)}
+    .cursor-dot{width:6px;height:6px;background:#fff;transition:transform .08s linear}
+    .cursor-ring{width:32px;height:32px;border:1px solid rgba(255,255,255,.55);transition:transform .25s var(--ease),width .2s var(--ease),height .2s var(--ease),border-color .2s var(--ease),background .2s var(--ease));box-shadow:0 0 16px rgba(244,194,208,.18)}
+    body.is-hover .cursor-ring{width:56px;height:56px;border-color:rgba(244,194,208,.85);background:rgba(244,194,208,.10);box-shadow:0 0 24px rgba(244,194,208,.35)}
+    body.is-hover .cursor-dot{background:#f4c2d0}
+    @media (hover:none){.cursor-dot,.cursor-ring{display:none}}
 
     .page{position:relative;z-index:1;padding:80px 28px 140px;max-width:980px;margin:0 auto}
-    .back{
-      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
-      color:var(--ink-faint);text-decoration:none;text-transform:uppercase;
-      display:inline-block;margin-bottom:80px}
+    .top-bar{display:flex;justify-content:space-between;align-items:baseline;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.2em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:64px}
+    .top-bar .brand{color:var(--ink-dim)}
+    .top-bar .brand b{color:var(--ink);letter-spacing:.22em}
+    .back{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.22em;color:var(--ink-faint);text-decoration:none;text-transform:uppercase}
     .back:hover{color:var(--accent)}
-    .section-label{
-      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.25em;
-      color:var(--ink-faint);text-transform:uppercase;margin-bottom:16px;display:block
-    }
+
+    .section-label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.25em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:16px;display:block}
 
     /* Headline */
     .headline{margin-bottom:80px}
-    .headline h1{
-      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:700;
-      font-size:clamp(56px,11vw,180px);line-height:1;letter-spacing:-.015em;margin:0;
-      color:var(--accent)
-    }
-    .headline .sub{
-      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
-      font-size:clamp(22px,3vw,36px);line-height:1.2;color:var(--ink-dim);
-      margin-top:18px
-    }
+    .headline h1{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:700;font-size:clamp(56px,11vw,180px);line-height:1;letter-spacing:-.015em;margin:0;color:var(--accent)}
+    .headline .sub{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:clamp(22px,3vw,36px);line-height:1.2;color:var(--ink-dim);margin-top:18px}
     .divider{height:1px;background:var(--line);margin:0 0 80px}
 
     /* Intro (main text) */
-    .intro{
-      font-family:"Fraunces",serif;font-weight:400;font-size:clamp(17px,1.6vw,20px);
-      line-height:1.75;color:var(--ink);max-width:720px
-    }
+    .intro{font-family:"Fraunces",serif;font-weight:400;font-size:clamp(17px,1.6vw,20px);line-height:1.75;color:var(--ink);max-width:720px}
     .intro p{margin:0 0 22px}
     .intro p em{font-style:italic;color:var(--accent)}
 
     /* Two-column meta list */
-    .meta-grid{
-      display:grid;grid-template-columns:repeat(2,1fr);gap:40px 80px;margin-top:80px
-    }
-    .meta-block{
-      border-top:1px solid var(--line);padding-top:18px
-    }
-    .meta-block .k{
-      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;
-      color:var(--ink-faint);text-transform:uppercase;margin-bottom:14px
-    }
-    .meta-block .v{
-      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
-      font-size:clamp(20px,2vw,26px);line-height:1.35;color:var(--ink)
-    }
+    .meta-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:40px 80px;margin-top:80px}
+    .meta-block{border-top:1px solid var(--line);padding-top:18px}
+    .meta-block .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:14px}
+    .meta-block .v{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:clamp(20px,2vw,26px);line-height:1.35;color:var(--ink)}
 
     /* Timeline / history */
     .timeline{margin-top:80px}
-    .timeline h3{
-      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
-      font-size:clamp(28px,3vw,40px);margin:0 0 36px;color:var(--ink)
-    }
-    .tl-row{
-      display:grid;grid-template-columns:120px 1fr;gap:24px;
-      padding:22px 0;border-bottom:1px dashed var(--line);align-items:baseline
-    }
+    .timeline h3{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:clamp(28px,3vw,40px);margin:0 0 36px;color:var(--ink)}
+    .tl-row{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:22px 0;border-bottom:1px dashed var(--line);align-items:baseline}
     .tl-row:first-of-type{border-top:1px dashed var(--line)}
-    .tl-date{
-      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
-      color:var(--ink-faint);text-transform:uppercase
-    }
-    .tl-body{
-      font-family:"Fraunces",serif;font-size:16px;line-height:1.65;color:var(--ink)
-    }
+    .tl-date{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;color:var(--ink-faint);text-transform:uppercase}
+    .tl-body{font-family:"Fraunces",serif;font-size:16px;line-height:1.65;color:var(--ink)}
     .tl-body em{color:var(--accent);font-style:italic}
 
     /* Skills cloud */
     .skills{margin-top:80px}
-    .skills h3{
-      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
-      font-size:clamp(28px,3vw,40px);margin:0 0 24px;color:var(--ink)
-    }
+    .skills h3{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:clamp(28px,3vw,40px);margin:0 0 24px;color:var(--ink)}
     .skill-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
-    .skill-tag{
-      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
-      text-transform:uppercase;color:var(--ink-dim);
-      border:1px solid var(--line);padding:8px 14px;border-radius:2px;
-      transition:border-color .3s,color .3s
-    }
+    .skill-tag{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-dim);border:1px solid var(--line);padding:8px 14px;border-radius:2px;transition:border-color .3s var(--ease),color .3s var(--ease)}
     .skill-tag:hover{border-color:var(--accent);color:var(--accent)}
     .skill-star{color:var(--accent);font-size:10px}
 
@@ -150,78 +152,102 @@
     <div class="layer s1"></div>
     <div class="layer s2"></div>
     <div class="layer s3"></div>
+    <span class="shooting-star"      style="top:10%;left:5%;animation-duration:11s"></span>
+    <span class="shooting-star pink" style="top:30%;left:60%;animation-duration:14s;animation-delay:-3s"></span>
+    <span class="shooting-star blue" style="top:60%;left:20%;animation-duration:17s;animation-delay:-7s"></span>
   </div>
 
+  <div class="cursor-dot"  aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
   <main class="page">
-    <a class="back" href="../index.html">← 返回 / Back</a>
+    <div class="top-bar">
+      <a class="back" href="../index.html">← 返回 / Back</a>
+      <div class="brand"><b>ANNIEIF</b>&nbsp;/&nbsp;2026</div>
+    </div>
+
     <span class="section-label">01 / about</span>
 
     <section class="headline">
-      <h1>[ 姓名 / 称呼 ]</h1>
-      <p class="sub">[ 副标题 / 一句话自我描述 ]</p>
+      <h1>Annieif</h1>
+      <p class="sub">独立造物者。偏爱自由。</p>
     </section>
 
     <div class="divider"></div>
 
     <section class="intro">
-      <p>[ 第一段落简介 — 开头自我介绍 / 专业方向 / 目前在做的事情 ]</p>
-      <p>[ 第二段落 — 兴趣 / 偏好 / 工作方式 ]</p>
-      <p>[ 第三段落 — 长期目标 / 创作理念;可使用 <em>斜体强调</em> 来突出关键词 ]</p>
+      <p>我是一名热爱代码与设计的独立开发者。在自己的节奏里,构建有温度的工具和世界。</p>
+      <p>我相信<em>美中不足</em>,<em>好事多磨</em>——在挫折里磨出棱角,在长夜里拾起微光。</p>
+      <p>无穷的远方,无数的人们,都和我有关。</p>
     </section>
 
     <section class="meta-grid">
       <div class="meta-block">
-        <div class="k">[ Label 01 ]</div>
-        <div class="v">[ 字段内容 01 ]</div>
+        <div class="k">Location</div>
+        <div class="v">地球 · Earth</div>
       </div>
       <div class="meta-block">
-        <div class="k">[ Label 02 ]</div>
-        <div class="v">[ 字段内容 02 ]</div>
+        <div class="k">Status</div>
+        <div class="v">在线构建中 · Building in the open</div>
       </div>
       <div class="meta-block">
-        <div class="k">[ Label 03 ]</div>
-        <div class="v">[ 字段内容 03 ]</div>
+        <div class="k">Focus</div>
+        <div class="v">独立开发 · Creative Coding</div>
       </div>
       <div class="meta-block">
-        <div class="k">[ Label 04 ]</div>
-        <div class="v">[ 字段内容 04 ]</div>
+        <div class="k">Year</div>
+        <div class="v">2026</div>
       </div>
     </section>
 
     <section class="timeline">
-      <span class="section-label">— [ 时间线 / history ]</span>
-      <h3>[ 经历 / 足迹 ]</h3>
+      <span class="section-label">— history / 足迹</span>
+      <h3>经历</h3>
       <div class="tl-row">
-        <div class="tl-date">[ 202X · ]</div>
-        <div class="tl-body">[ 事件 / 经历描述,可用 <em>强调</em> 标记重点 ]</div>
+        <div class="tl-date">2024 · start</div>
+        <div class="tl-body">开始独立造物,学习 <em>Java</em> 与前端构建,探索代码与美的平衡。</div>
       </div>
       <div class="tl-row">
-        <div class="tl-date">[ 202X · ]</div>
-        <div class="tl-body">[ 事件 / 经历描述 ]</div>
+        <div class="tl-date">2025 · build</div>
+        <div class="tl-body">搭建个人作品与工具链,形成自己的审美与节奏。</div>
       </div>
       <div class="tl-row">
-        <div class="tl-date">[ 202X · ]</div>
-        <div class="tl-body">[ 事件 / 经历描述 ]</div>
+        <div class="tl-date">2026 · now</div>
+        <div class="tl-body">继续轻装前行,<em>珍惜眼前人</em>,做有温度的创造。</div>
       </div>
     </section>
 
     <section class="skills">
-      <span class="section-label">— [ 技能 / tools & languages ]</span>
-      <h3>[ 关键词 ]</h3>
+      <span class="section-label">— tools & languages</span>
+      <h3>关键词</h3>
       <div class="skill-row">
-        <span class="skill-tag">[ 标签 01 ]</span>
-        <span class="skill-star">✦</span>
-        <span class="skill-tag">[ 标签 02 ]</span>
-        <span class="skill-star">✦</span>
-        <span class="skill-tag">[ 标签 03 ]</span>
-        <span class="skill-star">✦</span>
-        <span class="skill-tag">[ 标签 04 ]</span>
-        <span class="skill-star">✦</span>
-        <span class="skill-tag">[ 标签 05 ]</span>
-        <span class="skill-star">✦</span>
-        <span class="skill-tag">[ 标签 06 ]</span>
+        <span class="skill-tag">Java</span><span class="skill-star">✦</span>
+        <span class="skill-tag">TypeScript</span><span class="skill-star">✦</span>
+        <span class="skill-tag">Creative Coding</span><span class="skill-star">✦</span>
+        <span class="skill-tag">Design</span><span class="skill-star">✦</span>
+        <span class="skill-tag">DIY</span><span class="skill-star">✦</span>
+        <span class="skill-tag">Freedom</span>
       </div>
     </section>
   </main>
+
+  <script>
+    (function initCursor(){
+      const dot=document.querySelector('.cursor-dot');
+      const ring=document.querySelector('.cursor-ring');
+      if(!dot||!ring) return;
+      let mouseX=window.innerWidth/2, mouseY=window.innerHeight/2;
+      let ringX=mouseX, ringY=mouseY;
+      const interactiveSelector='a, button, [data-cursor-hover]';
+      function onMove(e){mouseX=e.clientX;mouseY=e.clientY;dot.style.transform='translate3d('+mouseX+'px,'+mouseY+'px,0) translate(-50%,-50%)'}
+      function loop(){ringX+=(mouseX-ringX)*0.18;ringY+=(mouseY-ringY)*0.18;ring.style.transform='translate3d('+ringX+'px,'+ringY+'px,0) translate(-50%,-50%)';requestAnimationFrame(loop)}
+      function onEnter(e){const t=e.target.closest(interactiveSelector);if(t) document.body.classList.add('is-hover')}
+      function onLeave(e){const t=e.target.closest(interactiveSelector);if(t) document.body.classList.remove('is-hover')}
+      window.addEventListener('mousemove',onMove,{passive:true});
+      document.addEventListener('mouseover',onEnter);
+      document.addEventListener('mouseout',onLeave);
+      loop();
+    })();
+  </script>
 </body>
 </html>

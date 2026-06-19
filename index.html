@@ -643,7 +643,7 @@ const I18N = {
     'sec.about': 'About',
     'sec.aboutSub': '关于 / <em>About me</em>',
     'sec.works': 'Selected Works',
-    'sec.worksSub': '泼墨造物,笔下生花。',
+    'sec.worksSub': '泼墨<em>造物</em>,笔下<em>生花</em>。',
     'sec.contact': 'Get in touch',
     'slot.empty': '— 待补充 / to be added —',
 
@@ -662,9 +662,9 @@ const I18N = {
 
     // ======== 在此编辑 About 卡片(3 张);字段为 label / title / text ========
     'about.cards': [
-      { label:'[ / label 01 ]', title:'[ 关于"我" ]', text:'[ 在此处填写介绍文字 / 第 1 段简介 ]' },
-      { label:'[ / label 02 ]', title:'[ 关于"Annieif" ]', text:'[ 在此处填写介绍文字 / 第 2 段简介 ]' },
-      { label:'[ / label 03 ]', title:'[ 其它 ]', text:'[ 在此处填写介绍文字 / 第 3 段简介 ]' }
+      { label:'[ / about me ]', title:'关于"<em>我</em>"', text:'我<em>终将在苦难中成长</em>——在挫折里磨出棱角,在长夜里拾起微光。' },
+      { label:'[ / annieif ]', title:'关于"<em>Annieif</em>"', text:'<em>无穷的远方</em>,<em>无数的人们</em>,都和我有关——一份来自远方,也走向远方的回应。' },
+      { label:'[ / otherwise ]', title:'<em>其它</em>', text:'一身<em>清贫</em>怎敢入繁华,两袖<em>清风</em>怎敢误佳人——我选择轻装,并珍惜眼前人。' }
     ],
 
     // ======== 在此编辑 Selected Works 条目(会指向 works/001.html 等) ========
@@ -697,7 +697,7 @@ const I18N = {
     'sec.about': 'About',
     'sec.aboutSub': '<em>关于</em> / About me',
     'sec.works': 'Selected Works',
-    'sec.worksSub': 'Some things <em>quietly growing</em>',
+    'sec.worksSub': 'Splashed ink makes <em>worlds</em>; a pen's breath makes <em>flowers bloom</em>.',
     'sec.contact': 'Get in touch',
     'slot.empty': '— to be added —',
 
@@ -713,9 +713,9 @@ const I18N = {
     ],
 
     'about.cards': [
-      { label:'[ / label 01 ]', title:'[ title 01 ]', text:'[ placeholder text / intro paragraph 1 ]' },
-      { label:'[ / label 02 ]', title:'[ title 02 ]', text:'[ placeholder text / intro paragraph 2 ]' },
-      { label:'[ / label 03 ]', title:'[ title 03 ]', text:'[ placeholder text / intro paragraph 3 ]' }
+      { label:'[ / about me ]', title:'About "<em>me</em>"', text:'I will <em>grow through hardship</em> — sharpening my edges in setbacks, picking up faint light in long nights.' },
+      { label:'[ / annieif ]', title:'About "<em>Annieif</em>"', text:'<em>Infinity beyond the horizon</em>, <em>countless souls</em> — all connected to me. A response from afar, and a step toward the far.' },
+      { label:'[ / otherwise ]', title:'<em>Otherwise</em>', text:'Clad in <em>poverty</em>, dare I enter the glittering crowd? Sleeves of <em>breeze</em>, dare I delay a beloved one? I travel light, and cherish those before me.' }
     ],
 
     'works.items': [
@@ -797,7 +797,31 @@ function buildTitleHtml(linesDict) {
    These pull from I18N[lang]['about.cards'] and ['works.items'].
    Use DOM APIs (createElement / appendChild / textContent) so that
    user-provided strings don't risk breaking the parser.
+   Only `<em>` / `</em>` is parsed as a real element for emphasis.
    ===================================================== */
+
+// Parse a plain string, turning any `<em>` / `</em>` segments into
+// actual <em> DOM nodes. Everything else is treated as plain text.
+function renderText(root, text) {
+  if (!text) return;
+  // Regex finds <em>…</em> at string level, no nesting expected.
+  const re = /<em>([\s\S]*?)<\/em>/g;
+  let lastIdx = 0;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > lastIdx) {
+      root.appendChild(document.createTextNode(text.slice(lastIdx, m.index)));
+    }
+    const em = document.createElement('em');
+    em.textContent = m[1];
+    root.appendChild(em);
+    lastIdx = m.index + m[0].length;
+  }
+  if (lastIdx < text.length) {
+    root.appendChild(document.createTextNode(text.slice(lastIdx)));
+  }
+}
+
 function renderAbout(cards) {
   if (!cards || !cards.length) {
     const d = document.createElement('div');
@@ -828,10 +852,10 @@ function renderAbout(cards) {
     label.appendChild(s2);
 
     const h4 = document.createElement('h4');
-    h4.textContent = c.title || '';
+    renderText(h4, c.title || '');
 
     const p = document.createElement('p');
-    p.textContent = c.text || '';
+    renderText(p, c.text || '');
 
     a.appendChild(label);
     a.appendChild(h4);
@@ -863,7 +887,7 @@ function renderWorks(items) {
 
     const pTitle = document.createElement('div');
     pTitle.className = 'p-title';
-    pTitle.textContent = w.title || '';
+    renderText(pTitle, w.title || '');
 
     const pTag = document.createElement('div');
     pTag.className = 'p-tag';
@@ -871,7 +895,7 @@ function renderWorks(items) {
 
     const pDesc = document.createElement('div');
     pDesc.className = 'p-desc';
-    pDesc.textContent = w.text || '';
+    renderText(pDesc, w.text || '');
 
     a.appendChild(pNum);
     a.appendChild(pTitle);
