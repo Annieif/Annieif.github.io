@@ -295,20 +295,21 @@
   .seg-reg .ch{color:inherit}
   .seg-ac  .ch{color:inherit}
 
-  /* Caret / blinking cursor at end of typewriter
-     Sits inline with the last line of the title; font-size is set to
-     match the scale of the (pink) accent segment so it lines up with
-     the surrounding text. */
+  /* Caret / blinking cursor at end of typewriter.
+     The JS appends this inside the last accent segment (.seg-ac) so it
+     naturally matches its font-size / baseline — we only need to give it
+     a subtle width + vertical offset and the pink color. */
   .caret{
     display:inline-block;
-    vertical-align:-.12em;
-    font-size:clamp(80px, 13vw, 190px);
-    width:.08em;height:.85em;
+    width:.025em;
+    height:.9em;
+    vertical-align:-.1em;
+    margin-left:.02em;
     background:var(--accent);
-    margin-left:.05em;
+    border-radius:2px;
     animation:blink 1s steps(1) infinite;
     opacity:0;
-    border-radius:1px;
+    box-shadow:0 0 6px rgba(244,194,208,.5);
   }
   .caret.on{opacity:1}
   @keyframes blink{50%{opacity:0}}
@@ -382,29 +383,98 @@
     color:var(--accent);
   }
 
-  /* ============ ABOUT (empty) ============ */
+  /* ============ ABOUT (card grid) ============ */
   .about{padding-top:120px}
-  .about-slot{
-    min-height:260px;
-    border:1px dashed var(--line);
-    display:flex;align-items:center;justify-content:center;
-    color:var(--ink-faint);
-    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
-    transition:border-color .4s var(--ease),color .4s var(--ease);
+  .about-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+    margin-top:8px;
   }
-  .about-slot:hover{border-color:var(--line-strong);color:var(--ink-dim)}
+  .about-card{
+    border:1px solid var(--line);
+    padding:28px 24px 32px;
+    background:linear-gradient(180deg, rgba(244,194,208,.04), transparent 70%);
+    transition:border-color .35s var(--ease), transform .35s var(--ease), background .35s var(--ease);
+    display:flex;flex-direction:column;gap:18px;
+    min-height:220px;
+  }
+  .about-card:hover{
+    border-color:rgba(244,194,208,.35);
+    transform:translateY(-3px);
+    background:linear-gradient(180deg, rgba(244,194,208,.09), transparent 70%);
+  }
+  .about-card .ac-label{
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.22em;
+    color:var(--ink-faint);text-transform:uppercase;
+    display:flex;justify-content:space-between;
+  }
+  .about-card .ac-label .num{color:var(--accent)}
+  .about-card h4{
+    font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+    font-size:clamp(28px, 3vw, 40px);
+    line-height:1.05;letter-spacing:-.01em;color:var(--ink);
+  }
+  .about-card p{
+    font-family:"Fraunces",serif;font-weight:400;font-size:14.5px;line-height:1.6;
+    color:var(--ink-dim);
+  }
 
-  /* ============ PROJECTS (empty) ============ */
-  .proj-list{border-top:1px solid var(--line)}
-  .proj-slot{
-    padding:40px 8px;border-bottom:1px solid var(--line);
-    display:flex;align-items:center;justify-content:center;
-    color:var(--ink-faint);
-    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;
-    min-height:110px;
-    transition:color .4s var(--ease);
+  /* ============ PROJECTS (vertical index list) ============ */
+  .proj-list{
+    border-top:1px solid var(--line);
   }
-  .proj-slot:hover{color:var(--ink-dim)}
+  .proj-item{
+    display:grid;
+    grid-template-columns: 60px 2.2fr 3fr auto;
+    gap:28px;
+    align-items:baseline;
+    padding:28px 8px;
+    border-bottom:1px solid var(--line);
+    transition:background .35s var(--ease), padding .35s var(--ease), color .35s var(--ease);
+  }
+  .proj-item:hover{
+    background:rgba(244,194,208,.05);
+    padding-left:24px;
+    padding-right:24px;
+  }
+  .proj-item .p-num{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
+    color:var(--ink-faint);
+  }
+  .proj-item .p-title{
+    font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+    font-size:clamp(26px, 2.8vw, 38px);line-height:1.1;
+    color:var(--ink);
+    transition:color .35s var(--ease);
+  }
+  .proj-item:hover .p-title{color:var(--accent)}
+  .proj-item .p-tag{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;
+    color:var(--ink-faint);text-transform:uppercase;
+  }
+  .proj-item .p-desc{
+    font-family:"Fraunces",serif;font-weight:400;font-size:14px;line-height:1.55;
+    color:var(--ink-dim);
+  }
+
+  @media (max-width:900px){
+    .about-grid{grid-template-columns:1fr;gap:12px}
+    .about-card{padding:22px 20px 26px;min-height:auto}
+    .proj-item{
+      grid-template-columns:40px 1fr;
+      grid-template-areas:
+        "num title"
+        "tag tag"
+        "desc desc";
+      gap:10px 16px;
+      padding:22px 6px;
+    }
+    .proj-item .p-num{grid-area:num}
+    .proj-item .p-title{grid-area:title}
+    .proj-item .p-tag{grid-area:tag}
+    .proj-item .p-desc{grid-area:desc}
+  }
 
   /* ============ CONTACT ============ */
   .contact{padding:130px 28px 90px;text-align:center}
@@ -511,7 +581,7 @@
     <div class="label-left"><span class="num">01</span><span data-i18n="sec.about">About</span></div>
     <div class="sub" data-i18n-html="sec.aboutSub"></div>
   </div>
-  <div class="about-slot"><span data-i18n="slot.empty">— 待补充 / to be added —</span></div>
+  <div class="about-grid" id="aboutGrid"><!-- populated by JS --></div>
 </section>
 
 <!-- PROJECTS -->
@@ -520,12 +590,7 @@
     <div class="label-left"><span class="num">02</span><span data-i18n="sec.works">Selected Works</span></div>
     <div class="sub" data-i18n-html="sec.worksSub"></div>
   </div>
-  <div class="proj-list" id="projList">
-    <div class="proj-slot">001 · —</div>
-    <div class="proj-slot">002 · —</div>
-    <div class="proj-slot">003 · —</div>
-    <div class="proj-slot">004 · —</div>
-  </div>
+  <div class="proj-list" id="projList"><!-- populated by JS --></div>
 </section>
 
 <!-- CONTACT -->
@@ -548,10 +613,14 @@
 
 <script>
 /* =====================================================
-   i18n dictionary.
-   Every user-visible string on the page lives here so
-   the page can be switched between languages at runtime.
+   🛠  CONTENT EDITOR — 编辑这里即可改变页面内容
+   修改下面的数组/对象,然后保存文件。结构:
+   - marquee:         [字符串,字符串,...]     (会以 ✦ 分隔)
+   - about:           [{label, title, text}]  (3张卡片)
+   - works:           [{title, tag, text}]    (条目列表)
+   每一项都分 zh / en 双语。
    ===================================================== */
+
 const I18N = {
   zh: {
     'meta.title': '独立造物者',
@@ -574,18 +643,41 @@ const I18N = {
     'slot.empty': '— 待补充 / to be added —',
 
     // Hero title = three lines.
-    // Each line is an array of { style: 'grad'|'reg'|'ac', text }.
     'hero.title.lines': [
       [{ style:'grad', text:'Annieif' }],
       [{ style:'reg', text:'—独立 ' }, { style:'ac', text:'造物者。' }],
       [{ style:'indent' }, { style:'reg', text:'偏爱 ' }, { style:'ac', text:'自由。' }]
     ],
-    // Quote below title
     'hero.quote': '“游戏开发、代码与审美。在自己的节奏里,构建有温度的工具和世界。”',
 
-    // Marquee items (one star + one word each).
+    // ======== 在此编辑走马灯 ========
     'marquee.items': [
       'creative coding','DIY','独立开发','JAVA','typescript','DESIGN','自由'
+    ],
+
+    // ======== 在此编辑 About 卡片 (3张) ========
+    'about.cards': [
+      { label:'High Freedom · DIY',
+        title:'高自由度 · DIY',
+        text:'偏向于可由玩家自主搭建的玩乐系统,强调工具与扩展性,而非线性剧情。' },
+      { label:'Engineering',
+        title:'Java · Web · 脚本',
+        text:'以长期可维护为第一要义。喜欢简洁的 API、性能敏感的实现、以及能自证正确的设计。' },
+      { label:'Typography',
+        title:'排版 · 字体 · 留白',
+        text:'对字体与版式有长期兴趣。相信克制的用色、准确的节奏、恰到好处的留白才是“好看”的本源。' }
+    ],
+
+    // ======== 在此编辑 Selected Works 条目 ========
+    'works.items': [
+      { title:'annieif.github.io', tag:'HTML · CSS · JS',
+        text:'你正在看的这个页面。目标是长期维护,把它做成一份自己动手修改的“数字庭院”。' },
+      { title:'独立游戏框架 (暂未命名)', tag:'Java · 游戏引擎',
+        text:'为想要“自己动手做”的玩家设计的高自由度模块化游戏框架,插件化扩展,脚本友好。' },
+      { title:'工具与小脚本', tag:'Shell · Node',
+        text:'日常生产力的小玩意儿 — 文件批处理、排版小工具、各种自动部署脚本合集。' },
+      { title:'排版 / 字体实验', tag:'Design · Typography',
+        text:'关于字体、字距、网格与视觉节奏的个人笔记。不定期更新,写得慢但认真。' }
     ],
 
     'contact.title': '想说点什么?<br><em>随时 联系。</em>',
@@ -626,6 +718,29 @@ const I18N = {
       'creative coding','DIY','independent','JAVA','typescript','DESIGN','freedom'
     ],
 
+    'about.cards': [
+      { label:'High Freedom · DIY',
+        title:'Playground systems',
+        text:'Tools the player can extend themselves. Composable mechanics over linear stories.' },
+      { label:'Engineering',
+        title:'Java · Web · Scripting',
+        text:'Maintainability first. I like small APIs, performance-sensitive implementations, and designs that prove themselves.' },
+      { label:'Typography',
+        title:'Typesetting & whitespace',
+        text:'A long-running interest in type, letter-spacing, grids and rhythm. Restraint over novelty.' }
+    ],
+
+    'works.items': [
+      { title:'annieif.github.io', tag:'HTML · CSS · JS',
+        text:'The page you are on right now. Intended to grow slowly — a hand-tended digital garden.' },
+      { title:'Indie game framework (untitled)', tag:'Java · engine',
+        text:'A plugin-friendly engine for makers who want to build games themselves. Scripting-heavy, modular, extensible.' },
+      { title:'Tools & scripts', tag:'Shell · Node',
+        text:'A quiet collection of small productivity helpers — batch processing, layout utilities, deployment scripts.' },
+      { title:'Type experiments', tag:'Design · Typography',
+        text:'Personal notes on type, letter-spacing, grids and visual rhythm. Slow to update; slow to read.' }
+    ],
+
     'contact.title': 'Got something to say?<br><em>Just reach out.</em>',
     'contact.github': 'GitHub · @Annieif',
     'contact.email': 'Email · Qianlovean@outlook.com',
@@ -664,6 +779,44 @@ function buildTitleHtml(linesDict) {
   }).join('');
 }
 
+/* =====================================================
+   Content renderers.
+   These pull from I18N[lang]['about.cards'] and ['works.items'].
+   ===================================================== */
+function renderAbout(cards) {
+  if (!cards || !cards.length) {
+    return `<div class="about-card" style="justify-content:center;align-items:center;text-align:center">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase">— to be added —</div>
+            </div>`;
+  }
+  return cards.map((c, i) => `
+    <div class="about-card">
+      <div class="ac-label"><span>${c.label || ''}</span><span class="num">0${i+1}</span></div>
+      <h4>${c.title || ''}</h4>
+      <p>${c.text || ''}</p>
+    </div>
+  `).join('');
+}
+
+function renderWorks(items) {
+  if (!items || !items.length) {
+    return `<div style="padding:40px 8px;border-bottom:1px solid var(--line);text-align:center;
+               font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase">
+              — to be added —
+            </div>`;
+  }
+  return items.map((w, i) => {
+    const num = String(i + 1).padStart(3, '0');
+    return `
+      <div class="proj-item">
+        <div class="p-num">${num}</div>
+        <div class="p-title">${w.title || ''}</div>
+        <div class="p-tag">${w.tag || ''}</div>
+        <div class="p-desc">${w.text || ''}</div>
+      </div>`;
+  }).join('');
+}
+
 function setLang(lang) {
   if (!I18N[lang]) return;
   const dict = I18N[lang];
@@ -687,6 +840,14 @@ function setLang(lang) {
   const track = document.getElementById('marqueeTrack');
   if (track) track.innerHTML = buildMarqueeHtml(dict['marquee.items']);
 
+  // About cards
+  const aboutGrid = document.getElementById('aboutGrid');
+  if (aboutGrid) aboutGrid.innerHTML = renderAbout(dict['about.cards']);
+
+  // Selected works list
+  const projList = document.getElementById('projList');
+  if (projList) projList.innerHTML = renderWorks(dict['works.items']);
+
   // Hero title — rebuild + re-run typewriter
   const tw = document.getElementById('typewriter');
   if (tw) {
@@ -698,7 +859,6 @@ function setLang(lang) {
   const q = document.getElementById('quote');
   if (q) {
     q.textContent = dict['hero.quote'];
-    // re-trigger fade-in
     q.classList.remove('on');
     requestAnimationFrame(() => q.classList.add('on'));
   }
@@ -718,11 +878,13 @@ function runTypewriter(root, stepMs) {
     el.classList.remove('on'); // reset
     setTimeout(() => el.classList.add('on'), i * stepMs);
   });
-  // Append caret at the end of the *last line* so it sits on the same
-  // baseline as the last character, not below the whole title.
+  // Put the caret inside the LAST accent segment of the last title line
+  // so it naturally inherits the pink accent font-size / baseline.
+  // Fall back to the last line itself if no accent segment is found.
   const lines = root.querySelectorAll('.title-line');
-  const target = lines.length ? lines[lines.length - 1] : root;
-  // Remove any previous caret first
+  const lastLine = lines.length ? lines[lines.length - 1] : root;
+  const accents = lastLine.querySelectorAll('.seg-ac');
+  const target = accents.length ? accents[accents.length - 1] : lastLine;
   target.querySelectorAll(':scope > .caret').forEach(c => c.remove());
   const caret = document.createElement('span');
   caret.className = 'caret on';
