@@ -13,7 +13,8 @@
     --ink:#e8e4dd;
     --ink-dim:#c4bfb4;
     --ink-faint:#6e6a62;
-    --accent:#ff6b1a;      /* 橘橙 */
+    --accent:#f4c2d0;      /* 淡粉色 */
+    --accent-hover:#f9d6e0;
     --link:#7ab4d8;        /* 青蓝 */
     --link-hover:#9cc9e8;
     --line:rgba(232,228,221,.10);
@@ -90,7 +91,11 @@
     font-size:clamp(110px, 18vw, 260px);
     line-height:.82;
     letter-spacing:-.02em;
-    color:var(--ink);
+    background:linear-gradient(100deg, #8fb9d6 0%, #b9c4d9 45%, #e9c9d5 80%, #f4c2d0 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    color:transparent;
     display:block;
     font-feature-settings:"swsh","dlig";
   }
@@ -175,7 +180,7 @@
     position:relative;
     transition:border-color .4s var(--ease),transform .4s var(--ease);
   }
-  .card:hover{border-color:var(--accent);transform:translateY(-3px)}
+  .card:hover{border-color:var(--accent);transform:translateY(-3px);background:linear-gradient(180deg, rgba(244,194,208,.05), transparent 70%)}
   .card .top{
     display:flex;justify-content:space-between;align-items:baseline;
     font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.18em;
@@ -209,7 +214,7 @@
     transition:background .4s var(--ease),padding .4s var(--ease);
     position:relative;
   }
-  .proj:hover{background:rgba(255,107,26,.035);padding-left:28px;padding-right:8px}
+  .proj:hover{background:rgba(244,194,208,.05);padding-left:28px;padding-right:8px}
   .proj .n{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-faint);letter-spacing:.16em;padding-top:6px}
   .proj .t{
     font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
