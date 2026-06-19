@@ -96,9 +96,11 @@
   }
 
   /* Styled segments within a title line.
-     NOTE: gradient rules are applied to .ch spans (below), not the wrapper,
-     because -webkit-text-fill-color does not inherit across inline-blocks and
-     the child falls back to black (the default) on dark backgrounds. */
+     Gradient must live on the outer .seg-grad container so it spans the
+     entire word as one continuous gradient. Inner .ch spans stay display:inline
+     (no transform — transform requires a block-like box) so typographic
+     swash tails (especially the f) are not clipped by child inline-box
+     boundaries. We animate opacity only for the typewriter effect. */
   .seg-grad{
     display:inline-block;
     font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:700;
@@ -106,19 +108,25 @@
     line-height:.82;
     letter-spacing:-.025em;
     font-feature-settings:"swsh","dlig";
-    padding: 0 .08em 0 .02em;
-  }
-  .seg-grad .ch{
+    padding: 0 .22em 0 .08em;
+    /* single gradient across the whole word */
     background:linear-gradient(100deg, #8fb9d6 0%, #b9c4d9 45%, #e9c9d5 78%, #f4c2d0 100%);
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:transparent;
+    -webkit-background-clip:text;
+            background-clip:text;
+    -webkit-text-fill-color:transparent;
+    color:transparent;
   }
+  /* gradient container: the text inside must also be "transparent fill"
+     so the gradient background shines through. -webkit-text-fill-color
+     inherits, but we reassert it on children just to be robust. */
+  .seg-grad .ch{ -webkit-text-fill-color:transparent;color:transparent; }
 
   .seg-reg{
     display:inline-block;
     font-family:"Fraunces",serif;font-weight:700;
     font-size:clamp(70px, 12vw, 180px);
     color:var(--ink);
+    padding: 0 .08em;
   }
 
   .seg-ac{
@@ -127,18 +135,18 @@
     font-size:clamp(80px, 13vw, 190px);
     color:var(--accent);
     letter-spacing:-.01em;
+    padding: 0 .06em;
   }
 
-  /* Each character span - hidden until JS reveals it.
-     For gradient segment, we do NOT re-apply gradient per-letter;
-     the gradient is owned by the wrapper, and we animate opacity on characters. */
+  /* Each character span — display:inline so glyphs can flow naturally
+     and swash glyphs aren't clipped by child box boundaries. We only
+     animate opacity (transform won't apply to inline boxes). */
   .ch{
-    display:inline-block;
+    display:inline;
     opacity:0;
-    transform:translateY(.4em);
-    transition:opacity .5s var(--ease),transform .5s var(--ease);
+    transition:opacity .5s var(--ease);
   }
-  .ch.on{opacity:1;transform:translateY(0)}
+  .ch.on{opacity:1;}
 
   /* Accent and regular segments: char colors inherit from parent color. */
   .seg-reg .ch{color:inherit}
@@ -196,24 +204,26 @@
   /* ============ SECTION COMMON ============ */
   section{padding:130px 28px;position:relative;border-top:1px solid var(--line)}
   .sec-head{
-    display:grid;
-    grid-template-columns: auto 1fr;
-    gap: 40px;
-    align-items:end;
-    justify-content:space-between;
+    display:block;
     font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
     color:var(--ink-faint);text-transform:uppercase;
     margin-bottom:64px;
+    text-align:center;
+  }
+  .sec-head .label-left{
+    display:block;
+    margin-bottom: 36px;
+    text-align: left;
   }
   .sec-head .num{color:var(--accent);margin-right:10px}
-  /* Big right-side subheadline — "关于 / About me", "正在悄悄生长的一些东西" */
+  /* Big centered subheadline */
   .sec-head .sub{
-    grid-column: 2;
-    text-align: right;
+    display:block;
+    text-align:center;
     font-family:"Cormorant Garamond","Fraunces",serif;
     font-style:italic;
     font-weight:500;
-    font-size:clamp(54px, 9vw, 140px);
+    font-size:clamp(60px, 11vw, 180px);
     line-height:.92;
     letter-spacing:-.015em;
     color:var(--ink);
@@ -276,8 +286,9 @@
     .title-line .seg-ac{font-size:clamp(52px,11vw,100px)}
     .since{position:static;right:auto;bottom:auto;margin-top:40px;text-align:left;font-size:44px}
     section{padding:80px 18px}
-    .sec-head{margin-bottom:40px;gap:24px}
-    .sec-head .sub{font-size:clamp(42px,11vw,90px)}
+    .sec-head{margin-bottom:40px}
+    .sec-head .label-left{margin-bottom:24px}
+    .sec-head .sub{font-size:clamp(48px,12vw,110px)}
     .about-slot{min-height:180px}
     .contact{padding:80px 18px 50px}
     .contact-links{gap:16px}
@@ -331,7 +342,7 @@
 <!-- ABOUT -->
 <section class="about" id="about">
   <div class="sec-head">
-    <div><span class="num">01</span><span data-i18n="sec.about">About</span></div>
+    <div class="label-left"><span class="num">01</span><span data-i18n="sec.about">About</span></div>
     <div class="sub" data-i18n-html="sec.aboutSub"></div>
   </div>
   <div class="about-slot"><span data-i18n="slot.empty">— 待补充 / to be added —</span></div>
@@ -340,7 +351,7 @@
 <!-- PROJECTS -->
 <section id="projects">
   <div class="sec-head">
-    <div><span class="num">02</span><span data-i18n="sec.works">Selected Works</span></div>
+    <div class="label-left"><span class="num">02</span><span data-i18n="sec.works">Selected Works</span></div>
     <div class="sub" data-i18n-html="sec.worksSub"></div>
   </div>
   <div class="proj-list" id="projList">
