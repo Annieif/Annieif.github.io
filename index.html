@@ -532,12 +532,21 @@
   }
   .insights-stat .big{
     font-family:"Cormorant Garamond",serif;font-weight:700;
-    font-size:clamp(64px, 10vw, 160px);
-    line-height:.88;letter-spacing:-.02em;
+    font-size:clamp(40px, 8vw, 120px);
+    line-height:.95;letter-spacing:-.02em;
     color:var(--ink);
     margin:18px 0 8px;
     transition:color .3s var(--ease);
+    /* 允许自动折行,避免长罗马数字溢出 */
+    word-break:keep-all;
+    overflow-wrap:anywhere;
+    white-space:normal;
+    /* 用 max-width + overflow 保证极端场景下仍然可读 */
+    max-width:100%;
   }
+  /* JS 会在需要时把 .big 字号再缩小以适应宽度。
+     以下是用于检测超宽时的 fallback 缩放层。*/
+  .insights-stat .big.shrink{font-size:clamp(28px, 5vw, 88px);}
   .insights-stat .sub{
     font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
     font-size:clamp(16px,1.8vw,22px);line-height:1.35;color:var(--ink-dim);
@@ -1885,6 +1894,13 @@ function toRoman(n) {
 function runCountUp(el, target, durationMs, fmt) {
   if (!el) return;
   const format = fmt || (v => v.toLocaleString());
+
+  // 1) 先用最终值测量字体大小,避免动画过程中数字闪烁或溢出
+  const finalText = format(target);
+  el.textContent = finalText;
+  fitTextToContainer(el);
+
+  // 2) 再从 0 开始做缓动计数动画(字体大小在上面已锁定,不会再改变)
   const startTime = performance.now();
   const ease = t => 1 - Math.pow(1 - t, 2.5);
   function tick(now) {
@@ -1894,6 +1910,44 @@ function runCountUp(el, target, durationMs, fmt) {
     if (p < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+}
+
+// 窗口尺寸变化时,重新测量已存在的数字,确保不会再溢出
+if (typeof window !== 'undefined' && window.addEventListener) {
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const pvDisplay = document.getElementById('pvDisplay');
+      const uvDisplay = document.getElementById('uvDisplay');
+      if (pvDisplay) fitTextToContainer(pvDisplay);
+      if (uvDisplay) fitTextToContainer(uvDisplay);
+    }, 200);
+  });
+}
+
+// 让文本字号适配容器宽度:对长罗马数字自动缩小以避免溢出
+// 向上寻找 .insights-stat 卡片宽度,让目标 .big 元素字号适应之
+function fitTextToContainer(el) {
+  if (!el) return;
+  // 找到 .big 层级(如果 el 是内部 span,则向上找一级)
+  const bigEl = el.classList.contains('big') ? el : el.closest('.big');
+  if (!bigEl) return;
+  const card = bigEl.closest('.insights-stat');
+  if (!card) return;
+  // 重置字号让 CSS 的 clamp 自然生效
+  bigEl.style.fontSize = '';
+  // 下一帧测量实际文本宽度,若溢出则缩小
+  requestAnimationFrame(() => {
+    const padding = 48; // 卡片左右 padding 预估
+    const available = Math.max(80, card.clientWidth - padding);
+    const textWidth = bigEl.scrollWidth;
+    if (textWidth <= available) return;
+    const ratio = available / textWidth;
+    const computed = parseFloat(getComputedStyle(bigEl).fontSize);
+    const newSize = Math.max(28, Math.floor(computed * ratio));
+    bigEl.style.fontSize = newSize + 'px';
+  });
 }
 
 function setLang(lang) {
