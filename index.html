@@ -227,8 +227,9 @@
     position:relative;
     z-index:1;
     min-height:100svh;
-    padding:160px 28px 60px;
+    padding:160px 24px 60px;
     display:flex;flex-direction:column;justify-content:center;
+    max-width:950px;margin:0 auto;
   }
 
   .title-main{max-width:100%}
@@ -358,7 +359,7 @@
   @keyframes scroll{to{transform:translateX(-50%)}}
 
   /* ============ SECTION COMMON ============ */
-  section{padding:130px 28px;position:relative;z-index:1;border-top:1px solid var(--line)}
+  section{padding:120px 8px;position:relative;z-index:1;border-top:1px solid var(--line)}
   .sec-head{
     display:block;
     font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
@@ -375,16 +376,19 @@
   /* Big centered subheadline */
   .sec-head .sub{
     display:block;
+    max-width:100%;
+    margin:0 auto;
     text-align:center;
     font-family:"Cormorant Garamond","Fraunces",serif;
     font-style:italic;
     font-weight:500;
-    font-size:clamp(60px, 11vw, 180px);
+    font-size:clamp(44px, 8vw, 120px);
     line-height:.92;
     letter-spacing:-.015em;
     color:var(--ink);
     text-transform:none;
-    white-space:nowrap;
+    white-space:normal;
+    word-break:break-word;
   }
   .sec-head .sub em{
     color:var(--accent);
@@ -427,23 +431,23 @@
     color:var(--ink-dim);
   }
 
-  /* ============ PROJECTS (vertical index list) ============ */
+  /* ============ PROJECTS (vertical index list, left-aligned to avoid overflow) ============ */
   .proj-list{
     border-top:1px solid var(--line);
   }
   .proj-item{
     display:grid;
-    grid-template-columns: 60px 2.2fr 3fr auto;
-    gap:28px;
+    grid-template-columns: 56px 1.5fr 2fr;
+    gap:20px;
     align-items:baseline;
-    padding:28px 8px;
+    padding:28px 4px;
     border-bottom:1px solid var(--line);
     transition:background .35s var(--ease), padding .35s var(--ease), color .35s var(--ease);
   }
   .proj-item:hover{
     background:rgba(244,194,208,.05);
-    padding-left:24px;
-    padding-right:24px;
+    padding-left:20px;
+    padding-right:20px;
   }
   .proj-item .p-num{
     font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
@@ -451,7 +455,7 @@
   }
   .proj-item .p-title{
     font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
-    font-size:clamp(26px, 2.8vw, 38px);line-height:1.1;
+    font-size:clamp(22px, 2.4vw, 32px);line-height:1.15;
     color:var(--ink);
     transition:color .35s var(--ease);
   }
@@ -463,6 +467,8 @@
   .proj-item .p-desc{
     font-family:"Fraunces",serif;font-weight:400;font-size:14px;line-height:1.55;
     color:var(--ink-dim);
+    grid-column: 3;
+    white-space:normal;
   }
 
   @media (max-width:900px){
@@ -706,17 +712,22 @@
   .sec-head.center{justify-content:center;display:flex;text-align:center}
   .sec-head.center .label-left{display:none}
 
-  /* ============ PAGE TOC (left sidebar, fixed in gutter) ============ */
+  /* ============ PAGE TOC (left sidebar, fixed at left edge with auto-hide on hero ============ */
   .page-layout{
-    max-width:1100px;margin:0 auto;padding:0 28px;
+    max-width:950px;margin:0 auto;padding:0 24px;
   }
   #page-toc{
     position:fixed;
     top:50%;transform:translateY(-50%);
-    left:calc((100vw - 1100px) / 2 - 60px);
-    z-index:10;
+    left:28px;
+    z-index:20;
     display:flex;flex-direction:column;gap:22px;
     width:auto;
+    transition:opacity .45s var(--ease);
+  }
+  /* auto-hide when the hero (large title) overlaps — JS toggles .is-hero-visible on body */
+  body.is-hero-visible #page-toc{
+    opacity:0;pointer-events:none;
   }
   #page-toc .toc-line{
     position:absolute;left:4px;top:10px;bottom:10px;
@@ -793,10 +804,6 @@
     to{opacity:1;transform:translateX(0)}
   }
   .page-main{width:100%}
-  /* responsive: on very wide screens sit in the gutter; on mid screens stick to left edge; hide on mobile */
-  @media (max-width:1260px){
-    #page-toc{left:28px}
-  }
   @media (max-width:1000px){
     #page-toc{display:none}
   }
@@ -1581,7 +1588,21 @@ function setLang(lang) {
     projList.appendChild(renderWorks(dict['works.items']));
   }
 
-  // Insights: PV / UV (localStorage 稳定计数器, 无需第三方依赖)
+  // Hero visibility → auto-hide TOC when the large title overlaps
+  const heroEl = document.querySelector('.hero') || document.querySelector('#about');
+  if (heroEl && 'IntersectionObserver' in window) {
+    const heroObs = new IntersectionObserver((entries) => {
+      entries.forEach(ent => {
+        if (ent.isIntersecting && ent.intersectionRatio > 0.35) {
+          document.body.classList.add('is-hero-visible');
+        } else {
+          document.body.classList.remove('is-hero-visible');
+        }
+      });
+    }, { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1.0] });
+    heroObs.observe(heroEl);
+  }
+
   // 每次页面加载 +1 PV; 如果是新访客 (session 检查) 则 +1 UV
   // 保留一个稳定的初始种子, 避免全都是 "1" 显得空洞
   try {
