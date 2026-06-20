@@ -975,15 +975,17 @@
   <div class="insights-grid">
     <div class="insights-stat">
       <div class="k" data-i18n="insights.pvLabel">本站总访问量</div>
-      <div class="big"><span id="busuanzi_value_site_pv">—</span></div>
+      <div class="big"><span id="pvDisplay">—</span></div>
       <div class="sub" data-i18n="insights.pvSub">次页面浏览</div>
     </div>
     <div class="insights-stat">
       <div class="k" data-i18n="insights.uvLabel">本站总访客数</div>
-      <div class="big"><span id="busuanzi_value_site_uv">—</span></div>
+      <div class="big"><span id="uvDisplay">—</span></div>
       <div class="sub" data-i18n="insights.uvSub">位独立访客</div>
     </div>
   </div>
+  <span id="busuanzi_value_site_pv" style="display:none">—</span>
+  <span id="busuanzi_value_site_uv" style="display:none">—</span>
 </section>
 
 <!-- NOTES -->
@@ -1942,35 +1944,32 @@ function setLang(lang) {
     heroObs.observe(heroEl);
   }
 
-  // 不蒜子统计：MutationObserver 检测数值后执行计数动画
-  const pvEl = document.getElementById('busuanzi_value_site_pv');
-  const uvEl = document.getElementById('busuanzi_value_site_uv');
-  if (pvEl && uvEl && typeof runCountUp === 'function') {
+  // 不蒜子统计：隐藏镜像元素接收不蒜子写入，可见元素只显示罗马数字
+  const pvHidden = document.getElementById('busuanzi_value_site_pv');
+  const uvHidden = document.getElementById('busuanzi_value_site_uv');
+  const pvEl = document.getElementById('pvDisplay');
+  const uvEl = document.getElementById('uvDisplay');
+  if (pvHidden && uvHidden && pvEl && uvEl && typeof runCountUp === 'function') {
     let done = false;
     const obs = new MutationObserver(() => {
       if (done) return;
-      const pv = parseInt(pvEl.textContent, 10);
-      const uv = parseInt(uvEl.textContent, 10);
+      const pv = parseInt(pvHidden.textContent, 10);
+      const uv = parseInt(uvHidden.textContent, 10);
       if (pv > 0 && uv > 0) {
         done = true;
         obs.disconnect();
-        // 立刻清空阿拉伯数字, 避免闪现
-        pvEl.textContent = '—';
-        uvEl.textContent = '—';
         runCountUp(pvEl, pv, 1800, toRoman);
         runCountUp(uvEl, uv, 1600, toRoman);
       }
     });
-    obs.observe(pvEl, { characterData: true, subtree: true });
-    obs.observe(uvEl, { characterData: true, subtree: true });
+    obs.observe(pvHidden, { characterData: true, subtree: true });
+    obs.observe(uvHidden, { characterData: true, subtree: true });
     // 兜底：5 秒后如果还没数据，直接显示
     setTimeout(() => {
       if (!done) {
         obs.disconnect();
-        const pv = parseInt(pvEl.textContent, 10) || 0;
-        const uv = parseInt(uvEl.textContent, 10) || 0;
-        pvEl.textContent = '—';
-        uvEl.textContent = '—';
+        const pv = parseInt(pvHidden.textContent, 10) || 0;
+        const uv = parseInt(uvHidden.textContent, 10) || 0;
         if (pv > 0) runCountUp(pvEl, pv, 1800, toRoman);
         if (uv > 0) runCountUp(uvEl, uv, 1600, toRoman);
       }
