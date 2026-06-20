@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Annieif &mdash; <span data-i18n-html="meta.title">独立造物者</span></title>
 <link rel="icon" href="icon.png">
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500;1,9..144,700;1,9..144,900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -22,7 +23,6 @@
     --line-strong:rgba(232,228,221,.18);
     --grain-opacity:.10;
     --ease:cubic-bezier(.2,.8,.2,1);
-    --toc-w:120px;
   }
 
   *{margin:0;padding:0;box-sizing:border-box}
@@ -486,37 +486,50 @@
 
   /* ============ INSIGHTS (stats) ============ */
   .insights-grid{
-    max-width:560px;
-    margin:0 auto;
+    display:grid;grid-template-columns:1fr 1fr;gap:18px;
+    max-width:860px;margin:0 auto;
   }
-  .insights-views{
+  .insights-stat{
     border:1px solid var(--line);
     padding:44px 32px 48px;
     background:linear-gradient(180deg, rgba(122,180,216,.05), transparent 70%);
     text-align:center;
+    transition:border-color .4s var(--ease),transform .4s var(--ease),box-shadow .4s var(--ease);
+    position:relative;overflow:hidden;
   }
-  .insights-views .k{
+  .insights-stat::before{
+    content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:60px;height:1px;background:var(--line);
+    transition:width .4s var(--ease),background .4s var(--ease);
+  }
+  .insights-stat:hover{
+    border-color:rgba(122,180,216,.3);
+    transform:translateY(-3px);
+    box-shadow:0 8px 40px rgba(0,0,0,.3);
+  }
+  .insights-stat:hover::before{
+    width:100%;background:var(--accent);
+  }
+  .insights-stat .k{
     font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.24em;
     color:var(--ink-faint);text-transform:uppercase;
+    margin-bottom:20px;
   }
-  .insights-views .big{
+  .insights-stat .big{
     font-family:"Fraunces",serif;font-weight:900;
-    font-size:clamp(80px, 14vw, 220px);
+    font-size:clamp(64px, 10vw, 160px);
     line-height:.88;letter-spacing:-.035em;
     color:var(--ink);
     margin:18px 0 8px;
+    transition:color .3s var(--ease);
   }
-  .insights-views .big em{
-    font-style:italic;font-family:"Cormorant Garamond",serif;font-weight:700;
-    color:var(--accent);
-  }
-  .insights-views .sub{
+  .insights-stat .sub{
     font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
-    font-size:clamp(18px,2vw,24px);line-height:1.35;color:var(--ink-dim);
+    font-size:clamp(16px,1.8vw,22px);line-height:1.35;color:var(--ink-dim);
   }
-
   @media (max-width:900px){
-    .insights-views{padding:32px 20px 36px}
+    .insights-grid{grid-template-columns:1fr;gap:12px}
+    .insights-stat{padding:32px 20px 36px}
   }
 
   /* ============ NOTES (rebel archive) ============ */
@@ -694,28 +707,95 @@
   .sec-head.center{justify-content:center;display:flex;text-align:center}
   .sec-head.center .label-left{display:none}
 
-  /* ============ PAGE TOC (fixed left sidebar) ============ */
+  /* ============ PAGE TOC (left sidebar, fixed constellation) ============ */
+  .page-layout{
+    display:flex;max-width:1100px;margin:0 auto;padding:0 28px;gap:40px;align-items:flex-start;
+  }
   #page-toc{
-    position:fixed;left:28px;top:50%;transform:translateY(-50%);
-    z-index:90;display:flex;flex-direction:column;gap:10px;
-    pointer-events:none;
+    position:fixed;left:max(28px, calc((100vw - 1100px) / 2 + 28px));
+    top:50%;transform:translateY(-50%);
+    z-index:10;
+    display:flex;flex-direction:column;gap:22px;
+  }
+  #page-toc .toc-line{
+    position:absolute;left:4px;top:10px;bottom:10px;
+    width:1px;background:var(--line);
+    transition:background .5s var(--ease);
+    border-radius:1px;
   }
   #page-toc a{
-    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.2em;
-    color:var(--ink-faint);text-decoration:none;text-transform:uppercase;
-    transition:color .3s var(--ease),padding .3s var(--ease);
-    pointer-events:auto;position:relative;
-    padding-left:0;
+    display:flex;align-items:center;gap:12px;
+    position:relative;text-decoration:none;
+    transition:transform .35s var(--ease);
   }
-  #page-toc a::before{
-    content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);
-    width:0;height:1px;background:var(--accent);
-    transition:width .3s var(--ease);
+  #page-toc .toc-dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--line-strong);flex-shrink:0;
+    transition:all .4s var(--ease);
+    box-shadow:0 0 0 0 rgba(244,194,208,0);
+    position:relative;z-index:1;
   }
-  #page-toc a:hover{color:var(--ink)}
-  #page-toc a.active{color:var(--accent);padding-left:6px}
-  #page-toc a.active::before{width:4px}
-  @media (max-width:1100px){#page-toc{display:none}}
+  #page-toc .toc-num{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.16em;
+    color:var(--ink-faint);width:18px;text-align:right;
+    transition:color .4s var(--ease);
+  }
+  #page-toc .toc-label{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;
+    color:var(--ink-faint);text-transform:uppercase;
+    transition:color .4s var(--ease);
+    white-space:nowrap;
+  }
+  /* hidden ring for hover pulse */
+  #page-toc .toc-dot::after{
+    content:'';position:absolute;inset:-4px;border-radius:50%;
+    border:1px solid transparent;transition:all .4s var(--ease);
+  }
+  #page-toc a:hover{
+    transform:translateX(4px);
+  }
+  #page-toc a:hover .toc-dot{
+    background:var(--accent);
+    box-shadow:0 0 12px rgba(244,194,208,.45);
+  }
+  #page-toc a:hover .toc-dot::after{
+    border-color:rgba(244,194,208,.3);
+    inset:-6px;
+  }
+  #page-toc a:hover .toc-label{color:var(--ink)}
+  #page-toc a:hover .toc-num{color:var(--ink-dim)}
+  #page-toc a.active .toc-dot{
+    background:var(--accent);
+    box-shadow:0 0 20px rgba(244,194,208,.65), 0 0 40px rgba(244,194,208,.2);
+    transform:scale(1.35);
+  }
+  #page-toc a.active .toc-dot::after{
+    border-color:rgba(244,194,208,.45);
+    inset:-8px;
+    animation:tocPulse 2s var(--ease) infinite;
+  }
+  @keyframes tocPulse{
+    0%,100%{opacity:.4;transform:scale(1)}
+    50%{opacity:1;transform:scale(1.25)}
+  }
+  #page-toc a.active .toc-num,
+  #page-toc a.active .toc-label{color:var(--accent)}
+  /* entrance animation staggered */
+  #page-toc a{opacity:0;animation:tocEnter .6s var(--ease) forwards}
+  #page-toc a:nth-child(1){animation-delay:.1s}
+  #page-toc a:nth-child(2){animation-delay:.2s}
+  #page-toc a:nth-child(3){animation-delay:.3s}
+  #page-toc a:nth-child(4){animation-delay:.4s}
+  #page-toc a:nth-child(5){animation-delay:.5s}
+  @keyframes tocEnter{
+    from{opacity:0;transform:translateX(-12px)}
+    to{opacity:1;transform:translateX(0)}
+  }
+  .page-main{flex:1;min-width:0}
+  @media (max-width:1100px){
+    .page-layout{display:block;padding:0 28px}
+    #page-toc{display:none}
+  }
 
   /* ============ LOAD MORE ============ */
   .load-more-wrap{text-align:center;padding:28px 0 0}
@@ -772,14 +852,6 @@
 <div class="cursor-dot"  aria-hidden="true"></div>
 <div class="cursor-ring" aria-hidden="true"></div>
 
-<nav id="page-toc" aria-label="页面导航">
-  <a href="#about" data-toc="about">01 · About</a>
-  <a href="#projects" data-toc="works">02 · Works</a>
-  <a href="#insights" data-toc="insights">03 · Insights</a>
-  <a href="#notes" data-toc="notes">04 · Notes</a>
-  <a href="#contact" data-toc="contact">05 · Contact</a>
-</nav>
-
 <!-- HERO (full viewport, top bar lives inside it) -->
 <header class="hero" id="top">
 
@@ -821,6 +893,37 @@
   <div class="quote" id="quote"></div>
 </header>
 
+<div class="page-layout">
+  <nav id="page-toc" aria-label="页面导航">
+    <div class="toc-line"></div>
+    <a href="#about" data-toc="about">
+      <span class="toc-dot"></span>
+      <span class="toc-num">01</span>
+      <span class="toc-label">About</span>
+    </a>
+    <a href="#projects" data-toc="projects">
+      <span class="toc-dot"></span>
+      <span class="toc-num">02</span>
+      <span class="toc-label">Works</span>
+    </a>
+    <a href="#insights" data-toc="insights">
+      <span class="toc-dot"></span>
+      <span class="toc-num">03</span>
+      <span class="toc-label">Insights</span>
+    </a>
+    <a href="#notes" data-toc="notes">
+      <span class="toc-dot"></span>
+      <span class="toc-num">04</span>
+      <span class="toc-label">Notes</span>
+    </a>
+    <a href="#contact" data-toc="contact">
+      <span class="toc-dot"></span>
+      <span class="toc-num">05</span>
+      <span class="toc-label">Contact</span>
+    </a>
+  </nav>
+  <div class="page-main">
+
 <!-- MARQUEE -->
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track" id="marqueeTrack"><!-- populated by JS --></div>
@@ -851,10 +954,25 @@
     <div class="sub" data-i18n-html="sec.insightsSub"></div>
   </div>
   <div class="insights-grid">
-    <div class="insights-views">
-      <div class="k" data-i18n="insights.viewsLabel">Total views in last 14 days</div>
-      <div class="big"><span id="viewsCount">—</span></div>
-      <div class="sub" id="viewsSub"><span data-i18n="insights.viewsSub">from visitors around the world</span></div>
+    <div class="insights-stat">
+      <div class="k" data-i18n="insights.pvLabel">本站总访问量</div>
+      <div class="big">
+        <span id="busuanzi_container_site_pv" style="display:none">
+          <span id="busuanzi_value_site_pv">—</span>
+        </span>
+        <span id="viewsFallback">—</span>
+      </div>
+      <div class="sub" data-i18n="insights.pvSub">次页面浏览</div>
+    </div>
+    <div class="insights-stat">
+      <div class="k" data-i18n="insights.uvLabel">本站总访客数</div>
+      <div class="big">
+        <span id="busuanzi_container_site_uv" style="display:none">
+          <span id="busuanzi_value_site_uv">—</span>
+        </span>
+        <span id="visitorsFallback">—</span>
+      </div>
+      <div class="sub" data-i18n="insights.uvSub">位独立访客</div>
     </div>
   </div>
 </section>
@@ -898,6 +1016,10 @@
   </div>
 </section>
 
+  </div><!-- .page-main -->
+</div><!-- .page-layout -->
+
+<script src="notes/data.js"></script>
 <script>
 /* =====================================================
    🛠  CONTENT EDITOR — 编辑这里即可改变页面内容
@@ -933,6 +1055,10 @@ const I18N = {
     'sec.insightsSub': '数据里的<em>光与影</em>',
     'insights.viewsLabel': '近 14 天 · 总访问量',
     'insights.viewsSub': '来自世界各地的访客',
+    'insights.pvLabel': '本站总访问量',
+    'insights.pvSub': '次页面浏览',
+    'insights.uvLabel': '本站总访客数',
+    'insights.uvSub': '位独立访客',
     'sec.notes': 'Notes',
     'sec.notesSub': '零散的<em>想法</em>与<em>记录</em>',
     'slot.empty': '— 待补充 / to be added —',
@@ -995,6 +1121,10 @@ const I18N = {
     'sec.insightsSub': '<em>Light</em> and <em>shadows</em> in the data',
     'insights.viewsLabel': 'Total views in last 14 days',
     'insights.viewsSub': 'from visitors around the world',
+    'insights.pvLabel': 'Total Page Views',
+    'insights.pvSub': 'page views',
+    'insights.uvLabel': 'Total Unique Visitors',
+    'insights.uvSub': 'unique visitors',
     'sec.notes': 'Notes',
     'sec.notesSub': 'Scattered <em>thoughts</em> and <em>notes</em>',
     'slot.empty': '— to be added —',
@@ -1031,24 +1161,9 @@ const I18N = {
 };
 
 /* =====================================================
-   NOTES — 笔记数据(单语言,不区分 zh/en)
-   字段: date(YYYY-MM-DD), title, desc, file(子页面路径)
-   新增笔记时只需在此数组头部追加一条即可
+   NOTES DATA — 来自 notes/data.js (单一数据源)
    ===================================================== */
-const NOTES = [
-  { date:'2026-06-20', title:'[ 笔记标题 01 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'这是笔记正文的第一句话，会在折叠展开时预览，大约一两行长度。', file:'notes/001.html' },
-  { date:'2026-06-18', title:'[ 笔记标题 02 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'另一篇笔记的开头第一句话，点击 ▸ 展开后这里会替代描述显示。', file:'notes/002.html' },
-  { date:'2026-06-15', title:'[ 笔记标题 03 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第三篇笔记的预览内容，可以写正文的第一句话，让读者快速了解笔记内容。', file:'notes/003.html' },
-  { date:'2026-06-12', title:'[ 笔记标题 04 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第四篇笔记的开头预览，折叠时只显示描述，展开后这里替换描述。', file:'notes/004.html' },
-  { date:'2026-06-10', title:'[ 笔记标题 05 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第五篇笔记正文预览，同样只会在展开时显示。', file:'notes/005.html' },
-  { date:'2026-06-07', title:'[ 笔记标题 06 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第六篇笔记的预览文字。', file:'notes/006.html' },
-  { date:'2026-06-05', title:'[ 笔记标题 07 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第七篇。', file:'notes/007.html' },
-  { date:'2026-06-02', title:'[ 笔记标题 08 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第八篇的预览文字，大量笔记时可通过搜索和排序快速定位。', file:'notes/008.html' },
-  { date:'2026-05-28', title:'[ 笔记标题 09 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第九篇笔记预览。', file:'notes/009.html' },
-  { date:'2026-05-25', title:'[ 笔记标题 10 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第十篇，示范大量笔记的分页效果。', file:'notes/010.html' },
-  { date:'2026-05-20', title:'[ 笔记标题 11 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第十一篇的预览文字。', file:'notes/011.html' },
-  { date:'2026-05-15', title:'[ 笔记标题 12 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第十二篇。', file:'notes/012.html' },
-];
+/* NOTES_DATA 由 notes/data.js 提供 */
 
 /* =====================================================
    Rendering helpers.
@@ -1278,7 +1393,7 @@ function renderNotesFeed(items) {
     previewInner.textContent = (n.preview || n.desc || '') + ' …';
     const nlink = document.createElement('a');
     nlink.className = 'nlink';
-    nlink.href = n.file || '#';
+    nlink.href = 'notes/note.html#' + (n.id || '');
     nlink.textContent = '→ 阅读全文';
     nlink.addEventListener('click', e => e.stopPropagation());
     previewInner.appendChild(document.createElement('br'));
@@ -1314,7 +1429,7 @@ function initNotesController() {
   let visibleCount = PER_PAGE;
 
   function getSorted() {
-    const arr = [...NOTES];
+    const arr = [...NOTES_DATA];
     if (sortKey === 'newest')  return arr;
     if (sortKey === 'oldest')  return arr.reverse();
     if (sortKey === 'title')   return arr.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'zh'));
@@ -1472,34 +1587,34 @@ function setLang(lang) {
     projList.appendChild(renderWorks(dict['works.items']));
   }
 
-  // Insights: fetch traffic.json from repo (auto-generated by GitHub Actions)
-  const viewsCountEl = document.getElementById('viewsCount');
-  const viewsSubEl   = document.getElementById('viewsSub');
+  // Insights: busuanzi 不蒜子统计 (MutationObserver 检测数值后执行计数动画)
+  const pvEl = document.getElementById('busuanzi_value_site_pv');
+  const uvEl = document.getElementById('busuanzi_value_site_uv');
+  const fbPv = document.getElementById('viewsFallback');
+  const fbUv = document.getElementById('visitorsFallback');
 
-  function renderInsightsStatic() {
-    if (viewsCountEl) viewsCountEl.textContent = '—';
-    if (viewsSubEl)   viewsSubEl.innerHTML = dict['insights.viewsSub'] || '';
+  if (pvEl && uvEl) {
+    const obs = new MutationObserver(() => {
+      const pv = parseInt(pvEl.textContent, 10);
+      const uv = parseInt(uvEl.textContent, 10);
+      if (pv > 0) {
+        if (fbPv) fbPv.style.display = 'none';
+        runCountUp(pvEl, pv, 1800);
+      }
+      if (uv > 0) {
+        if (fbUv) fbUv.style.display = 'none';
+        runCountUp(uvEl, uv, 1800);
+      }
+      if (pv > 0 || uv > 0) obs.disconnect();
+    });
+    obs.observe(pvEl, { characterData: true, subtree: true });
+    obs.observe(uvEl, { characterData: true, subtree: true });
+    // 兜底：3 秒后如果还没数据，显示 fallback
+    setTimeout(() => {
+      if (fbPv && fbPv.style.display !== 'none') fbPv.style.display = '';
+      if (fbUv && fbUv.style.display !== 'none') fbUv.style.display = '';
+    }, 3000);
   }
-
-  function renderInsightsFromData(data) {
-    const count = (data && data.views && data.views.uniques) || (data && data.views && data.views.count) || 0;
-    if (viewsCountEl) {
-      if (count > 0) runCountUp(viewsCountEl, count, 1600);
-      else viewsCountEl.textContent = '—';
-    }
-    if (viewsSubEl) {
-      const baseLabel = dict['insights.viewsSub'] || '';
-      const stamp = (data && data.updated_at)
-        ? '<br><span style="font-size:0.48em;color:var(--ink-faint);letter-spacing:0.14em;text-transform:uppercase;font-family:IBM Plex Mono,monospace;font-style:normal">updated · ' + data.updated_at.replace('T',' ').replace('Z','') + ' UTC</span>'
-        : '';
-      viewsSubEl.innerHTML = baseLabel + stamp;
-    }
-  }
-
-  fetch('_data/traffic.json', { cache: 'no-store' })
-    .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.json(); })
-    .then(renderInsightsFromData)
-    .catch(renderInsightsStatic);
 
   // Notes (single-language, searchable + sortable + collapsible)
   initNotesController();
