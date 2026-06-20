@@ -2,8 +2,9 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>001 · Annieif</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>001 · Annieif Portfolio</title>
+  <link rel="icon" href="../icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -17,15 +18,13 @@
       --link:#7ab4d8;
       --line:rgba(232,228,221,.10);
     }
-    html,body{background:var(--bg);color:var(--ink);margin:0}
+    html,body{background:var(--bg);color:var(--ink);margin:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
     body{
-      font-family:"Fraunces",serif;
-      font-weight:400;
-      min-height:100vh;
-      position:relative;
+      font-family:"Fraunces",serif;font-weight:500;font-size:16px;line-height:1.7;
+      position:relative;overflow-x:hidden;
       background:
-        radial-gradient(ellipse at 20% 10%, rgba(122,180,216,.12), transparent 55%),
-        radial-gradient(ellipse at 85% 20%, rgba(244,194,208,.10), transparent 50%),
+        radial-gradient(ellipse at 20% 10%, rgba(122,180,216,.10), transparent 55%),
+        radial-gradient(ellipse at 85% 20%, rgba(244,194,208,.08), transparent 50%),
         #0a0a0a;
     }
     /* starfield */
@@ -39,41 +38,96 @@
         radial-gradient(1px 1px at 220px 180px, #fff, transparent 60%),
         radial-gradient(1px 1px at 300px 40px, #8fb9d6, transparent 60%),
         radial-gradient(1.5px 1.5px at 380px 220px, #fff, transparent 60%);
-      background-size:540px 400px;opacity:.85}
+      background-size:540px 400px;opacity:.85
+    }
     .stars .s2{
       background-image:
         radial-gradient(1.5px 1.5px at 40px 50px, #fff, transparent 60%),
         radial-gradient(2px 2px at 180px 140px, #fff, transparent 60%),
         radial-gradient(1.5px 1.5px at 320px 80px, #f4c2d0, transparent 60%),
         radial-gradient(2px 2px at 260px 240px, #8fb9d6, transparent 60%);
-      background-size:620px 600px;opacity:.65}
+      background-size:620px 600px;opacity:.55
+    }
     .stars .s3{
       background-image:
         radial-gradient(2.5px 2.5px at 100px 80px, #fff, transparent 60%),
         radial-gradient(3px 3px at 280px 180px, #8fb9d6, transparent 60%),
         radial-gradient(2.5px 2.5px at 460px 280px, #f4c2d0, transparent 60%);
-      background-size:700px 800px;opacity:.55}
+      background-size:700px 800px;opacity:.45
+    }
 
-    .page{position:relative;z-index:1;padding:80px 28px 120px;max-width:820px;margin:0 auto}
+    .page{position:relative;z-index:1;padding:60px 28px 120px;max-width:760px;margin:0 auto}
     .back{
       font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
       color:var(--ink-faint);text-decoration:none;text-transform:uppercase;
-      display:inline-block;margin-bottom:80px}
+      display:inline-block;margin-bottom:60px;transition:color .3s ease
+    }
     .back:hover{color:var(--accent)}
-    .title{
-      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:700;
-      font-size:clamp(56px,10vw,160px);line-height:1;color:var(--accent);
-      letter-spacing:-.01em;margin:0 0 28px
-    }
-    .divider{height:1px;background:var(--line);margin:0 0 60px}
-    .slot{
+
+    .meta{
       font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.25em;
-      text-transform:uppercase;color:var(--ink-faint);
-      border:1px dashed var(--line);padding:80px 40px;text-align:center}
-    .num{
-      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.25em;
-      color:var(--ink-faint);margin-bottom:16px;display:block;text-transform:uppercase
+      color:var(--ink-faint);text-transform:uppercase;margin-bottom:28px;
+      display:flex;gap:18px;flex-wrap:wrap
     }
+    .meta span{display:inline-flex;align-items:center;gap:8px}
+    .meta span::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--line-strong);display:inline-block}
+
+    h1.title{
+      font-family:"Fraunces",serif;font-weight:900;font-style:italic;
+      font-size:clamp(44px,7vw,96px);line-height:1.02;letter-spacing:-.02em;
+      margin:0 0 40px;color:var(--ink);
+    }
+    h1.title em{color:var(--accent);font-style:italic;font-family:"Cormorant Garamond",serif;font-weight:700}
+
+    .lede{
+      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
+      font-size:clamp(18px,2vw,24px);line-height:1.55;color:var(--ink-dim);
+      margin-bottom:56px;border-left:2px solid var(--line);padding-left:24px
+    }
+
+    .divider{height:1px;background:var(--line);margin:40px 0}
+
+    h2.sec-title{
+      font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.3em;
+      color:var(--ink-faint);text-transform:uppercase;margin:56px 0 20px;font-weight:400
+    }
+    h2.sec-title::before{content:"— "}
+
+    p.body{
+      font-family:"Fraunces",serif;font-weight:400;
+      font-size:clamp(16px,1.7vw,19px);line-height:1.75;
+      color:var(--ink-dim);margin:0 0 20px;
+      font-feature-settings:"onum","lnum"
+    }
+    p.body em{font-style:italic;color:var(--ink);font-weight:500}
+
+    .kv{
+      display:grid;grid-template-columns:140px 1fr;gap:14px 24px;
+      font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+      padding:28px 0;margin:32px 0 48px
+    }
+    .kv .k{color:var(--ink-faint);text-transform:uppercase}
+    .kv .v{color:var(--ink);font-family:"Fraunces",serif;font-size:15px;letter-spacing:0}
+
+    .quote-card{
+      border:1px solid var(--line);padding:36px 32px;
+      background:linear-gradient(180deg, rgba(244,194,208,.03), transparent 70%);
+      margin:48px 0;text-align:center
+    }
+    .quote-card .q-text{
+      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
+      font-size:clamp(18px,2vw,22px);line-height:1.55;color:var(--ink);
+      margin:0 0 16px
+    }
+    .quote-card .q-src{
+      font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.24em;
+      color:var(--ink-faint);text-transform:uppercase
+    }
+
+    /* subtle reveal on scroll */
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+    .reveal.in{opacity:1;transform:none}
   </style>
 </head>
 <body>
@@ -84,10 +138,53 @@
   </div>
   <main class="page">
     <a class="back" href="../index.html">← 返回 / Back</a>
-    <span class="num">001 / selected works</span>
-    <h1 class="title">—</h1>
-    <div class="divider"></div>
-    <div class="slot">待补充 / to be added</div>
+    <div class="meta reveal"><span>001</span><span>Personal Portfolio</span><span>2026</span></div>
+    <h1 class="title reveal">泼墨<em>造物</em>,<br>笔下<em>生花</em>。</h1>
+
+    <p class="lede reveal">一个独立造物者的作品集与数字花园。<br>在这里,作品、笔记、数据都生长在同一片土壤上。</p>
+
+    <div class="divider reveal"></div>
+
+    <h2 class="sec-title reveal">关于 / About this project</h2>
+    <p class="body reveal">Annieif 是一个<em>个人作品集与数字花园</em>, 既是创作的出口, 也是独立开发者的实验场。整个站点由单个 HTML 文件驱动, 辅以笔记系统与一套可插拔的作品页。它不依赖 CMS, 不使用数据库 — 内容直接由前端渲染, 样式由手工打磨, 数据由访问者自然增长。</p>
+    <p class="body reveal">从技术上, 这是一个<em> GitHub Pages 静态站点</em>, 用原生 JavaScript 渲染全部内容, 用 CSS 表达气质与氛围。从表达上, 这是一份自画像 — 有星空、有墨水、有空旷的排版、有留白, 也有温度。</p>
+
+    <div class="kv reveal">
+      <div class="k">Type</div><div class="v">个人作品集 / Digital Portfolio</div>
+      <div class="k">Stack</div><div class="v">HTML · CSS · Vanilla JavaScript · GitHub Pages</div>
+      <div class="k">Role</div><div class="v">Design · Frontend · Writing</div>
+      <div class="k">Year</div><div class="v">2026</div>
+      <div class="k">Source</div><div class="v">github.com/Annieif</div>
+    </div>
+
+    <h2 class="sec-title reveal">设计 / Design principles</h2>
+    <p class="body reveal"><em>克制。</em> 排版优先, 装饰让步。主色只有三组: 夜的底色、墨水的灰、以及粉色的「温度」。字体系统由 Fraunces 与 Cormorant Garamond 组成 — 一个有锋芒, 一个有呼吸。</p>
+    <p class="body reveal"><em>留白即语言。</em> 页面之间不堆叠卡片, 而是让文字自己成为结构。章节用序号与时间线锚点共同标记, 形成「左侧目录 + 正文流」的阅读节奏。</p>
+    <p class="body reveal"><em>动画是叙事的一部分。</em> 大数字有计数动画, 标题有逐字显现, 笔记有展开折叠, 侧边目录随滚动点亮。一切动画都遵循同一条缓动曲线 — 让页面像一次呼吸。</p>
+
+    <h2 class="sec-title reveal">笔记系统 / Notes</h2>
+    <p class="body reveal">这是一个<em>单一数据源</em>的笔记系统。新增一条笔记, 只需在 <code>notes/data.js</code> 写入标题、正文与日期, 其它工作由脚本自动完成: 生成序号、提取首句作为预览、渲染搜索与排序、写入独立的详情页。</p>
+    <p class="body reveal">阅读者可以按时间排序、按关键词过滤、按章节展开或折叠。目录自动根据内容生成, 章节之间有平滑滚动、锚点与 scroll-spy 高亮。</p>
+
+    <h2 class="sec-title reveal">数据 / The quiet counter</h2>
+    <p class="body reveal">站点用本地计数器追踪访问量与访客数 — 稳定、离线可用、无需第三方。每次加载, 数字都会通过计数动画从 0 缓慢滚到当前值, 像是时间的回声。</p>
+
+    <div class="quote-card reveal">
+      <div class="q-text">「 一身清贫, 怎敢入繁华;<br>两袖清风, 怎敢误佳人。 」</div>
+      <div class="q-src">— a private manifest</div>
+    </div>
+
+    <h2 class="sec-title reveal">下一步 / Next</h2>
+    <p class="body reveal">未来的方向: <em>更多作品页的写作</em>, 让 Selected Works 从一条清单长成一条长卷; <em>扩展笔记的标签系统</em>, 让笔记可以按主题聚集成花园的小簇; 以及 — 也许最重要的 — 让站点本身慢慢「变老」。</p>
+    <p class="body reveal"><em>而不是追求完美。</em></p>
   </main>
+  <script>
+    // simple scroll reveal
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.02 });
+    els.forEach(el => io.observe(el));
+  </script>
 </body>
 </html>

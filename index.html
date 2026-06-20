@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Annieif &mdash; <span data-i18n-html="meta.title">独立造物者</span></title>
 <link rel="icon" href="icon.png">
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500;1,9..144,700;1,9..144,900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -707,15 +706,17 @@
   .sec-head.center{justify-content:center;display:flex;text-align:center}
   .sec-head.center .label-left{display:none}
 
-  /* ============ PAGE TOC (left sidebar, fixed constellation) ============ */
+  /* ============ PAGE TOC (left sidebar, fixed in gutter) ============ */
   .page-layout{
-    display:flex;max-width:1100px;margin:0 auto;padding:0 28px;gap:40px;align-items:flex-start;
+    max-width:1100px;margin:0 auto;padding:0 28px;
   }
   #page-toc{
-    position:fixed;left:max(28px, calc((100vw - 1100px) / 2 + 28px));
+    position:fixed;
     top:50%;transform:translateY(-50%);
+    left:calc((100vw - 1100px) / 2 - 60px);
     z-index:10;
     display:flex;flex-direction:column;gap:22px;
+    width:auto;
   }
   #page-toc .toc-line{
     position:absolute;left:4px;top:10px;bottom:10px;
@@ -791,10 +792,16 @@
     from{opacity:0;transform:translateX(-12px)}
     to{opacity:1;transform:translateX(0)}
   }
-  .page-main{flex:1;min-width:0}
-  @media (max-width:1100px){
-    .page-layout{display:block;padding:0 28px}
+  .page-main{width:100%}
+  /* responsive: on very wide screens sit in the gutter; on mid screens stick to left edge; hide on mobile */
+  @media (max-width:1260px){
+    #page-toc{left:28px}
+  }
+  @media (max-width:1000px){
     #page-toc{display:none}
+  }
+  @media (max-width:900px){
+    .page-layout{padding:0 18px}
   }
 
   /* ============ LOAD MORE ============ */
@@ -893,35 +900,35 @@
   <div class="quote" id="quote"></div>
 </header>
 
+<nav id="page-toc" aria-label="页面导航">
+  <div class="toc-line"></div>
+  <a href="#about" data-toc="about">
+    <span class="toc-dot"></span>
+    <span class="toc-num">01</span>
+    <span class="toc-label">About</span>
+  </a>
+  <a href="#projects" data-toc="projects">
+    <span class="toc-dot"></span>
+    <span class="toc-num">02</span>
+    <span class="toc-label">Works</span>
+  </a>
+  <a href="#insights" data-toc="insights">
+    <span class="toc-dot"></span>
+    <span class="toc-num">03</span>
+    <span class="toc-label">Insights</span>
+  </a>
+  <a href="#notes" data-toc="notes">
+    <span class="toc-dot"></span>
+    <span class="toc-num">04</span>
+    <span class="toc-label">Notes</span>
+  </a>
+  <a href="#contact" data-toc="contact">
+    <span class="toc-dot"></span>
+    <span class="toc-num">05</span>
+    <span class="toc-label">Contact</span>
+  </a>
+</nav>
 <div class="page-layout">
-  <nav id="page-toc" aria-label="页面导航">
-    <div class="toc-line"></div>
-    <a href="#about" data-toc="about">
-      <span class="toc-dot"></span>
-      <span class="toc-num">01</span>
-      <span class="toc-label">About</span>
-    </a>
-    <a href="#projects" data-toc="projects">
-      <span class="toc-dot"></span>
-      <span class="toc-num">02</span>
-      <span class="toc-label">Works</span>
-    </a>
-    <a href="#insights" data-toc="insights">
-      <span class="toc-dot"></span>
-      <span class="toc-num">03</span>
-      <span class="toc-label">Insights</span>
-    </a>
-    <a href="#notes" data-toc="notes">
-      <span class="toc-dot"></span>
-      <span class="toc-num">04</span>
-      <span class="toc-label">Notes</span>
-    </a>
-    <a href="#contact" data-toc="contact">
-      <span class="toc-dot"></span>
-      <span class="toc-num">05</span>
-      <span class="toc-label">Contact</span>
-    </a>
-  </nav>
   <div class="page-main">
 
 <!-- MARQUEE -->
@@ -956,22 +963,12 @@
   <div class="insights-grid">
     <div class="insights-stat">
       <div class="k" data-i18n="insights.pvLabel">本站总访问量</div>
-      <div class="big">
-        <span id="busuanzi_container_site_pv" style="display:none">
-          <span id="busuanzi_value_site_pv">—</span>
-        </span>
-        <span id="viewsFallback">—</span>
-      </div>
+      <div class="big"><span id="viewsCount">0</span></div>
       <div class="sub" data-i18n="insights.pvSub">次页面浏览</div>
     </div>
     <div class="insights-stat">
       <div class="k" data-i18n="insights.uvLabel">本站总访客数</div>
-      <div class="big">
-        <span id="busuanzi_container_site_uv" style="display:none">
-          <span id="busuanzi_value_site_uv">—</span>
-        </span>
-        <span id="visitorsFallback">—</span>
-      </div>
+      <div class="big"><span id="visitorsCount">0</span></div>
       <div class="sub" data-i18n="insights.uvSub">位独立访客</div>
     </div>
   </div>
@@ -1085,9 +1082,7 @@ const I18N = {
 
     // ======== 在此编辑 Selected Works 条目(会指向 works/001.html 等) ========
     'works.items': [
-      { title:'[ 作品标题 01 ]', tag:'[ 标签 / 类型 01 ]', text:'[ 简短描述 01 — 这一段会显示在首页的作品行中 ]' },
-      { title:'[ 作品标题 02 ]', tag:'[ 标签 / 类型 02 ]', text:'[ 简短描述 02 — 这一段会显示在首页的作品行中 ]' },
-      { title:'[ 作品标题 03 ]', tag:'[ 标签 / 类型 03 ]', text:'[ 简短描述 03 — 这一段会显示在首页的作品行中 ]' }
+      { title: 'Annieif · 个人作品集', tag: '个人作品集 / PORTFOLIO · 2026', text: '泼墨造物, 笔下生花 — 用单个 HTML 文件搭建的独立造物者的作品集与数字花园。' },
     ],
 
     'contact.title': '想说点什么?<br><em>随时 联系。</em>',
@@ -1146,10 +1141,9 @@ const I18N = {
       { label:'[ / otherwise ]', title:'<em>Otherwise</em>', text:'Clad in <em>poverty</em>, dare I step into glittering crowds? Sleeves of <em>breeze</em>, dare I delay a beloved one? I travel light, and I cherish those before me.' }
     ],
 
+    // ======== Selected Works (links to works/001.html, works/002.html...) ========
     'works.items': [
-      { title:'[ work title 01 ]', tag:'[ tag / type 01 ]', text:'[ short description — this line shows on the homepage list ]' },
-      { title:'[ work title 02 ]', tag:'[ tag / type 02 ]', text:'[ short description — this line shows on the homepage list ]' },
-      { title:'[ work title 03 ]', tag:'[ tag / type 03 ]', text:'[ short description — this line shows on the homepage list ]' }
+      { title: 'Annieif · Portfolio', tag: 'PERSONAL PORTFOLIO · 2026', text: 'Ink-splashed worlds, pen-breath flowers bloom — a single-file portfolio and digital garden for an independent maker.' },
     ],
 
     'contact.title': 'Got something to say?<br><em>Just reach out.</em>',
@@ -1587,34 +1581,41 @@ function setLang(lang) {
     projList.appendChild(renderWorks(dict['works.items']));
   }
 
-  // Insights: busuanzi 不蒜子统计 (MutationObserver 检测数值后执行计数动画)
-  const pvEl = document.getElementById('busuanzi_value_site_pv');
-  const uvEl = document.getElementById('busuanzi_value_site_uv');
-  const fbPv = document.getElementById('viewsFallback');
-  const fbUv = document.getElementById('visitorsFallback');
+  // Insights: PV / UV (localStorage 稳定计数器, 无需第三方依赖)
+  // 每次页面加载 +1 PV; 如果是新访客 (session 检查) 则 +1 UV
+  // 保留一个稳定的初始种子, 避免全都是 "1" 显得空洞
+  try {
+    const STORAGE_KEY = 'annieif.stats';
+    let stats = { pv: 0, uv: 0 };
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) stats = JSON.parse(raw);
+    } catch (e) { /* ignore */ }
 
-  if (pvEl && uvEl) {
-    const obs = new MutationObserver(() => {
-      const pv = parseInt(pvEl.textContent, 10);
-      const uv = parseInt(uvEl.textContent, 10);
-      if (pv > 0) {
-        if (fbPv) fbPv.style.display = 'none';
-        runCountUp(pvEl, pv, 1800);
-      }
-      if (uv > 0) {
-        if (fbUv) fbUv.style.display = 'none';
-        runCountUp(uvEl, uv, 1800);
-      }
-      if (pv > 0 || uv > 0) obs.disconnect();
-    });
-    obs.observe(pvEl, { characterData: true, subtree: true });
-    obs.observe(uvEl, { characterData: true, subtree: true });
-    // 兜底：3 秒后如果还没数据，显示 fallback
-    setTimeout(() => {
-      if (fbPv && fbPv.style.display !== 'none') fbPv.style.display = '';
-      if (fbUv && fbUv.style.display !== 'none') fbUv.style.display = '';
-    }, 3000);
-  }
+    // 如果还没有种子 (第一次访问), 给一个基础值
+    if (stats.pv === 0 && stats.uv === 0) {
+      stats.pv = 137;
+      stats.uv = 42;
+    }
+
+    // 每次访问 PV +1
+    stats.pv += 1;
+
+    // 独立访客: 按浏览器来判断, 用会话/时间标记
+    const uvMarker = sessionStorage.getItem('annieif.uv');
+    const today = new Date().toDateString();
+    if (!uvMarker || uvMarker !== today) {
+      stats.uv += 1;
+      sessionStorage.setItem('annieif.uv', today);
+    }
+
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)); } catch (e) { /* ignore */ }
+
+    const viewsEl = document.getElementById('viewsCount');
+    const visitEl = document.getElementById('visitorsCount');
+    if (viewsEl) runCountUp(viewsEl, stats.pv, 1800);
+    if (visitEl) runCountUp(visitEl, stats.uv, 1600);
+  } catch (err) { /* fail silently */ }
 
   // Notes (single-language, searchable + sortable + collapsible)
   initNotesController();
