@@ -167,7 +167,7 @@
     <p class="body reveal">阅读者可以按时间排序、按关键词过滤、按章节展开或折叠。目录自动根据内容生成, 章节之间有平滑滚动、锚点与 scroll-spy 高亮。</p>
 
     <h2 class="sec-title reveal">数据 / The quiet counter</h2>
-    <p class="body reveal">站点用本地计数器追踪访问量与访客数 — 稳定、离线可用、无需第三方。每次加载, 数字都会通过计数动画从 0 缓慢滚到当前值, 像是时间的回声。</p>
+    <p class="body reveal">站点使用 busuanzi 不蒜子追踪访问量与访客数 — 一个轻量的第三方服务, 数字在用户之间同步可见。为了避免"阿拉伯数字闪现后再变成罗马数字"的突兀感, 隐藏镜像节点先接收数值, MutationObserver 监听变化后经由 toRoman 转成罗马数字, 再通过计数动画从 0 缓慢滚到当前值, 像是时间的回声。</p>
 
     <div class="quote-card reveal">
       <div class="q-text">「 一身清贫, 怎敢入繁华;<br>两袖清风, 怎敢误佳人。 」</div>
