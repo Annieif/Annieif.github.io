@@ -523,9 +523,9 @@
     margin-bottom:20px;
   }
   .insights-stat .big{
-    font-family:"Fraunces",serif;font-weight:900;
+    font-family:"Cormorant Garamond",serif;font-weight:700;
     font-size:clamp(64px, 10vw, 160px);
-    line-height:.88;letter-spacing:-.035em;
+    line-height:.88;letter-spacing:-.02em;
     color:var(--ink);
     margin:18px 0 8px;
     transition:color .3s var(--ease);
@@ -1858,14 +1858,28 @@ function initPageTOC() {
   sections.forEach(s => observer.observe(s.el));
 }
 
-function runCountUp(el, target, durationMs) {
+function toRoman(n) {
+  if (n <= 0 || n >= 4000) return String(n);
+  const map = [
+    [1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],
+    [100,'C'],[90,'XC'],[50,'L'],[40,'XL'],
+    [10,'X'],[9,'IX'],[5,'V'],[4,'IV'],
+    [1,'I']
+  ];
+  let r = '';
+  for (const [v, s] of map) { while (n >= v) { r += s; n -= v; } }
+  return r;
+}
+
+function runCountUp(el, target, durationMs, fmt) {
   if (!el) return;
+  const format = fmt || (v => v.toLocaleString());
   const startTime = performance.now();
   const ease = t => 1 - Math.pow(1 - t, 2.5);
   function tick(now) {
     const p = Math.min(1, (now - startTime) / durationMs);
     const v = Math.floor(target * ease(p));
-    el.textContent = v.toLocaleString();
+    el.textContent = format(v);
     if (p < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
@@ -1939,8 +1953,8 @@ function setLang(lang) {
       if (pv > 0 && uv > 0) {
         done = true;
         obs.disconnect();
-        runCountUp(pvEl, pv, 1800);
-        runCountUp(uvEl, uv, 1600);
+        runCountUp(pvEl, pv, 1800, toRoman);
+        runCountUp(uvEl, uv, 1600, toRoman);
       }
     });
     obs.observe(pvEl, { characterData: true, subtree: true });
@@ -1951,8 +1965,8 @@ function setLang(lang) {
         obs.disconnect();
         const pv = parseInt(pvEl.textContent, 10) || 0;
         const uv = parseInt(uvEl.textContent, 10) || 0;
-        if (pv > 0) runCountUp(pvEl, pv, 1800);
-        if (uv > 0) runCountUp(uvEl, uv, 1600);
+        if (pv > 0) runCountUp(pvEl, pv, 1800, toRoman);
+        if (uv > 0) runCountUp(uvEl, uv, 1600, toRoman);
       }
     }, 5000);
   }
