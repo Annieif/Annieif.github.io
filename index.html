@@ -22,6 +22,7 @@
     --line-strong:rgba(232,228,221,.18);
     --grain-opacity:.10;
     --ease:cubic-bezier(.2,.8,.2,1);
+    --toc-w:120px;
   }
 
   *{margin:0;padding:0;box-sizing:border-box}
@@ -693,6 +694,44 @@
   .sec-head.center{justify-content:center;display:flex;text-align:center}
   .sec-head.center .label-left{display:none}
 
+  /* ============ PAGE TOC (fixed left sidebar) ============ */
+  #page-toc{
+    position:fixed;left:28px;top:50%;transform:translateY(-50%);
+    z-index:90;display:flex;flex-direction:column;gap:10px;
+    pointer-events:none;
+  }
+  #page-toc a{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.2em;
+    color:var(--ink-faint);text-decoration:none;text-transform:uppercase;
+    transition:color .3s var(--ease),padding .3s var(--ease);
+    pointer-events:auto;position:relative;
+    padding-left:0;
+  }
+  #page-toc a::before{
+    content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);
+    width:0;height:1px;background:var(--accent);
+    transition:width .3s var(--ease);
+  }
+  #page-toc a:hover{color:var(--ink)}
+  #page-toc a.active{color:var(--accent);padding-left:6px}
+  #page-toc a.active::before{width:4px}
+  @media (max-width:1100px){#page-toc{display:none}}
+
+  /* ============ LOAD MORE ============ */
+  .load-more-wrap{text-align:center;padding:28px 0 0}
+  .load-more{
+    background:transparent;border:1px solid var(--line);
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.2em;
+    color:var(--ink-faint);text-transform:uppercase;
+    padding:12px 32px;cursor:pointer;
+    transition:border-color .35s var(--ease),color .35s var(--ease),box-shadow .35s var(--ease);
+  }
+  .load-more:hover{
+    border-color:var(--accent);color:var(--accent);
+    box-shadow:0 0 24px rgba(244,194,208,.12);
+  }
+  .load-more .count{color:var(--accent);font-weight:500}
+
   /* ============ RESPONSIVE ============ */
   @media (max-width:900px){
     .hero{padding:130px 18px 40px;min-height:100svh}
@@ -732,6 +771,14 @@
 <!-- Custom cursor -->
 <div class="cursor-dot"  aria-hidden="true"></div>
 <div class="cursor-ring" aria-hidden="true"></div>
+
+<nav id="page-toc" aria-label="页面导航">
+  <a href="#about" data-toc="about">01 · About</a>
+  <a href="#projects" data-toc="works">02 · Works</a>
+  <a href="#insights" data-toc="insights">03 · Insights</a>
+  <a href="#notes" data-toc="notes">04 · Notes</a>
+  <a href="#contact" data-toc="contact">05 · Contact</a>
+</nav>
 
 <!-- HERO (full viewport, top bar lives inside it) -->
 <header class="hero" id="top">
@@ -989,11 +1036,18 @@ const I18N = {
    新增笔记时只需在此数组头部追加一条即可
    ===================================================== */
 const NOTES = [
-  { date:'2026-06-20', title:'[ 笔记标题 01 ]', desc:'[ 简短的描述 01 — 这一段会显示在首页笔记列表中 ]', file:'notes/001.html' },
-  { date:'2026-06-19', title:'[ 笔记标题 02 ]', desc:'[ 简短的描述 02 — 这一段会显示在首页笔记列表中 ]', file:'notes/002.html' },
-  { date:'2026-06-18', title:'[ 笔记标题 03 ]', desc:'[ 简短的描述 03 — 这一段会显示在首页笔记列表中 ]', file:'notes/003.html' },
-  { date:'2026-06-15', title:'[ 笔记标题 04 ]', desc:'[ 简短的描述 04 — 这一段会显示在首页笔记列表中 ]', file:'notes/004.html' },
-  { date:'2026-06-10', title:'[ 笔记标题 05 ]', desc:'[ 简短的描述 05 — 这一段会显示在首页笔记列表中 ]', file:'notes/005.html' },
+  { date:'2026-06-20', title:'[ 笔记标题 01 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'这是笔记正文的第一句话，会在折叠展开时预览，大约一两行长度。', file:'notes/001.html' },
+  { date:'2026-06-18', title:'[ 笔记标题 02 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'另一篇笔记的开头第一句话，点击 ▸ 展开后这里会替代描述显示。', file:'notes/002.html' },
+  { date:'2026-06-15', title:'[ 笔记标题 03 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第三篇笔记的预览内容，可以写正文的第一句话，让读者快速了解笔记内容。', file:'notes/003.html' },
+  { date:'2026-06-12', title:'[ 笔记标题 04 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第四篇笔记的开头预览，折叠时只显示描述，展开后这里替换描述。', file:'notes/004.html' },
+  { date:'2026-06-10', title:'[ 笔记标题 05 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第五篇笔记正文预览，同样只会在展开时显示。', file:'notes/005.html' },
+  { date:'2026-06-07', title:'[ 笔记标题 06 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第六篇笔记的预览文字。', file:'notes/006.html' },
+  { date:'2026-06-05', title:'[ 笔记标题 07 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第七篇。', file:'notes/007.html' },
+  { date:'2026-06-02', title:'[ 笔记标题 08 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第八篇的预览文字，大量笔记时可通过搜索和排序快速定位。', file:'notes/008.html' },
+  { date:'2026-05-28', title:'[ 笔记标题 09 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第九篇笔记预览。', file:'notes/009.html' },
+  { date:'2026-05-25', title:'[ 笔记标题 10 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第十篇，示范大量笔记的分页效果。', file:'notes/010.html' },
+  { date:'2026-05-20', title:'[ 笔记标题 11 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第十一篇的预览文字。', file:'notes/011.html' },
+  { date:'2026-05-15', title:'[ 笔记标题 12 ]', desc:'[ 简短的描述 — 显示在首页列表中 ]', preview:'第十二篇。', file:'notes/012.html' },
 ];
 
 /* =====================================================
@@ -1221,7 +1275,7 @@ function renderNotesFeed(items) {
     preview.className = 'note-preview';
     const previewInner = document.createElement('div');
     previewInner.className = 'note-preview-inner';
-    previewInner.textContent = (n.desc || '') + ' …';
+    previewInner.textContent = (n.preview || n.desc || '') + ' …';
     const nlink = document.createElement('a');
     nlink.className = 'nlink';
     nlink.href = n.file || '#';
@@ -1246,7 +1300,7 @@ function renderNotesFeed(items) {
   return frag;
 }
 
-/* ---- notes controller: search + sort ---- */
+/* ---- notes controller: search + sort + load-more ---- */
 function initNotesController() {
   const feed    = document.getElementById('notesFeed');
   const search  = document.getElementById('notesSearch');
@@ -1254,12 +1308,14 @@ function initNotesController() {
   const sortEl  = document.getElementById('notesSort');
   if (!feed || !search || !sortEl) return;
 
+  const PER_PAGE = 5;
   let sortKey = 'newest';
   let query   = '';
+  let visibleCount = PER_PAGE;
 
   function getSorted() {
     const arr = [...NOTES];
-    if (sortKey === 'newest')  return arr; // already newest-first
+    if (sortKey === 'newest')  return arr;
     if (sortKey === 'oldest')  return arr.reverse();
     if (sortKey === 'title')   return arr.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'zh'));
     return arr;
@@ -1270,28 +1326,55 @@ function initNotesController() {
     const q = query.toLowerCase();
     return list.filter(n =>
       (n.title || '').toLowerCase().includes(q) ||
-      (n.desc  || '').toLowerCase().includes(q)
+      (n.desc  || '').toLowerCase().includes(q) ||
+      (n.preview || '').toLowerCase().includes(q)
     );
   }
 
-  function render() {
-    const sorted = getSorted();
-    const filtered = filter(sorted);
+  function renderSlice(filtered) {
+    const shown = filtered.slice(0, visibleCount);
     feed.innerHTML = '';
 
-    if (!filtered.length) {
+    if (!shown.length) {
       const d = document.createElement('div');
       d.className = 'notes-empty';
       d.innerHTML = query ? '没有匹配 <em>"' + query + '"</em> 的笔记' : '— 暂无笔记 —';
       feed.appendChild(d);
     } else {
-      feed.appendChild(renderNotesFeed(filtered));
+      feed.appendChild(renderNotesFeed(shown));
     }
-    if (countEl) countEl.textContent = filtered.length + '/' + NOTES.length;
+
+    if (countEl) countEl.textContent = shown.length + '/' + filtered.length;
+
+    // Load-more button
+    const remaining = filtered.length - shown.length;
+    const oldBtn = feed.parentNode.querySelector('.load-more-wrap');
+    if (oldBtn) oldBtn.remove();
+
+    if (remaining > 0) {
+      const wrap = document.createElement('div');
+      wrap.className = 'load-more-wrap';
+      const btn = document.createElement('button');
+      btn.className = 'load-more';
+      btn.innerHTML = '→ LOAD MORE <span class="count">(' + remaining + ')</span>';
+      btn.addEventListener('click', () => {
+        visibleCount += PER_PAGE;
+        renderSlice(filtered);
+      });
+      wrap.appendChild(btn);
+      feed.parentNode.appendChild(wrap);
+    }
+  }
+
+  function render() {
+    const sorted = getSorted();
+    const filtered = filter(sorted);
+    renderSlice(filtered);
   }
 
   search.addEventListener('input', () => {
     query = search.value;
+    visibleCount = PER_PAGE;
     render();
   });
 
@@ -1300,11 +1383,40 @@ function initNotesController() {
       sortEl.querySelectorAll('button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       sortKey = btn.dataset.sort;
+      visibleCount = PER_PAGE;
       render();
     });
   });
 
   render();
+}
+
+/* ---- page TOC scroll-spy ---- */
+function initPageTOC() {
+  const toc = document.getElementById('page-toc');
+  if (!toc) return;
+  const links = toc.querySelectorAll('a[data-toc]');
+  const sections = [];
+  links.forEach(a => {
+    const id = a.getAttribute('data-toc');
+    const sec = document.getElementById(id);
+    if (sec) sections.push({ el: sec, link: a });
+  });
+
+  if (!sections.length) return;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const link = toc.querySelector('a[data-toc="' + e.target.id + '"]');
+      if (!link) return;
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s.el));
 }
 
 function runCountUp(el, target, durationMs) {
@@ -1515,6 +1627,9 @@ function runTypewriter(root, stepMs) {
 
   // First render — set everything
   setLang(startLang);
+
+  // Page TOC scroll-spy
+  initPageTOC();
 
   // Wire language switcher buttons
   document.querySelectorAll('#langSwitch .btn').forEach(btn => {
