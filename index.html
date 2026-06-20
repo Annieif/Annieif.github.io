@@ -227,9 +227,10 @@
     position:relative;
     z-index:1;
     min-height:100svh;
-    padding:160px 24px 60px;
+    padding:160px 40px 60px 220px;
     display:flex;flex-direction:column;justify-content:center;
-    max-width:950px;margin:0 auto;
+    max-width:none;
+    margin:0 auto;
   }
 
   .title-main{max-width:100%}
@@ -359,7 +360,7 @@
   @keyframes scroll{to{transform:translateX(-50%)}}
 
   /* ============ SECTION COMMON ============ */
-  section{padding:120px 8px;position:relative;z-index:1;border-top:1px solid var(--line)}
+  section{padding:120px 8px;position:relative;z-index:1;border-top:1px solid var(--line);max-width:none;margin:0}
   .sec-head{
     display:block;
     font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
@@ -712,14 +713,16 @@
   .sec-head.center{justify-content:center;display:flex;text-align:center}
   .sec-head.center .label-left{display:none}
 
-  /* ============ PAGE TOC (left sidebar, fixed at left edge with auto-hide on hero ============ */
+  /* ============ PAGE TOC (left sidebar, fixed at left edge, auto-hide on hero) ============ */
   .page-layout{
-    max-width:950px;margin:0 auto;padding:0 24px;
+    padding: 0 40px 0 220px;
+    max-width: none;
+    margin: 0;
   }
   #page-toc{
     position:fixed;
     top:50%;transform:translateY(-50%);
-    left:28px;
+    left:36px;
     z-index:20;
     display:flex;flex-direction:column;gap:22px;
     width:auto;
@@ -806,9 +809,12 @@
   .page-main{width:100%}
   @media (max-width:1000px){
     #page-toc{display:none}
+    .page-layout{padding:0 24px}
+    .hero{padding:140px 24px 60px}
   }
   @media (max-width:900px){
     .page-layout{padding:0 18px}
+    .hero{padding:130px 18px 60px}
   }
 
   /* ============ LOAD MORE ============ */
