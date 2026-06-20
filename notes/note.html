@@ -159,14 +159,16 @@
   article .content blockquote p{margin:.4em 0}
 
   /* — 高亮标记 ==text== — 浅粉色斜体 + 光晕 */
-  article .content mark{
-    background:rgba(244,194,208,.12);
-    color:var(--accent);
+  article .content mark,
+  article .content p mark,
+  article .content li mark{
+    background:rgba(244,194,208,.14);
+    color:#f4c2d0;
     font-style:italic;
     font-weight:400;
     padding:1px 5px;margin:0 1px;
     border-radius:3px;
-    box-shadow:0 0 0 1px rgba(244,194,208,.18), 0 0 10px rgba(244,194,208,.12);
+    box-shadow:0 0 0 1px rgba(244,194,208,.2), 0 0 10px rgba(244,194,208,.14);
   }
 
   /* — 列表 — */
@@ -175,9 +177,9 @@
   article .content ul li::marker{color:var(--accent);font-size:.85em}
   article .content ol li::marker{color:var(--ink-faint);font-family:var(--mono);font-size:.85em}
 
-  /* — 强调与斜体 — */
-  article .content strong{color:var(--ink);font-weight:600}
-  article .content em{font-style:italic;color:var(--ink)}
+  /* — 强调与斜体 — 统一浅粉色重点 */
+  article .content strong{color:#f4c2d0;font-weight:500;font-style:italic}
+  article .content em{font-style:italic;color:#f4c2d0}
 
   /* — 响应式 — */
   @media(max-width:900px){
