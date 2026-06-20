@@ -3,9 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Annieif &mdash; <span data-i18n-html="meta.title">独立造物者</span></title>
+<title>Annieif &mdash; <span data-i18n-html="meta.title">Annieif</span></title>
 <link rel="icon" href="icon.png">
-<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script>
+  // 仅在 https 协议下加载不蒜子脚本，避免 file:// 本地预览时产生 ERR_ABORTED
+  if (window.location.protocol === 'https:') {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
+    document.head.appendChild(s);
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500;1,9..144,700;1,9..144,900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -1043,7 +1051,7 @@
 
 const I18N = {
   zh: {
-    'meta.title': '独立造物者',
+    'meta.title': 'Annieif',
     'nav.year': '2026',
     'nav.about': '关于',
     'nav.works': '作品',
@@ -1096,7 +1104,7 @@ const I18N = {
 
     // ======== 在此编辑 Selected Works 条目(会指向 works/001.html 等) ========
     'works.items': [
-      { title: 'Annieif · 个人作品集', tag: '个人作品集 / PORTFOLIO · 2026', text: '泼墨造物, 笔下生花 — 用单个 HTML 文件搭建的独立造物者的作品集与数字花园。' },
+      { title: 'Annieif · 个人作品集', tag: '个人作品集 / PORTFOLIO · 2026', text: '泼墨造物, 笔下生花 — 用单个 HTML 文件搭建的 Annieif 的作品集与数字花园。' },
     ],
 
     'contact.title': '想说点什么?<br><em>随时 联系。</em>',
@@ -1157,7 +1165,7 @@ const I18N = {
 
     // ======== Selected Works (links to works/001.html, works/002.html...) ========
     'works.items': [
-      { title: 'Annieif · Portfolio', tag: 'PERSONAL PORTFOLIO · 2026', text: 'Ink-splashed worlds, pen-breath flowers bloom — a single-file portfolio and digital garden for an independent maker.' },
+      { title: 'Annieif · Portfolio', tag: 'PERSONAL PORTFOLIO · 2026', text: 'Ink-splashed worlds, pen-breath flowers bloom — a single-file portfolio and digital garden by Annieif.' },
     ],
 
     'contact.title': 'Got something to say?<br><em>Just reach out.</em>',
@@ -1168,7 +1176,7 @@ const I18N = {
   },
 
   ja: {
-    'meta.title': '独立した創り手',
+    'meta.title': 'Annieif',
     'nav.year': '2026',
     'nav.about': 'プロフィール',
     'nav.works': '作品',
@@ -1200,7 +1208,7 @@ const I18N = {
     'slot.empty': '— 追記予定 —',
     'hero.title.lines': [
       [{ style:'grad', text:'Annieif' }],
-      [{ style:'reg', text:'—独立した ' }, { style:'ac', text:'創り手。' }],
+      [{ style:'reg', text:'—Annieif。' }],
       [{ style:'indent' }, { style:'reg', text:'自由を ' }, { style:'ac', text:'愛する者。' }]
     ],
     'hero.quote': '美しいものには、いつも欠けたところがある。',
@@ -1211,7 +1219,7 @@ const I18N = {
       { label:'[ あなたについて / 03 ]', title:'<em>「あなた」</em>について', text:'<em>清貧</em>をまとい、輝く人々の中に踏み入るだろうか？<em>清風</em>の袖で、愛する人を待たせるだろうか？私は軽やかに旅をし、目の前の人を慈しむ。' }
     ],
     'works.items': [
-      { title: 'Annieif · 個人作品集', tag: '個人作品集 / PORTFOLIO · 2026', text: '墨を飛ばし、筆から花が咲く — 単一ファイルで構築された、独立した創り手のための作品集とデジタルガーデン。' },
+      { title: 'Annieif · 個人作品集', tag: '個人作品集 / PORTFOLIO · 2026', text: '墨を飛ばし、筆から花が咲く — 単一ファイルで構築された、Annieif の作品集とデジタルガーデン。' },
     ],
     'contact.title': '何か伝えたいことはありますか？<br><em>いつでもどうぞ。</em>',
     'contact.github': 'GitHub · @Annieif',
@@ -1221,7 +1229,7 @@ const I18N = {
   },
 
   ko: {
-    'meta.title': '독립적인 창작자',
+    'meta.title': 'Annieif',
     'nav.year': '2026',
     'nav.about': '프로필',
     'nav.works': '작품',
@@ -1253,7 +1261,7 @@ const I18N = {
     'slot.empty': '— 추가 예정 —',
     'hero.title.lines': [
       [{ style:'grad', text:'Annieif' }],
-      [{ style:'reg', text:'—독립적인 ' }, { style:'ac', text:'창작자.' }],
+      [{ style:'reg', text:'—Annieif.' }],
       [{ style:'indent' }, { style:'reg', text:'자유를 ' }, { style:'ac', text:'사랑하는 사람.' }]
     ],
     'hero.quote': '아름다운 것에는 언제나 모자란 부분이 있다.',
@@ -1264,7 +1272,7 @@ const I18N = {
       { label:'[ 당신에 대해 / 03 ]', title:'<em>「당신」</em>에 대해', text:'<em>청빈</em>을 입고, 화려한 군중 속으로 발을 들일 용기가 내게 있는가?<em>청풍</em> 두 팔로, 사랑하는 이를 미루게 되지는 않을까? 나는 가볍게 여행하며, 눈앞의 이를 아끼노라.' }
     ],
     'works.items': [
-      { title: 'Annieif · 개인作品集', tag: '개인作品集 / PORTFOLIO · 2026', text: '먹을 튄 세상, 붓숨으로 꽃 피우리 — 단일 파일로 구축된 독립 창작자의 포트폴리오 & 디지털 가든.' },
+      { title: 'Annieif · 개인作品集', tag: '개인作品集 / PORTFOLIO · 2026', text: '먹을 튄 세상, 붓숨으로 꽃 피우리 — 단일 파일로 구축된 Annieif 의 포트폴리오 & 디지털 가든.' },
     ],
     'contact.title': '전하고 싶은 이야기가 있나요?<br><em>언제든 연락 주십시오.</em>',
     'contact.github': 'GitHub · @Annieif',
@@ -1274,7 +1282,7 @@ const I18N = {
   },
 
   es: {
-    'meta.title': 'Creador independiente',
+    'meta.title': 'Annieif',
     'nav.year': '2026',
     'nav.about': 'Perfil',
     'nav.works': 'Obras',
@@ -1306,7 +1314,7 @@ const I18N = {
     'slot.empty': '— por añadir —',
     'hero.title.lines': [
       [{ style:'grad', text:'Annieif' }],
-      [{ style:'reg', text:'—un creador ' }, { style:'ac', text:'independiente.' }],
+      [{ style:'reg', text:'—Annieif.' }],
       [{ style:'indent' }, { style:'reg', text:'defensor de la ' }, { style:'ac', text:'libertad.' }]
     ],
     'hero.quote': 'Nada es perfecto, nada llega sin esfuerzo.',
@@ -1317,7 +1325,7 @@ const I18N = {
       { label:'[ sobre ti / 03 ]', title:'Sobre «<em>ti</em>»', text:'Vestido de <em>pobreza</em>, ¿me atreveré en las muchedumbres brillantes? Mangas de <em>brisa</em>, ¿haré esperar a quien amo? Viajo ligero y atesoro a quien tengo delante.' }
     ],
     'works.items': [
-      { title: 'Annieif · Portafolio personal', tag: 'PORTAFOLIO PERSONAL · 2026', text: 'Mundos salpicados de tinta, flores brotan del aliento del pincel — un portafolio y jardín digital en un solo archivo, para creadores independientes.' },
+      { title: 'Annieif · Portafolio personal', tag: 'PORTAFOLIO PERSONAL · 2026', text: 'Mundos salpicados de tinta, flores brotan del aliento del pincel — un portafolio y jardín digital en un solo archivo por Annieif.' },
     ],
     'contact.title': '¿Tienes algo que decir?<br><em>Solo haz clic.</em>',
     'contact.github': 'GitHub · @Annieif',
@@ -1327,7 +1335,7 @@ const I18N = {
   },
 
   fr: {
-    'meta.title': 'Créateur indépendant',
+    'meta.title': 'Annieif',
     'nav.year': '2026',
     'nav.about': 'Profil',
     'nav.works': 'Œuvres',
@@ -1370,7 +1378,7 @@ const I18N = {
       { label:'[ à ton sujet / 03 ]', title:'À propos de «<em>toi</em>»', text:'Revêtu de <em>pauvreté</em>, oserai-je au milieu des foules éclatantes? Manches de <em>brise</em>, ferai-je attendre celle que j\'aime? Je voyage léger et je chéris ceux qui sont devant moi.' }
     ],
     'works.items': [
-      { title: 'Annieif · Portfolio personnel', tag: 'PORTFOLIO PERSONNEL · 2026', text: 'Des mondes éclaboussés d\'encre, des fleurs naissent du soufflet du pinceau — un portfolio et jardin numérique en un seul fichier, pour créateurs indépendants.' },
+      { title: 'Annieif · Portfolio personnel', tag: 'PORTFOLIO PERSONNEL · 2026', text: 'Des mondes éclaboussés d\'encre, des fleurs naissent du soufflet du pinceau — un portfolio et jardin numérique en un seul fichier par Annieif.' },
     ],
     'contact.title': 'Quelque chose à dire ?<br><em>Un clic suffit.</em>',
     'contact.github': 'GitHub · @Annieif',
@@ -1380,7 +1388,7 @@ const I18N = {
   },
 
   ar: {
-    'meta.title': 'صانع مستقل',
+    'meta.title': 'Annieif',
     'nav.year': '2026',
     'nav.about': 'ملف تعريفي',
     'nav.works': 'أعمال',
@@ -1412,7 +1420,7 @@ const I18N = {
     'slot.empty': '— قيد الإضافة —',
     'hero.title.lines': [
       [{ style:'grad', text:'Annieif' }],
-      [{ style:'reg', text:'—صانع ' }, { style:'ac', text:'مستقل.' }],
+      [{ style:'reg', text:'—Annieif.' }],
       [{ style:'indent' }, { style:'reg', text:'مدافع عن ' }, { style:'ac', text:'الحرية.' }]
     ],
     'hero.quote': 'لا شيء كامل، ولا شيء يأتي بسهولة.',
@@ -1423,7 +1431,7 @@ const I18N = {
       { label:'[ عنك / ٠٣ ]', title:'عن «<em>أنت</em>»', text:'مرتدًا عِداءً من <em>الفقر</em>، هأتجرأ على دخول الحشود المتلألئة؟ بأكمام <em>النسيم</em>، هأؤخر من أحب؟ أسافر خفيفًا وأعزّ من هو أمامي.' }
     ],
     'works.items': [
-      { title: 'Annieif · ملف أعمال شخصي', tag: 'ملف أعمال شخصي · ٢٠٢٦', text: 'عوالم تتناثر بها الحبر، أزهار تنبت من أنفاس الفرشاة — ملف أعمال وحديقة رقمية في ملف واحد، لصانع مستقل.' },
+      { title: 'Annieif · ملف أعمال شخصي', tag: 'ملف أعمال شخصي · ٢٠٢٦', text: 'عوالم تتناثر بها الحبر، أزهار تنبت من أنفاس الفرشاة — ملف أعمال وحديقة رقمية في ملف واحد، لـ Annieif.' },
     ],
     'contact.title': 'عليك قول شيء ما؟<br><em>تواصل في أي وقت.</em>',
     'contact.github': 'GitHub · @Annieif',
@@ -1433,7 +1441,7 @@ const I18N = {
   },
 
   ru: {
-    'meta.title': 'Независимый творец',
+    'meta.title': 'Annieif',
     'nav.year': '2026',
     'nav.about': 'Обо мне',
     'nav.works': 'Работы',
@@ -1476,7 +1484,7 @@ const I18N = {
       { label:'[ о тебе / 03 ]', title:'О «<em>тебе</em>»', text:'Облечённый в <em>бедность</em>, посмею ли я влиться в сверкающие толпы? Рукавами <em>ветра</em>, стану ли я заставлять любимого ждать? Я еду налегке и берегу тех, кто рядом.' }
     ],
     'works.items': [
-      { title: 'Annieif · Личное портфолио', tag: 'ЛИЧНОЕ ПОРТФОЛИО · 2026', text: 'Миры, окроплённые чернилами, цветы расцветают от дыхания кисти — портфолио и цифровой сад в одном файле для независимого творца.' },
+      { title: 'Annieif · Личное портфолио', tag: 'ЛИЧНОЕ ПОРТФОЛИО · 2026', text: 'Миры, окроплённые чернилами, цветы расцветают от дыхания кисти — портфолио и цифровой сад в одном файле от Annieif.' },
     ],
     'contact.title': 'Хотите что-то сказать?<br><em>Пишите в любое время.</em>',
     'contact.github': 'GitHub · @Annieif',
