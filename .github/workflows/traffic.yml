@@ -1,0 +1,93 @@
+name: Sync traffic insights
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pull traffic from GitHub API
+        id: traffic
+        run: |
+          REPO="${{ github.repository }}"
+          TOKEN="${{ secrets.GH_TRAFFIC_TOKEN }}"
+          AUTH="Authorization: Bearer $TOKEN"
+
+          # 1) Total views / uniques (last 14 days)
+          VIEWS_JSON=$(curl -sS -H "$AUTH" \
+            "https://api.github.com/repos/$REPO/traffic/views")
+
+          VIEWS_COUNT=$(echo "$VIEWS_JSON" | jq '.count // 0')
+          VIEWS_UNIQUES=$(echo "$VIEWS_JSON" | jq '.uniques // 0')
+          VIEWS_LAST=$(echo "$VIEWS_JSON" | jq -r '(.views | last | .timestamp) // ""')
+
+          echo "views_count=$VIEWS_COUNT"
+          echo "views_uniques=$VIEWS_UNIQUES"
+          echo "views_last=$VIEWS_LAST"
+
+          echo "views_count=$VIEWS_COUNT" >> "$GITHUB_OUTPUT"
+          echo "views_uniques=$VIEWS_UNIQUES" >> "$GITHUB_OUTPUT"
+          echo "views_last=$VIEWS_LAST" >> "$GITHUB_OUTPUT"
+
+          # 2) Popular content (top paths, last 14 days)
+          PATHS_JSON=$(curl -sS -H "$AUTH" \
+            "https://api.github.com/repos/$REPO/traffic/popular/paths")
+
+          POPULAR_JSON=$(echo "$PATHS_JSON" | jq '[.[] | {
+            path: .path,
+            title: (.title // .path),
+            views: .count,
+            uniques: .uniques
+          }]')
+
+          echo "popular_json=$POPULAR_JSON" >> "$GITHUB_OUTPUT"
+
+          # 3) Also save to temp files for verification
+          echo "$POPULAR_JSON" > /tmp/popular.json
+          cat /tmp/popular.json
+
+      - name: Write _data/traffic.json
+        run: |
+          mkdir -p _data
+          UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          jq -n \
+            --argjson views_count   '${{ steps.traffic.outputs.views_count }}' \
+            --argjson views_uniques '${{ steps.traffic.outputs.views_uniques }}' \
+            --arg     views_last    '${{ steps.traffic.outputs.views_last }}' \
+            --argjson popular       '${{ steps.traffic.outputs.popular_json }}' \
+            --arg     updated_at    "$UPDATED_AT" \
+            '{
+              views: {
+                count: $views_count,
+                uniques: $views_uniques,
+                last_updated: $views_last
+              },
+              popular: $popular,
+              updated_at: $updated_at,
+              fallback: false
+            }' > _data/traffic.json
+
+          echo "--- generated traffic.json ---"
+          cat _data/traffic.json
+
+      - name: Commit & push
+        run: |
+          git config user.name  "traffic-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add _data/traffic.json
+          if git diff --cached --quiet; then
+            echo "no changes to commit"
+          else
+            git commit -m "chore(data): sync traffic insights"
+            git push
+          fi
