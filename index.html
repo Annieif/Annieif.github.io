@@ -885,9 +885,7 @@
         <a href="#notes" data-i18n="nav.notes">笔记</a>
         <a href="#contact" data-i18n="nav.contact">联系</a>
         <span class="lang-switch" id="langSwitch">
-          <span class="btn active" data-lang="zh">中</span>
-          <span class="sep">/</span>
-          <span class="btn" data-lang="en">EN</span>
+          <span class="btn active" data-lang="zh">中</span><span class="sep">/</span><span class="btn" data-lang="en">EN</span><span class="sep">/</span><span class="btn" data-lang="ja">日</span><span class="sep">/</span><span class="btn" data-lang="ko">한</span><span class="sep">/</span><span class="btn" data-lang="es">ES</span><span class="sep">/</span><span class="btn" data-lang="fr">FR</span><span class="sep">/</span><span class="btn" data-lang="ar">ع</span><span class="sep">/</span><span class="btn" data-lang="ru">RU</span>
         </span>
       </div>
     </div>
@@ -1090,7 +1088,7 @@ const I18N = {
     'about.cards': [
       { label:'[ / label 01 ]', title:'[ 关于"我" ]', text:'[ 我終將在苦難中成長 ]' },
       { label:'[ / label 02 ]', title:'[ 关于"Annieif" ]', text:'[ 无穷的远方，无数的人们，都和我有关 ]' },
-      { label:'[ / label 03 ]', title:'[ 其它 ]', text:'[ 一身清贫怎敢入繁华，两袖清风怎敢误佳人 ]' }
+      { label:'[ / label 03 ]', title:'[ 关于"你" ]', text:'[ 一身清贫怎敢入繁华，两袖清风怎敢误佳人 ]' }
     ],
 
     // ======== 在此编辑 Selected Works 条目(会指向 works/001.html 等) ========
@@ -1151,7 +1149,7 @@ const I18N = {
     'about.cards': [
       { label:'[ / about me ]', title:'About "<em>me</em>"', text:'Through <em>hardship I will grow</em> — forged in setbacks, I gather faint light through long nights.' },
       { label:'[ / annieif ]', title:'About "<em>Annieif</em>"', text:'<em>Infinity beyond the horizon</em>, <em>countless souls</em> — all bear my weight. A reply from afar, and a step outward.' },
-      { label:'[ / otherwise ]', title:'<em>Otherwise</em>', text:'Clad in <em>poverty</em>, dare I step into glittering crowds? Sleeves of <em>breeze</em>, dare I delay a beloved one? I travel light, and I cherish those before me.' }
+      { label:'[ / about you ]', title:'About "<em>you</em>"', text:'Clad in <em>poverty</em>, dare I step into glittering crowds? Sleeves of <em>breeze</em>, dare I delay a beloved one? I travel light, and I cherish those before me.' }
     ],
 
     // ======== Selected Works (links to works/001.html, works/002.html...) ========
@@ -1164,6 +1162,324 @@ const I18N = {
     'contact.email': 'Email · Qianlovean@outlook.com',
     'contact.site': 'Website · annieif.dev',
     'contact.rss': 'RSS · Subscribe',
+  },
+
+  ja: {
+    'meta.title': '独立した創り手',
+    'nav.year': '2026',
+    'nav.about': 'プロフィール',
+    'nav.works': '作品',
+    'nav.insights': 'データ',
+    'nav.notes': 'ノート',
+    'nav.contact': '連絡',
+    'meta.coord': '座標',
+    'meta.earth': '地球',
+    'meta.statusLabel': 'ステータス',
+    'meta.status': '制作中',
+    'meta.langLabel': '言語',
+    'meta.lang': '日本語',
+    'meta.tagline': 'PERSONAL / PORTFOLIO / MMXXVI · 2026',
+    'sec.about': 'About',
+    'sec.aboutSub': '私について / <em>About me</em>',
+    'sec.works': 'Selected Works',
+    'sec.worksSub': '墨を<em>飛ばし</em>、筆から<em>花が咲く</em>。',
+    'sec.contact': 'Get in touch',
+    'sec.insights': 'Insights',
+    'sec.insightsSub': 'データの中の<em>光と影</em>',
+    'insights.viewsLabel': '過去14日間 · 総アクセス',
+    'insights.viewsSub': '世界中の訪問者から',
+    'insights.pvLabel': '総ページビュー',
+    'insights.pvSub': 'ページビュー',
+    'insights.uvLabel': '総ユニーク訪問者',
+    'insights.uvSub': 'ユニーク訪問者',
+    'sec.notes': 'Notes',
+    'sec.notesSub': '散らばった<em>考え</em>と<em>記録</em>',
+    'slot.empty': '— 追記予定 —',
+    'hero.title.lines': [
+      [{ style:'grad', text:'Annieif' }],
+      [{ style:'reg', text:'—独立した ' }, { style:'ac', text:'創り手。' }],
+      [{ style:'indent' }, { style:'reg', text:'自由を ' }, { style:'ac', text:'愛する者。' }]
+    ],
+    'hero.quote': '美しいものには、いつも欠けたところがある。',
+    'marquee.items': ['creative coding','DIY','独立開発','JAVA','typescript','DESIGN','自由'],
+    'about.cards': [
+      { label:'[ 私について / 01 ]', title:'<em>「私」</em>について', text:'苦難の中で私は<em>成長する</em> — 挫折に鍛えられ、長い夜に微かな光を集める。' },
+      { label:'[ Annieifについて / 02 ]', title:'<em>「Annieif」</em>について', text:'地平線の彼方に<em>無限があり</em>、<em>無数の人々</em>が私に関わっている。遠方からの返事、そして一歩の前進。' },
+      { label:'[ あなたについて / 03 ]', title:'<em>「あなた」</em>について', text:'<em>清貧</em>をまとい、輝く人々の中に踏み入るだろうか？<em>清風</em>の袖で、愛する人を待たせるだろうか？私は軽やかに旅をし、目の前の人を慈しむ。' }
+    ],
+    'works.items': [
+      { title: 'Annieif · 個人作品集', tag: '個人作品集 / PORTFOLIO · 2026', text: '墨を飛ばし、筆から花が咲く — 単一ファイルで構築された、独立した創り手のための作品集とデジタルガーデン。' },
+    ],
+    'contact.title': '何か伝えたいことはありますか？<br><em>いつでもどうぞ。</em>',
+    'contact.github': 'GitHub · @Annieif',
+    'contact.email': 'Email · Qianlovean@outlook.com',
+    'contact.site': 'Website · annieif.dev',
+    'contact.rss': 'RSS · 購読する',
+  },
+
+  ko: {
+    'meta.title': '독립적인 창작자',
+    'nav.year': '2026',
+    'nav.about': '프로필',
+    'nav.works': '작품',
+    'nav.insights': '데이터',
+    'nav.notes': '노트',
+    'nav.contact': '연락',
+    'meta.coord': '좌표',
+    'meta.earth': '지구',
+    'meta.statusLabel': '상태',
+    'meta.status': '공개 제작 중',
+    'meta.langLabel': '언어',
+    'meta.lang': '한국어',
+    'meta.tagline': 'PERSONAL / PORTFOLIO / MMXXVI · 2026',
+    'sec.about': 'About',
+    'sec.aboutSub': '나에 대해 / <em>About me</em>',
+    'sec.works': 'Selected Works',
+    'sec.worksSub': '먹을 튄 세상,<br>붓숨으로 꽃 피우리.',
+    'sec.contact': 'Get in touch',
+    'sec.insights': 'Insights',
+    'sec.insightsSub': '데이터 속의<em>빛과 그림자</em>',
+    'insights.viewsLabel': '지난 14일간 · 총 방문',
+    'insights.viewsSub': '세계 각지의 방문자로부터',
+    'insights.pvLabel': '총 페이지뷰',
+    'insights.pvSub': '페이지뷰',
+    'insights.uvLabel': '총 유니크 방문자',
+    'insights.uvSub': '유니크 방문자',
+    'sec.notes': 'Notes',
+    'sec.notesSub': '흩어진<em>생각</em>과<em>기록</em>',
+    'slot.empty': '— 추가 예정 —',
+    'hero.title.lines': [
+      [{ style:'grad', text:'Annieif' }],
+      [{ style:'reg', text:'—독립적인 ' }, { style:'ac', text:'창작자.' }],
+      [{ style:'indent' }, { style:'reg', text:'자유를 ' }, { style:'ac', text:'사랑하는 사람.' }]
+    ],
+    'hero.quote': '아름다운 것에는 언제나 모자란 부분이 있다.',
+    'marquee.items': ['creative coding','DIY','독립 개발','JAVA','typescript','DESIGN','자유'],
+    'about.cards': [
+      { label:'[ 나에 대해 / 01 ]', title:'<em>「나」</em>에 대해', text:'고난 속에서 나는<em>성장하리라</em> — 역경에 단련되어 기나긴 밤 희미한 빛을 모으며.' },
+      { label:'[ Annieif에 대해 / 02 ]', title:'<em>「Annieif」</em>에 대해', text:'지평선 너머의<em>무한</em>, <em>무수한 사람들</em> — 모두 나의 무게를 짊어지고 간다. 멀리서 답신을 보내며, 한 걸음 더 나아간다.' },
+      { label:'[ 당신에 대해 / 03 ]', title:'<em>「당신」</em>에 대해', text:'<em>청빈</em>을 입고, 화려한 군중 속으로 발을 들일 용기가 내게 있는가?<em>청풍</em> 두 팔로, 사랑하는 이를 미루게 되지는 않을까? 나는 가볍게 여행하며, 눈앞의 이를 아끼노라.' }
+    ],
+    'works.items': [
+      { title: 'Annieif · 개인作品集', tag: '개인作品集 / PORTFOLIO · 2026', text: '먹을 튄 세상, 붓숨으로 꽃 피우리 — 단일 파일로 구축된 독립 창작자의 포트폴리오 & 디지털 가든.' },
+    ],
+    'contact.title': '전하고 싶은 이야기가 있나요?<br><em>언제든 연락 주십시오.</em>',
+    'contact.github': 'GitHub · @Annieif',
+    'contact.email': 'Email · Qianlovean@outlook.com',
+    'contact.site': 'Website · annieif.dev',
+    'contact.rss': 'RSS · 구독하기',
+  },
+
+  es: {
+    'meta.title': 'Creador independiente',
+    'nav.year': '2026',
+    'nav.about': 'Perfil',
+    'nav.works': 'Obras',
+    'nav.insights': 'Datos',
+    'nav.notes': 'Notas',
+    'nav.contact': 'Contacto',
+    'meta.coord': 'Coordenadas',
+    'meta.earth': 'Tierra',
+    'meta.statusLabel': 'Estado',
+    'meta.status': 'Construcción en abierto',
+    'meta.langLabel': 'Idioma',
+    'meta.lang': 'ESPAÑOL',
+    'meta.tagline': 'PERSONAL / PORTFOLIO / MMXXVI · 2026',
+    'sec.about': 'About',
+    'sec.aboutSub': 'Sobre mí / <em>About me</em>',
+    'sec.works': 'Selected Works',
+    'sec.worksSub': 'Mundos salpicados de tinta,<br>flores brotan del aliento del pincel.',
+    'sec.contact': 'Get in touch',
+    'sec.insights': 'Insights',
+    'sec.insightsSub': '<em>Luz y sombra</em> entre los datos',
+    'insights.viewsLabel': 'Últimos 14 días · visitas totales',
+    'insights.viewsSub': 'desde visitantes de todo el mundo',
+    'insights.pvLabel': 'Páginas vistas totales',
+    'insights.pvSub': 'páginas vistas',
+    'insights.uvLabel': 'Visitantes únicos totales',
+    'insights.uvSub': 'visitantes únicos',
+    'sec.notes': 'Notes',
+    'sec.notesSub': '<em>Ideas</em> y <em>notas</em> dispersas',
+    'slot.empty': '— por añadir —',
+    'hero.title.lines': [
+      [{ style:'grad', text:'Annieif' }],
+      [{ style:'reg', text:'—un creador ' }, { style:'ac', text:'independiente.' }],
+      [{ style:'indent' }, { style:'reg', text:'defensor de la ' }, { style:'ac', text:'libertad.' }]
+    ],
+    'hero.quote': 'Nada es perfecto, nada llega sin esfuerzo.',
+    'marquee.items': ['creative coding','DIY','independiente','JAVA','typescript','DESIGN','libertad'],
+    'about.cards': [
+      { label:'[ sobre mí / 01 ]', title:'Sobre «<em>mí</em>»', text:'A través de la <em>adversidad creceré</em> — forjado por los reveses, recolecto tenues luces en largas noches.' },
+      { label:'[ sobre annieif / 02 ]', title:'Sobre «<em>Annieif</em>»', text:'<em>Infinito más allá del horizonte</em>, <em>almas incontables</em> — todas llevan mi peso. Una respuesta desde lejos, y un paso hacia afuera.' },
+      { label:'[ sobre ti / 03 ]', title:'Sobre «<em>ti</em>»', text:'Vestido de <em>pobreza</em>, ¿me atreveré en las muchedumbres brillantes? Mangas de <em>brisa</em>, ¿haré esperar a quien amo? Viajo ligero y atesoro a quien tengo delante.' }
+    ],
+    'works.items': [
+      { title: 'Annieif · Portafolio personal', tag: 'PORTAFOLIO PERSONAL · 2026', text: 'Mundos salpicados de tinta, flores brotan del aliento del pincel — un portafolio y jardín digital en un solo archivo, para creadores independientes.' },
+    ],
+    'contact.title': '¿Tienes algo que decir?<br><em>Solo haz clic.</em>',
+    'contact.github': 'GitHub · @Annieif',
+    'contact.email': 'Email · Qianlovean@outlook.com',
+    'contact.site': 'Website · annieif.dev',
+    'contact.rss': 'RSS · Suscríbete',
+  },
+
+  fr: {
+    'meta.title': 'Créateur indépendant',
+    'nav.year': '2026',
+    'nav.about': 'Profil',
+    'nav.works': 'Œuvres',
+    'nav.insights': 'Données',
+    'nav.notes': 'Notes',
+    'nav.contact': 'Contact',
+    'meta.coord': 'Coordonnées',
+    'meta.earth': 'Terre',
+    'meta.statusLabel': 'Statut',
+    'meta.status': 'En construction ouverte',
+    'meta.langLabel': 'Langue',
+    'meta.lang': 'FRANÇAIS',
+    'meta.tagline': 'PERSONAL / PORTFOLIO / MMXXVI · 2026',
+    'sec.about': 'About',
+    'sec.aboutSub': 'À mon sujet / <em>About me</em>',
+    'sec.works': 'Selected Works',
+    'sec.worksSub': 'Des mondes éclaboussés d\'encre,<br>des fleurs naissent du soufflet du pinceau.',
+    'sec.contact': 'Get in touch',
+    'sec.insights': 'Insights',
+    'sec.insightsSub': '<em>Lumière et ombre</em> parmi les données',
+    'insights.viewsLabel': '14 derniers jours · visites totales',
+    'insights.viewsSub': 'de visiteurs du monde entier',
+    'insights.pvLabel': 'Pages vues totales',
+    'insights.pvSub': 'pages vues',
+    'insights.uvLabel': 'Visiteurs uniques totaux',
+    'insights.uvSub': 'visiteurs uniques',
+    'sec.notes': 'Notes',
+    'sec.notesSub': '<em>Idées</em> et <em>notes</em> éparpillées',
+    'slot.empty': '— à compléter —',
+    'hero.title.lines': [
+      [{ style:'grad', text:'Annieif' }],
+      [{ style:'reg', text:'—un créateur ' }, { style:'ac', text:'indépendant.' }],
+      [{ style:'indent' }, { style:'reg', text:'défenseur de la ' }, { style:'ac', text:'liberté.' }]
+    ],
+    'hero.quote': 'Rien n\'est parfait, rien n\'est facile.',
+    'marquee.items': ['creative coding','DIY','indépendant','JAVA','typescript','DESIGN','liberté'],
+    'about.cards': [
+      { label:'[ à mon sujet / 01 ]', title:'À propos de «<em>moi</em>»', text:'À travers l\'<em>épreuve je grandirai</em> — forgé par les revers, je cueille de faibles lumières dans les longues nuits.' },
+      { label:'[ à propos d\'annieif / 02 ]', title:'À propos de «<em>Annieif</em>»', text:'<em>L\'infini au-delà de l\'horizon</em>, <em>d\'innombrables âmes</em> — toutes portent mon poids. Une réponse venue de loin, et un pas vers l\'extérieur.' },
+      { label:'[ à ton sujet / 03 ]', title:'À propos de «<em>toi</em>»', text:'Revêtu de <em>pauvreté</em>, oserai-je au milieu des foules éclatantes? Manches de <em>brise</em>, ferai-je attendre celle que j\'aime? Je voyage léger et je chéris ceux qui sont devant moi.' }
+    ],
+    'works.items': [
+      { title: 'Annieif · Portfolio personnel', tag: 'PORTFOLIO PERSONNEL · 2026', text: 'Des mondes éclaboussés d\'encre, des fleurs naissent du soufflet du pinceau — un portfolio et jardin numérique en un seul fichier, pour créateurs indépendants.' },
+    ],
+    'contact.title': 'Quelque chose à dire ?<br><em>Un clic suffit.</em>',
+    'contact.github': 'GitHub · @Annieif',
+    'contact.email': 'Email · Qianlovean@outlook.com',
+    'contact.site': 'Website · annieif.dev',
+    'contact.rss': 'RSS · S\'abonner',
+  },
+
+  ar: {
+    'meta.title': 'صانع مستقل',
+    'nav.year': '2026',
+    'nav.about': 'ملف تعريفي',
+    'nav.works': 'أعمال',
+    'nav.insights': 'بيانات',
+    'nav.notes': 'ملاحظات',
+    'nav.contact': 'تواصل',
+    'meta.coord': 'إحداثيات',
+    'meta.earth': 'الأرض',
+    'meta.statusLabel': 'الحالة',
+    'meta.status': 'قيد الإنشاء علنًا',
+    'meta.langLabel': 'اللغة',
+    'meta.lang': 'العربية',
+    'meta.tagline': 'شخصي / ملف أعمال / ٢٠٢٦',
+    'sec.about': 'حول',
+    'sec.aboutSub': 'عني / <em>About me</em>',
+    'sec.works': 'أعمال مختارة',
+    'sec.worksSub': 'عوالم تتناثر بها الحبر،<br>أزهار تنبت من أنفاس الفرشاة.',
+    'sec.contact': 'تواصل',
+    'sec.insights': 'رؤى',
+    'sec.insightsSub': '<em>نور وظل</em> داخل البيانات',
+    'insights.viewsLabel': 'آخر ١٤ يومًا · إجمالي الزيارات',
+    'insights.viewsSub': 'من زوار حول العالم',
+    'insights.pvLabel': 'إجمالي صفحات الموقع',
+    'insights.pvSub': 'صفحات تمت مشاهدتها',
+    'insights.uvLabel': 'إجمالي الزوار الفرديين',
+    'insights.uvSub': 'زوار فريدون',
+    'sec.notes': 'ملاحظات',
+    'sec.notesSub': '<em>أفكار</em> و<em>ملاحظات</em> متناثرة',
+    'slot.empty': '— قيد الإضافة —',
+    'hero.title.lines': [
+      [{ style:'grad', text:'Annieif' }],
+      [{ style:'reg', text:'—صانع ' }, { style:'ac', text:'مستقل.' }],
+      [{ style:'indent' }, { style:'reg', text:'مدافع عن ' }, { style:'ac', text:'الحرية.' }]
+    ],
+    'hero.quote': 'لا شيء كامل، ولا شيء يأتي بسهولة.',
+    'marquee.items': ['البرمجة الإبداعية','DIY','استقلالية','JAVA','typescript','DESIGN','حرية'],
+    'about.cards': [
+      { label:'[ عني / ٠١ ]', title:'عن «<em>أنا</em>»', text:'في صميم <em>الشدائد سأنمو</em> — مشكولًا من النكسات، أجمع خيوط ضياءً في ليلات طويلة.' },
+      { label:'[ عن أنييف / ٠٢ ]', title:'عن «<em>Annieif</em>»', text:'<em>اللانهاية خلف الأفق</em>، و<em>أرواح بلا عدد</em> — تحمل كلها ثقلًا عرسيّا. ردٌ من بعيد، وخطوةٌ إلى الخارج.' },
+      { label:'[ عنك / ٠٣ ]', title:'عن «<em>أنت</em>»', text:'مرتدًا عِداءً من <em>الفقر</em>، هأتجرأ على دخول الحشود المتلألئة؟ بأكمام <em>النسيم</em>، هأؤخر من أحب؟ أسافر خفيفًا وأعزّ من هو أمامي.' }
+    ],
+    'works.items': [
+      { title: 'Annieif · ملف أعمال شخصي', tag: 'ملف أعمال شخصي · ٢٠٢٦', text: 'عوالم تتناثر بها الحبر، أزهار تنبت من أنفاس الفرشاة — ملف أعمال وحديقة رقمية في ملف واحد، لصانع مستقل.' },
+    ],
+    'contact.title': 'عليك قول شيء ما؟<br><em>تواصل في أي وقت.</em>',
+    'contact.github': 'GitHub · @Annieif',
+    'contact.email': 'Email · Qianlovean@outlook.com',
+    'contact.site': 'Website · annieif.dev',
+    'contact.rss': 'RSS · اشتراك',
+  },
+
+  ru: {
+    'meta.title': 'Независимый творец',
+    'nav.year': '2026',
+    'nav.about': 'Обо мне',
+    'nav.works': 'Работы',
+    'nav.insights': 'Данные',
+    'nav.notes': 'Заметки',
+    'nav.contact': 'Контакты',
+    'meta.coord': 'Координаты',
+    'meta.earth': 'Земля',
+    'meta.statusLabel': 'Статус',
+    'meta.status': 'Создаётся в открытую',
+    'meta.langLabel': 'Язык',
+    'meta.lang': 'РУССКИЙ',
+    'meta.tagline': 'PERSONAL / PORTFOLIO / MMXXVI · 2026',
+    'sec.about': 'About',
+    'sec.aboutSub': 'Обо мне / <em>About me</em>',
+    'sec.works': 'Selected Works',
+    'sec.worksSub': 'Миры, окроплённые чернилами,<br>цветы расцветают от дыхания кисти.',
+    'sec.contact': 'Get in touch',
+    'sec.insights': 'Insights',
+    'sec.insightsSub': '<em>Свет и тень</em> в потоке данных',
+    'insights.viewsLabel': 'Последние 14 дней · всего посещений',
+    'insights.viewsSub': 'от посетителей со всего мира',
+    'insights.pvLabel': 'Всего просмотров страниц',
+    'insights.pvSub': 'просмотров страниц',
+    'insights.uvLabel': 'Всего уникальных посетителей',
+    'insights.uvSub': 'уникальных посетителей',
+    'sec.notes': 'Notes',
+    'sec.notesSub': 'Разрозненные <em>мысля</em> и <em>заметки</em>',
+    'slot.empty': '— будет добавлено —',
+    'hero.title.lines': [
+      [{ style:'grad', text:'Annieif' }],
+      [{ style:'reg', text:'—независимый ' }, { style:'ac', text:'творец.' }],
+      [{ style:'indent' }, { style:'reg', text:'защитник ' }, { style:'ac', text:'свободы.' }]
+    ],
+    'hero.quote': 'Нет ничего совершенного, ничто не даётся без труда.',
+    'marquee.items': ['творческое программирование','DIY','независимость','JAVA','typescript','DESIGN','свобода'],
+    'about.cards': [
+      { label:'[ обо мне / 01 ]', title:'О «<em>мне</em>»', text:'Сквозь <em>трудности я буду расти</em> — закалённый неудачами, я собираю тусклый огонь в длинные ночи.' },
+      { label:'[ об annieif / 02 ]', title:'О «<em>Annieif</em>»', text:'<em>Бесконечность за горизонтом</em>, <em>бесчисленные души</em> — все несут мою тяжесть. Ответ из дали, и шаг навстречу.' },
+      { label:'[ о тебе / 03 ]', title:'О «<em>тебе</em>»', text:'Облечённый в <em>бедность</em>, посмею ли я влиться в сверкающие толпы? Рукавами <em>ветра</em>, стану ли я заставлять любимого ждать? Я еду налегке и берегу тех, кто рядом.' }
+    ],
+    'works.items': [
+      { title: 'Annieif · Личное портфолио', tag: 'ЛИЧНОЕ ПОРТФОЛИО · 2026', text: 'Миры, окроплённые чернилами, цветы расцветают от дыхания кисти — портфолио и цифровой сад в одном файле для независимого творца.' },
+    ],
+    'contact.title': 'Хотите что-то сказать?<br><em>Пишите в любое время.</em>',
+    'contact.github': 'GitHub · @Annieif',
+    'contact.email': 'Email · Qianlovean@outlook.com',
+    'contact.site': 'Website · annieif.dev',
+    'contact.rss': 'RSS · Подписаться',
   }
 };
 
@@ -1558,7 +1874,8 @@ function setLang(lang) {
   if (!I18N[lang]) return;
   const dict = I18N[lang];
 
-  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  const langMap = { zh:'zh-CN', en:'en', ja:'ja', ko:'ko', es:'es', fr:'fr', ar:'ar', ru:'ru' };
+  document.documentElement.lang = langMap[lang] || 'zh-CN';
   document.title = 'Annieif — ' + dict['meta.title'];
 
   // Plain text slots
