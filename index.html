@@ -518,43 +518,66 @@
     .insights-views{padding:32px 20px 36px}
   }
 
-  /* ============ NOTES ============ */
-  .notes-grid{
+  /* ============ NOTES (vertical feed) ============ */
+  .notes-feed{
+    border-top:1px solid var(--line);
+    position:relative;
+  }
+  .notes-year{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;
+    color:var(--accent);text-transform:uppercase;
+    padding:40px 0 14px 0;
+    position:sticky;top:20px;z-index:2;
+    background:linear-gradient(180deg,var(--bg) 60%,transparent);
+  }
+  .note-row{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:18px;
-    margin-top:8px;
+    grid-template-columns:90px 1fr;
+    gap:28px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+    transition:padding .35s var(--ease),background .35s var(--ease);
+    text-decoration:none;color:inherit;
+    position:relative;
   }
-  .note-card{
-    border:1px solid var(--line);
-    padding:32px 24px 36px;
-    background:linear-gradient(180deg, rgba(244,194,208,.03), transparent 70%);
-    transition:border-color .35s var(--ease), transform .35s var(--ease);
-    display:flex;flex-direction:column;gap:14px;
-    min-height:200px;
+  .note-row::before{
+    content:'';
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:3px;
+    background:transparent;
+    transition:background .35s var(--ease);
+    border-radius:0 2px 2px 0;
   }
-  .note-card:hover{
-    border-color:rgba(244,194,208,.28);
-    transform:translateY(-3px);
+  .note-row:hover{
+    padding-left:16px;
+    padding-right:12px;
+    background:rgba(244,194,208,.04);
   }
-  .note-card time{
-    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;
-    color:var(--ink-faint);text-transform:uppercase;
+  .note-row:hover::before{
+    background:var(--accent);
   }
-  .note-card h4{
+  .note-row .ndate{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    color:var(--ink-faint);
+    padding-top:4px;
+    white-space:nowrap;
+  }
+  .note-row .nbody{display:flex;flex-direction:column;gap:6px}
+  .note-row .ntitle{
     font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
-    font-size:clamp(22px,2.4vw,30px);
-    line-height:1.15;letter-spacing:-.01em;color:var(--ink);
+    font-size:clamp(20px,2.2vw,28px);
+    line-height:1.2;letter-spacing:-.01em;color:var(--ink);
     transition:color .35s var(--ease);
   }
-  .note-card:hover h4{color:var(--accent)}
-  .note-card p{
-    font-family:"Fraunces",serif;font-weight:400;font-size:13.5px;line-height:1.6;
+  .note-row:hover .ntitle{color:var(--accent)}
+  .note-row .ndesc{
+    font-family:"Fraunces",serif;font-weight:400;font-size:13.5px;line-height:1.55;
     color:var(--ink-dim);
   }
   @media (max-width:900px){
-    .notes-grid{grid-template-columns:1fr;gap:12px}
-    .note-card{padding:24px 20px 28px;min-height:auto}
+    .note-row{grid-template-columns:64px 1fr;gap:16px;padding:18px 0}
+    .note-row .ndate{font-size:9.5px;padding-top:3px}
   }
 
   /* ============ CONTACT ============ */
@@ -702,7 +725,7 @@
     <div class="label-left"><span class="num">04</span><span data-i18n="sec.notes">Notes</span></div>
     <div class="sub" data-i18n-html="sec.notesSub"></div>
   </div>
-  <div class="notes-grid" id="notesGrid"><!-- populated by JS --></div>
+  <div class="notes-feed" id="notesFeed"><!-- populated by JS --></div>
 </section>
 
 <!-- CONTACT -->
@@ -789,13 +812,6 @@ const I18N = {
       { title:'[ 作品标题 03 ]', tag:'[ 标签 / 类型 03 ]', text:'[ 简短描述 03 — 这一段会显示在首页的作品行中 ]' }
     ],
 
-    // ======== 在此编辑笔记卡片(3 张);字段为 date / title / text ========
-    'notes.items': [
-      { date:'[ 2026-06-20 ]', title:'[ 笔记标题 01 ]', text:'[ 简短的笔记内容 01 ]' },
-      { date:'[ 2026-06-19 ]', title:'[ 笔记标题 02 ]', text:'[ 简短的笔记内容 02 ]' },
-      { date:'[ 2026-06-18 ]', title:'[ 笔记标题 03 ]', text:'[ 简短的笔记内容 03 ]' }
-    ],
-
     'contact.title': '想说点什么?<br><em>随时 联系。</em>',
     'contact.github': 'GitHub · @Annieif',
     'contact.email': 'Email · Qianlovean@outlook.com',
@@ -854,12 +870,6 @@ const I18N = {
       { title:'[ work title 03 ]', tag:'[ tag / type 03 ]', text:'[ short description — this line shows on the homepage list ]' }
     ],
 
-    'notes.items': [
-      { date:'[ 2026-06-20 ]', title:'[ Note title 01 ]', text:'[ Short note content 01 ]' },
-      { date:'[ 2026-06-19 ]', title:'[ Note title 02 ]', text:'[ Short note content 02 ]' },
-      { date:'[ 2026-06-18 ]', title:'[ Note title 03 ]', text:'[ Short note content 03 ]' }
-    ],
-
     'contact.title': 'Got something to say?<br><em>Just reach out.</em>',
     'contact.github': 'GitHub · @Annieif',
     'contact.email': 'Email · Qianlovean@outlook.com',
@@ -867,6 +877,19 @@ const I18N = {
     'contact.rss': 'RSS · Subscribe',
   }
 };
+
+/* =====================================================
+   NOTES — 笔记数据(单语言,不区分 zh/en)
+   字段: date(YYYY-MM-DD), title, desc, file(子页面路径)
+   新增笔记时只需在此数组头部追加一条即可
+   ===================================================== */
+const NOTES = [
+  { date:'2026-06-20', title:'[ 笔记标题 01 ]', desc:'[ 简短的描述 01 — 这一段会显示在首页笔记列表中 ]', file:'notes/001.html' },
+  { date:'2026-06-19', title:'[ 笔记标题 02 ]', desc:'[ 简短的描述 02 — 这一段会显示在首页笔记列表中 ]', file:'notes/002.html' },
+  { date:'2026-06-18', title:'[ 笔记标题 03 ]', desc:'[ 简短的描述 03 — 这一段会显示在首页笔记列表中 ]', file:'notes/003.html' },
+  { date:'2026-06-15', title:'[ 笔记标题 04 ]', desc:'[ 简短的描述 04 — 这一段会显示在首页笔记列表中 ]', file:'notes/004.html' },
+  { date:'2026-06-10', title:'[ 笔记标题 05 ]', desc:'[ 简短的描述 05 — 这一段会显示在首页笔记列表中 ]', file:'notes/005.html' },
+];
 
 /* =====================================================
    Rendering helpers.
@@ -1039,35 +1062,52 @@ function renderWorks(items) {
   return frag;
 }
 
-function renderNotes(items, emptyText) {
+function renderNotesFeed(items) {
   if (!items || !items.length) {
     const d = document.createElement('div');
-    d.className = 'note-card';
-    d.style.cssText = 'justify-content:center;align-items:center;text-align:center';
-    const inner = document.createElement('div');
-    inner.style.cssText = 'font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase';
-    inner.textContent = emptyText || '— to be added —';
-    d.appendChild(inner);
+    d.style.cssText = 'padding:40px 8px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase';
+    d.textContent = '— 暂无笔记 —';
     return d;
   }
   const frag = document.createDocumentFragment();
+  let lastYear = '';
+
   items.forEach(n => {
-    const card = document.createElement('div');
-    card.className = 'note-card';
+    const y = (n.date || '').slice(0, 4);
+    if (y && y !== lastYear) {
+      const yearDiv = document.createElement('div');
+      yearDiv.className = 'notes-year';
+      yearDiv.textContent = y;
+      frag.appendChild(yearDiv);
+      lastYear = y;
+    }
 
-    const time = document.createElement('time');
-    time.textContent = n.date || '';
+    const a = document.createElement('a');
+    a.className = 'note-row';
+    a.href = n.file || '#';
+    a.style.textDecoration = 'none';
+    a.style.color = 'inherit';
 
-    const h4 = document.createElement('h4');
-    renderText(h4, n.title || '');
+    const ndate = document.createElement('div');
+    ndate.className = 'ndate';
+    ndate.textContent = (n.date || '').slice(5); // MM-DD
 
-    const p = document.createElement('p');
-    renderText(p, n.text || '');
+    const nbody = document.createElement('div');
+    nbody.className = 'nbody';
 
-    card.appendChild(time);
-    card.appendChild(h4);
-    card.appendChild(p);
-    frag.appendChild(card);
+    const ntitle = document.createElement('div');
+    ntitle.className = 'ntitle';
+    renderText(ntitle, n.title || '');
+
+    const ndesc = document.createElement('div');
+    ndesc.className = 'ndesc';
+    renderText(ndesc, n.desc || '');
+
+    nbody.appendChild(ntitle);
+    nbody.appendChild(ndesc);
+    a.appendChild(ndate);
+    a.appendChild(nbody);
+    frag.appendChild(a);
   });
   return frag;
 }
@@ -1154,11 +1194,11 @@ function setLang(lang) {
     .then(renderInsightsFromData)
     .catch(renderInsightsStatic);
 
-  // Notes cards
-  const notesGrid = document.getElementById('notesGrid');
-  if (notesGrid) {
-    notesGrid.innerHTML = '';
-    notesGrid.appendChild(renderNotes(dict['notes.items'], dict['slot.empty']));
+  // Notes (single-language, not i18n)
+  const notesFeed = document.getElementById('notesFeed');
+  if (notesFeed) {
+    notesFeed.innerHTML = '';
+    notesFeed.appendChild(renderNotesFeed(NOTES));
   }
 
   // Hero title — DOM node version (buildTitleHtml returns DocumentFragment)
