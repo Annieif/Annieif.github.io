@@ -518,7 +518,58 @@
     .insights-views{padding:32px 20px 36px}
   }
 
-  /* ============ NOTES (vertical feed) ============ */
+  /* ============ NOTES (rebel archive) ============ */
+  .notes-toolbar{
+    display:flex;align-items:center;gap:16px;
+    margin-bottom:28px;flex-wrap:wrap;
+  }
+  /* ---- search ---- */
+  .notes-search{
+    position:relative;flex:1;min-width:220px;max-width:420px;
+  }
+  .notes-search input{
+    width:100%;background:transparent;border:none;border-bottom:2px solid var(--line);
+    padding:14px 0 14px 36px;
+    font-family:"Fraunces",serif;font-size:clamp(18px,2.2vw,28px);
+    font-weight:600;color:var(--ink);outline:none;
+    transition:border-color .35s var(--ease);
+    caret-color:var(--accent);
+  }
+  .notes-search input::placeholder{color:var(--ink-faint);font-style:italic}
+  .notes-search input:focus{border-color:var(--accent)}
+  .notes-search .s-prefix{
+    position:absolute;left:0;top:50%;transform:translateY(-50%);
+    font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.08em;
+    color:var(--accent);pointer-events:none;
+    transition:opacity .25s;
+  }
+  .notes-search input:focus ~ .s-prefix{opacity:.5}
+  .notes-search .s-count{
+    position:absolute;right:0;top:50%;transform:translateY(-50%);
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;
+    color:var(--ink-faint);pointer-events:none;
+  }
+  /* ---- sort chips ---- */
+  .notes-sort{
+    display:flex;gap:0;
+    border:1px solid var(--line);border-radius:3px;
+    overflow:hidden;flex-shrink:0;
+  }
+  .notes-sort button{
+    background:transparent;border:none;
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.16em;
+    color:var(--ink-faint);text-transform:uppercase;
+    padding:10px 16px;cursor:pointer;
+    transition:background .25s var(--ease),color .25s var(--ease);
+    position:relative;
+  }
+  .notes-sort button:not(:last-child){border-right:1px solid var(--line)}
+  .notes-sort button:hover{color:var(--ink);background:rgba(244,194,208,.06)}
+  .notes-sort button.active{
+    background:var(--accent);color:var(--bg);font-weight:500;
+    box-shadow:0 0 20px rgba(244,194,208,.25);
+  }
+  /* ---- feed ---- */
   .notes-feed{
     border-top:1px solid var(--line);
     position:relative;
@@ -532,13 +583,13 @@
   }
   .note-row{
     display:grid;
-    grid-template-columns:90px 1fr;
-    gap:28px;
+    grid-template-columns:28px 90px 1fr;
+    gap:16px;
     padding:22px 0;
     border-bottom:1px solid var(--line);
     transition:padding .35s var(--ease),background .35s var(--ease);
-    text-decoration:none;color:inherit;
     position:relative;
+    cursor:pointer;
   }
   .note-row::before{
     content:'';
@@ -550,34 +601,76 @@
     border-radius:0 2px 2px 0;
   }
   .note-row:hover{
-    padding-left:16px;
-    padding-right:12px;
+    padding-left:12px;
     background:rgba(244,194,208,.04);
   }
   .note-row:hover::before{
     background:var(--accent);
   }
+  .note-row .chevron{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);
+    display:flex;align-items:flex-start;padding-top:5px;
+    transition:transform .3s var(--ease),color .3s var(--ease);
+    user-select:none;
+  }
+  .note-row.expanded .chevron{transform:rotate(90deg);color:var(--accent)}
   .note-row .ndate{
     font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
-    color:var(--ink-faint);
-    padding-top:4px;
-    white-space:nowrap;
+    color:var(--ink-faint);padding-top:5px;white-space:nowrap;
   }
-  .note-row .nbody{display:flex;flex-direction:column;gap:6px}
+  .note-row .nbody{display:flex;flex-direction:column;gap:6px;min-width:0}
   .note-row .ntitle{
     font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
-    font-size:clamp(20px,2.2vw,28px);
-    line-height:1.2;letter-spacing:-.01em;color:var(--ink);
-    transition:color .35s var(--ease);
+    font-size:clamp(20px,2.2vw,28px);line-height:1.2;letter-spacing:-.01em;
+    color:var(--ink);transition:color .35s var(--ease);
   }
   .note-row:hover .ntitle{color:var(--accent)}
   .note-row .ndesc{
     font-family:"Fraunces",serif;font-weight:400;font-size:13.5px;line-height:1.55;
     color:var(--ink-dim);
   }
+  /* ---- collapse preview ---- */
+  .note-preview{
+    grid-column:2/-1;
+    overflow:hidden;
+    max-height:0;
+    opacity:0;
+    transition:max-height .45s var(--ease),opacity .35s var(--ease),margin .35s var(--ease);
+    margin:0;
+  }
+  .note-row.expanded .note-preview{
+    max-height:200px;
+    opacity:1;
+    margin:8px 0 4px;
+  }
+  .note-preview-inner{
+    font-family:"Fraunces",serif;font-weight:400;font-size:13px;line-height:1.65;
+    color:var(--ink-dim);
+    padding:12px 16px;
+    border-left:2px solid var(--accent);
+    background:rgba(244,194,208,.03);
+    border-radius:0 4px 4px 0;
+  }
+  .note-row .nlink{
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+    color:var(--accent);text-transform:uppercase;text-decoration:none;
+    margin-top:8px;display:inline-block;transition:opacity .3s;
+  }
+  .note-row .nlink:hover{opacity:.7}
+  /* ---- empty / no-results ---- */
+  .notes-empty{
+    padding:60px 8px;text-align:center;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;
+    color:var(--ink-faint);text-transform:uppercase;
+  }
+  .notes-empty em{font-style:normal;color:var(--accent)}
   @media (max-width:900px){
-    .note-row{grid-template-columns:64px 1fr;gap:16px;padding:18px 0}
-    .note-row .ndate{font-size:9.5px;padding-top:3px}
+    .notes-toolbar{flex-direction:column;align-items:stretch;gap:12px}
+    .notes-search{max-width:100%}
+    .notes-sort{align-self:flex-start}
+    .note-row{grid-template-columns:22px 56px 1fr;gap:10px;padding:18px 0}
+    .note-row .ndate{font-size:9.5px;padding-top:4px}
+    .note-preview{grid-column:1/-1}
   }
 
   /* ============ CONTACT ============ */
@@ -724,6 +817,18 @@
   <div class="sec-head">
     <div class="label-left"><span class="num">04</span><span data-i18n="sec.notes">Notes</span></div>
     <div class="sub" data-i18n-html="sec.notesSub"></div>
+  </div>
+  <div class="notes-toolbar" id="notesToolbar">
+    <div class="notes-search">
+      <span class="s-prefix">//</span>
+      <input type="text" id="notesSearch" placeholder="搜索笔记…" autocomplete="off">
+      <span class="s-count" id="notesCount"></span>
+    </div>
+    <div class="notes-sort" id="notesSort">
+      <button data-sort="newest" class="active">NEWEST</button>
+      <button data-sort="oldest">OLDEST</button>
+      <button data-sort="title">TITLE</button>
+    </div>
   </div>
   <div class="notes-feed" id="notesFeed"><!-- populated by JS --></div>
 </section>
@@ -1065,14 +1170,14 @@ function renderWorks(items) {
 function renderNotesFeed(items) {
   if (!items || !items.length) {
     const d = document.createElement('div');
-    d.style.cssText = 'padding:40px 8px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase';
-    d.textContent = '— 暂无笔记 —';
+    d.className = 'notes-empty';
+    d.innerHTML = '— 暂无笔记 —';
     return d;
   }
   const frag = document.createDocumentFragment();
   let lastYear = '';
 
-  items.forEach(n => {
+  items.forEach((n, idx) => {
     const y = (n.date || '').slice(0, 4);
     if (y && y !== lastYear) {
       const yearDiv = document.createElement('div');
@@ -1082,16 +1187,21 @@ function renderNotesFeed(items) {
       lastYear = y;
     }
 
-    const a = document.createElement('a');
-    a.className = 'note-row';
-    a.href = n.file || '#';
-    a.style.textDecoration = 'none';
-    a.style.color = 'inherit';
+    const row = document.createElement('div');
+    row.className = 'note-row';
+    row.dataset.index = idx;
 
+    // chevron
+    const chev = document.createElement('div');
+    chev.className = 'chevron';
+    chev.textContent = '▸';
+
+    // date
     const ndate = document.createElement('div');
     ndate.className = 'ndate';
-    ndate.textContent = (n.date || '').slice(5); // MM-DD
+    ndate.textContent = (n.date || '').slice(5);
 
+    // body
     const nbody = document.createElement('div');
     nbody.className = 'nbody';
 
@@ -1105,11 +1215,96 @@ function renderNotesFeed(items) {
 
     nbody.appendChild(ntitle);
     nbody.appendChild(ndesc);
-    a.appendChild(ndate);
-    a.appendChild(nbody);
-    frag.appendChild(a);
+
+    // preview (collapsed)
+    const preview = document.createElement('div');
+    preview.className = 'note-preview';
+    const previewInner = document.createElement('div');
+    previewInner.className = 'note-preview-inner';
+    previewInner.textContent = (n.desc || '') + ' …';
+    const nlink = document.createElement('a');
+    nlink.className = 'nlink';
+    nlink.href = n.file || '#';
+    nlink.textContent = '→ 阅读全文';
+    nlink.addEventListener('click', e => e.stopPropagation());
+    previewInner.appendChild(document.createElement('br'));
+    previewInner.appendChild(nlink);
+    preview.appendChild(previewInner);
+
+    row.appendChild(chev);
+    row.appendChild(ndate);
+    row.appendChild(nbody);
+    row.appendChild(preview);
+
+    // click to toggle collapse
+    row.addEventListener('click', () => {
+      row.classList.toggle('expanded');
+    });
+
+    frag.appendChild(row);
   });
   return frag;
+}
+
+/* ---- notes controller: search + sort ---- */
+function initNotesController() {
+  const feed    = document.getElementById('notesFeed');
+  const search  = document.getElementById('notesSearch');
+  const countEl = document.getElementById('notesCount');
+  const sortEl  = document.getElementById('notesSort');
+  if (!feed || !search || !sortEl) return;
+
+  let sortKey = 'newest';
+  let query   = '';
+
+  function getSorted() {
+    const arr = [...NOTES];
+    if (sortKey === 'newest')  return arr; // already newest-first
+    if (sortKey === 'oldest')  return arr.reverse();
+    if (sortKey === 'title')   return arr.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'zh'));
+    return arr;
+  }
+
+  function filter(list) {
+    if (!query.trim()) return list;
+    const q = query.toLowerCase();
+    return list.filter(n =>
+      (n.title || '').toLowerCase().includes(q) ||
+      (n.desc  || '').toLowerCase().includes(q)
+    );
+  }
+
+  function render() {
+    const sorted = getSorted();
+    const filtered = filter(sorted);
+    feed.innerHTML = '';
+
+    if (!filtered.length) {
+      const d = document.createElement('div');
+      d.className = 'notes-empty';
+      d.innerHTML = query ? '没有匹配 <em>"' + query + '"</em> 的笔记' : '— 暂无笔记 —';
+      feed.appendChild(d);
+    } else {
+      feed.appendChild(renderNotesFeed(filtered));
+    }
+    if (countEl) countEl.textContent = filtered.length + '/' + NOTES.length;
+  }
+
+  search.addEventListener('input', () => {
+    query = search.value;
+    render();
+  });
+
+  sortEl.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      sortEl.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      sortKey = btn.dataset.sort;
+      render();
+    });
+  });
+
+  render();
 }
 
 function runCountUp(el, target, durationMs) {
@@ -1194,12 +1389,8 @@ function setLang(lang) {
     .then(renderInsightsFromData)
     .catch(renderInsightsStatic);
 
-  // Notes (single-language, not i18n)
-  const notesFeed = document.getElementById('notesFeed');
-  if (notesFeed) {
-    notesFeed.innerHTML = '';
-    notesFeed.appendChild(renderNotesFeed(NOTES));
-  }
+  // Notes (single-language, searchable + sortable + collapsible)
+  initNotesController();
 
   // Hero title — DOM node version (buildTitleHtml returns DocumentFragment)
   const tw = document.getElementById('typewriter');
