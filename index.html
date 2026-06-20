@@ -1859,7 +1859,8 @@ function initPageTOC() {
 }
 
 function toRoman(n) {
-  if (n <= 0 || n >= 4000) return String(n);
+  if (n <= 0) return '—';
+  if (n >= 4000) return String(n);
   const map = [
     [1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],
     [100,'C'],[90,'XC'],[50,'L'],[40,'XL'],
@@ -1953,6 +1954,9 @@ function setLang(lang) {
       if (pv > 0 && uv > 0) {
         done = true;
         obs.disconnect();
+        // 立刻清空阿拉伯数字, 避免闪现
+        pvEl.textContent = '—';
+        uvEl.textContent = '—';
         runCountUp(pvEl, pv, 1800, toRoman);
         runCountUp(uvEl, uv, 1600, toRoman);
       }
@@ -1965,6 +1969,8 @@ function setLang(lang) {
         obs.disconnect();
         const pv = parseInt(pvEl.textContent, 10) || 0;
         const uv = parseInt(uvEl.textContent, 10) || 0;
+        pvEl.textContent = '—';
+        uvEl.textContent = '—';
         if (pv > 0) runCountUp(pvEl, pv, 1800, toRoman);
         if (uv > 0) runCountUp(uvEl, uv, 1600, toRoman);
       }
