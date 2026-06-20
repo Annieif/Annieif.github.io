@@ -7,30 +7,31 @@
      ## 标题  →  <h2>      ### 标题  →  <h3>
      - 列表   →  <ul><li>  1. 列表  →  <ol><li>
      **粗体** →  <strong>  *斜体* →  <em>
+     ==重点== →  <mark>
      `代码`  →  <code>    ```  →  <pre><code>
      > 引用   →  <blockquote>   ---  →  <hr>
+     | A | B | → 表格
      空行分隔段落
    ===================================================== */
 
 // 轻量 Markdown → HTML 解析器
 // 核心原则：先把内容里所有字面尖括号（<、>）转义为实体，
 // 只有解析器自身产出的标签才会作为真实 HTML 渲染。
-// 这样内容里讨论 HTML 标签（如「识别 <em>…</em>」）不会误生成强调。
 function parseNoteContent(text) {
   if (!text) return '';
   let html = String(text);
 
-  // Step 1 — 保护代码块 ```...```：其中所有 <> 直接转义, 然后用占位符暂存
+  // Step 1 — 保护代码块 ```...```
   const codeBlocks = [];
   html = html.replace(/```([\w-]*)\n([\s\S]*?)```/g, function(m, lang, code) {
     codeBlocks.push(code.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
     return '\n\n---CODEBLOCK' + (codeBlocks.length - 1) + '---\n\n';
   });
 
-  // Step 2 — 转义所有剩余的尖括号, 防止笔记内容里讨论 HTML 时被误渲染为真实元素
+  // Step 2 — 转义字面尖括号
   html = html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  // Step 3 — 行内代码 `...`（此时尖括号已转义, 无需再处理内部）
+  // Step 3 — 行内代码 `...`
   html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
 
   // Step 4 — 标题
@@ -40,29 +41,68 @@ function parseNoteContent(text) {
   // Step 5 — 水平线 ---
   html = html.replace(/^-{3,}[ \t]*$/gm, '<hr>');
 
-  // Step 6 — 引用 > ...（此时 > 已被转义为 &gt;）
+  // Step 6 — 表格：| header | | |:---|:---:| | data |
+  // 逐行扫描：找到表头+分隔线+数据行的连续块，合成 HTML table
+  const tableBlocks = [];
+  const tlines = html.split('\n');
+  let tl = 0, tnewLines = [];
+  while (tl < tlines.length) {
+    // 表头行：以 | 开头，且下一行是分隔线
+    if (/^\s*\|.+\|\s*$/.test(tlines[tl]) && tl + 1 < tlines.length && /^\s*\|[\s:\-|]+\|\s*$/.test(tlines[tl + 1])) {
+      let tableText = [tlines[tl], tlines[tl + 1]];
+      let j = tl + 2;
+      while (j < tlines.length && /^\s*\|.+\|\s*$/.test(tlines[j])) {
+        tableText.push(tlines[j]);
+        j++;
+      }
+      // 解析每行：用 | 分割，去掉首尾空字符串
+      const splitRow = (row) => row.trim().split('|').slice(1, -1).map(c => c.trim());
+      let tbl = '<table><thead><tr>';
+      const headers = splitRow(tableText[0]);
+      headers.forEach(h => tbl += `<th>${h}</th>`);
+      tbl += '</tr></thead><tbody>';
+      for (let k = 2; k < tableText.length; k++) {
+        tbl += '<tr>';
+        splitRow(tableText[k]).forEach(c => tbl += `<td>${c}</td>`);
+        tbl += '</tr>';
+      }
+      tbl += '</tbody></table>';
+      tableBlocks.push(tbl);
+      tnewLines.push(`---TABLE${tableBlocks.length - 1}---`);
+      tl = j;
+    } else {
+      tnewLines.push(tlines[tl]);
+      tl++;
+    }
+  }
+  html = tnewLines.join('\n');
+
+  // Step 7 — 引用 > ...（> 已转义为 &gt;）
   html = html.replace(/^&gt;[ \t]?(.+)$/gm, '<blockquote>$1</blockquote>');
 
-  // Step 7 — 列表（有序 / 无序）
-  html = html.replace(/^(\d+)\.[ \t]+(.+)$/gm, '<li data-ol="1">$2</li>');
-  html = html.replace(/^[*-][ \t]+(.+)$/gm, '<li>$1</li>');
+  // Step 8 — 列表（允许前导空白用于缩进）
+  html = html.replace(/^\s*(\d+)\.[ \t]+(.+)$/gm, '<li data-ol="1">$2</li>');
+  html = html.replace(/^\s*[*-][ \t]+(.+)$/gm, '<li>$1</li>');
   html = html.replace(/((?:<li data-ol="1">[\s\S]*?<\/li>\s*)+)/g, function(m) {
     return '<ol>' + m.replace(/ data-ol="1"/g, '') + '</ol>';
   });
   html = html.replace(/((?:<li>[\s\S]*?<\/li>\s*)+)/g, '<ul>$1</ul>');
 
-  // Step 8 — 行内：**粗体** / *斜体* / ==重点==
+  // Step 9 — 恢复代码块 & 表格（先恢复，以便单元格内的 **加粗** 等能被后续行内替换正确处理）
+  html = html.replace(/---CODEBLOCK(\d+)---/g, function(m, i) {
+    return '<pre><code>' + codeBlocks[parseInt(i, 10)] + '</code></pre>';
+  });
+  html = html.replace(/---TABLE(\d+)---/g, function(m, i) {
+    return tableBlocks[parseInt(i, 10)];
+  });
+
+  // Step 10 — 行内：**粗体** / *斜体* / ==重点==
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/(^|[^*])\*([^*\s][^*]*?)\*(?=[^*]|$)/g, '$1<em>$2</em>');
   html = html.replace(/==([^=\n]+)==/g, '<mark>$1</mark>');
 
-  // Step 9 — 恢复代码块
-  html = html.replace(/---CODEBLOCK(\d+)---/g, function(m, i) {
-    return '<pre><code>' + codeBlocks[parseInt(i, 10)] + '</code></pre>';
-  });
-
-  // Step 10 — 段落：双换行分隔, 纯文本块包 <p>
-  const BLOCK_TAG_RE = /<(?:h[23]|p|pre|blockquote|hr|ul|ol|li)\b/i;
+  // Step 11 — 段落：双换行分隔，纯文本块包 <p>
+  const BLOCK_TAG_RE = /<(?:h[23]|p|pre|blockquote|hr|ul|ol|li|table|thead|tbody|tr|th|td)\b/i;
   html = html.split(/\n{2,}/).map(function(block) {
     block = block.trim();
     if (!block) return '';
@@ -87,6 +127,12 @@ function autoPreview(content) {
 }
 
 const NOTES_DATA = [
+  {
+    date:'2026-06-21',
+    title:'地球仪与地图笔记',
+    desc:'空间坐标系的基础语言。经纬网、比例尺与方向判断 — 一张地图是地球的缩影。',
+    content:'地球仪与地图 — 空间坐标系的基础语言。从椭球体到经纬网，一张地图是地球的缩影。\n\n## 一、地球的形状与大小\n\n**形状**：两极稍扁、赤道略鼓的不规则椭球体。\n\n**大小**：\n\n- 平均半径：约 6371 千米\n- 赤道周长：约 4 万千米\n- 赤道半径：约 6378 千米\n- 极半径：约 6357 千米\n\n## 二、地球仪\n\n**地轴**：地球仪上，地球绕转的轴，其倾斜方向不变，北端始终指向 **北极星**。\n\n**两极**：地轴穿过地心，与地球表面相交的两点。\n\n## 三、经线与纬线\n\n| 特点 | 经线 | 纬线 |\n| :--- | :--- | :--- |\n| **形状** | 半圆 | 圆圈 |\n| **长度** | 都相等，约 2 万千米 | 自赤道向两极递减，赤道最长 |\n| **关系** | 相交于南北两极点 | 相互平行 |\n| **指示方向** | 南北方向 | 东西方向 |\n\n## 四、经度与纬度\n\n| 项目 | 经度 | 纬度 |\n| :--- | :--- | :--- |\n| **划分起点** | 本初子午线（0° 经线） | 赤道（0° 纬线） |\n| **划分方法** | 向东、向西各分 180° | 向南、向北各分 90° |\n| **分布规律** | 东经度向东增大，西经度向西增大 | 北纬度向北增大，南纬度向南增大 |\n| **半球划分** | 20° W 和 160° E 组成的经线圈 | 赤道（0° 纬线） |\n| **特殊经纬线** | ① 本初子午线和 180° 经线为东西经分界线 ② 180° 经线大致与日界线重合 | ① 30° 纬线是中、低纬度界线；60° 纬线是中、高纬度界线 ② 回归线是热带、温带界线；极圈是温带、寒带界线 |\n\n## 五、地图三要素\n\n**1. 比例尺**\n\n- **公式**：比例尺 = 图上距离 / 实地距离\n- **形式**：文字式、数字式、线段式\n- **特点**：图幅相同时，比例尺越大，表示的实地范围越**小**，内容越**详细**，精确度越高。\n\n**2. 方向**\n\n- **一般地图**：上北下南，左西右东。\n- **指向标地图**：指向标箭头一般指示正北方。\n- **经纬网地图**：经线指示南北方向，纬线指示东西方向。\n\n**3. 图例与注记**\n\n- **图例**：地图上表示地理事物的符号。\n- **注记**：地图上的文字说明和数字。\n\n## 六、经纬网的应用\n\n**1. 定对称点位置**\n\n- **关于赤道对称**：经度相同，纬度南北相反，数值相等。\n- **关于地轴对称**：纬度相同，经度相对（和为 180°）。\n- **关于地心对称（对跖点）**：纬度南北相反、数值相等，经度相对（和为 180°）。\n\n**2. 定方向**\n\n- **方格状经纬网**：根据经纬度数值大小判断。\n- **极点俯视图**：根据地球自转方向（北逆南顺）判断东西，离极点远近判断南北。\n\n**3. 算距离**\n\n- **经线距离**：同一条经线上，纬度相差 1°，实际距离约 **111 km**。\n- **纬线距离**：同一条纬线上，经度相差 1°，实际距离约 **111 × cos(φ) km**（φ 为该纬线的纬度）。\n\n**4. 定最短航线**\n\n- **原理**：球面上两点间的最短距离是经过这两点的大圆的劣弧段。\n\n**5. 定范围与比例尺**\n\n- 跨经纬度数相同的地图，纬度越高，表示的实地范围越小，比例尺越大。\n- 图幅相同的两幅图，中心点纬度数相同，则跨经纬度越广，所表示的实地范围越大，比例尺越小。\n\n## 七、地理位置特征描述\n\n- **经纬度位置**：半球位置（东/西半球，南/北半球）、纬度带（低/中/高纬度）、热量带（热带/温带/寒带）。\n- **海陆位置**：位于某大陆的某方位，临某海洋。\n- **相对位置**：与周边国家、行政区、地形区、交通线等的相对方位关系。'
+  },
   {
     date:'2026-06-20',
     title:'code_wiki — Annieif 的个人作品集',

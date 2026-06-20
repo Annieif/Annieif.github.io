@@ -147,6 +147,36 @@
     max-width:160px;
   }
 
+  /* — 表格 — */
+  article .content table{
+    width:100%;border-collapse:collapse;
+    margin:1.6em 0;font-size:15px;
+    font-family:var(--serif-body);
+    background:rgba(232,228,221,.02);
+    border:1px solid var(--line);
+    border-radius:6px;overflow:hidden;
+    box-shadow:0 4px 24px rgba(0,0,0,.35);
+  }
+  article .content table thead{
+    background:rgba(244,194,208,.08);
+  }
+  article .content table th{
+    text-align:left;padding:14px 18px;
+    font-family:var(--serif-display);font-style:italic;font-weight:500;
+    color:var(--accent);font-size:16px;
+    border-bottom:1px solid var(--line-strong);
+  }
+  article .content table td{
+    padding:11px 18px;
+    border-bottom:1px solid var(--line);
+    color:var(--ink-dim);line-height:1.7;
+  }
+  article .content table tbody tr:last-child td{border-bottom:none}
+  article .content table tbody tr:hover{background:rgba(232,228,221,.025)}
+  /* 第一列（通常是"特点/项目"列）样式强调 */
+  article .content table td:first-child,
+  article .content table th:first-child{color:var(--ink)}
+
   /* — 引用块 — */
   article .content blockquote{
     border-left:2px solid var(--accent);
