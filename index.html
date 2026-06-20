@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Annieif &mdash; <span data-i18n-html="meta.title">独立造物者</span></title>
 <link rel="icon" href="icon.png">
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500;1,9..144,700;1,9..144,900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -974,12 +975,12 @@
   <div class="insights-grid">
     <div class="insights-stat">
       <div class="k" data-i18n="insights.pvLabel">本站总访问量</div>
-      <div class="big"><span id="viewsCount">0</span></div>
+      <div class="big"><span id="busuanzi_value_site_pv">—</span></div>
       <div class="sub" data-i18n="insights.pvSub">次页面浏览</div>
     </div>
     <div class="insights-stat">
       <div class="k" data-i18n="insights.uvLabel">本站总访客数</div>
-      <div class="big"><span id="visitorsCount">0</span></div>
+      <div class="big"><span id="busuanzi_value_site_uv">—</span></div>
       <div class="sub" data-i18n="insights.uvSub">位独立访客</div>
     </div>
   </div>
@@ -1926,40 +1927,35 @@ function setLang(lang) {
     heroObs.observe(heroEl);
   }
 
-  // 每次页面加载 +1 PV; 如果是新访客 (session 检查) 则 +1 UV
-  // 保留一个稳定的初始种子, 避免全都是 "1" 显得空洞
-  try {
-    const STORAGE_KEY = 'annieif.stats';
-    let stats = { pv: 0, uv: 0 };
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) stats = JSON.parse(raw);
-    } catch (e) { /* ignore */ }
-
-    // 如果还没有种子 (第一次访问), 给一个基础值
-    if (stats.pv === 0 && stats.uv === 0) {
-      stats.pv = 137;
-      stats.uv = 42;
-    }
-
-    // 每次访问 PV +1
-    stats.pv += 1;
-
-    // 独立访客: 按浏览器来判断, 用会话/时间标记
-    const uvMarker = sessionStorage.getItem('annieif.uv');
-    const today = new Date().toDateString();
-    if (!uvMarker || uvMarker !== today) {
-      stats.uv += 1;
-      sessionStorage.setItem('annieif.uv', today);
-    }
-
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)); } catch (e) { /* ignore */ }
-
-    const viewsEl = document.getElementById('viewsCount');
-    const visitEl = document.getElementById('visitorsCount');
-    if (viewsEl) runCountUp(viewsEl, stats.pv, 1800);
-    if (visitEl) runCountUp(visitEl, stats.uv, 1600);
-  } catch (err) { /* fail silently */ }
+  // 不蒜子统计：MutationObserver 检测数值后执行计数动画
+  const pvEl = document.getElementById('busuanzi_value_site_pv');
+  const uvEl = document.getElementById('busuanzi_value_site_uv');
+  if (pvEl && uvEl && typeof runCountUp === 'function') {
+    let done = false;
+    const obs = new MutationObserver(() => {
+      if (done) return;
+      const pv = parseInt(pvEl.textContent, 10);
+      const uv = parseInt(uvEl.textContent, 10);
+      if (pv > 0 && uv > 0) {
+        done = true;
+        obs.disconnect();
+        runCountUp(pvEl, pv, 1800);
+        runCountUp(uvEl, uv, 1600);
+      }
+    });
+    obs.observe(pvEl, { characterData: true, subtree: true });
+    obs.observe(uvEl, { characterData: true, subtree: true });
+    // 兜底：5 秒后如果还没数据，直接显示
+    setTimeout(() => {
+      if (!done) {
+        obs.disconnect();
+        const pv = parseInt(pvEl.textContent, 10) || 0;
+        const uv = parseInt(uvEl.textContent, 10) || 0;
+        if (pv > 0) runCountUp(pvEl, pv, 1800);
+        if (uv > 0) runCountUp(uvEl, uv, 1600);
+      }
+    }, 5000);
+  }
 
   // Notes (single-language, searchable + sortable + collapsible)
   initNotesController();
