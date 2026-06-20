@@ -163,7 +163,7 @@
   article .content p mark,
   article .content li mark{
     background:rgba(244,194,208,.14);
-    color:#f4c2d0;
+    color:#f4c2d0 !important;
     font-style:italic;
     font-weight:400;
     padding:1px 5px;margin:0 1px;
@@ -178,8 +178,12 @@
   article .content ol li::marker{color:var(--ink-faint);font-family:var(--mono);font-size:.85em}
 
   /* — 强调与斜体 — 统一浅粉色重点 */
-  article .content strong{color:#f4c2d0;font-weight:500;font-style:italic}
-  article .content em{font-style:italic;color:#f4c2d0}
+  article .content strong,
+  article .content p strong,
+  article .content li strong{color:#f4c2d0 !important;font-weight:500;font-style:italic}
+  article .content em,
+  article .content p em,
+  article .content li em{font-style:italic;color:#f4c2d0 !important}
 
   /* — 响应式 — */
   @media(max-width:900px){
