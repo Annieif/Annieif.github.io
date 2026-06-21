@@ -2188,6 +2188,10 @@ function setLang(lang) {
       if (raw <= 0) return;
       fmt = (fmt === 'roman') ? 'arabic' : 'roman';
       const formatFn = (fmt === 'roman') ? toRoman : function(v){ return v.toLocaleString(); };
+      // 阿拉伯数字用等宽字体，罗马数字用衬线体
+      el.style.fontFamily = (fmt === 'roman') ? '"Cormorant Garamond", serif' : '"JetBrains Mono", monospace';
+      el.style.fontWeight = (fmt === 'roman') ? '700' : '400';
+      el.style.letterSpacing = (fmt === 'roman') ? '-.02em' : '.04em';
       runCountUp(el, raw, 800, formatFn);
     }
 
