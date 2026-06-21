@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSS · Annieif 笔记订阅</title>
+<style>
+:root{
+  --bg:#0a0a0a;
+  --ink:#e8e4dd;
+  --ink-dim:#b8b0a4;
+  --ink-faint:#7d7565;
+  --accent:#f4c2d0;
+  --line:rgba(232,228,221,.10);
+  --card:#13111a;
+  --card-hover:rgba(244,194,208,.04);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink);font-family:'Fraunces','Noto Serif SC',Georgia,serif}
+body{
+  min-height:100vh;
+  line-height:1.7;
+  font-size:16px;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(244,194,208,.08), transparent 60%),
+    radial-gradient(800px 400px at 10% 110%, rgba(122,180,216,.06), transparent 60%),
+    var(--bg);
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:
+    radial-gradient(1px 1px at 15% 20%, rgba(232,228,221,.5) 50%, transparent 100%),
+    radial-gradient(1px 1px at 45% 35%, rgba(244,194,208,.4) 50%, transparent 100%),
+    radial-gradient(1px 1px at 70% 15%, rgba(232,228,221,.35) 50%, transparent 100%),
+    radial-gradient(1px 1px at 25% 60%, rgba(232,228,221,.3) 50%, transparent 100%),
+    radial-gradient(1px 1px at 85% 55%, rgba(122,180,216,.35) 50%, transparent 100%),
+    radial-gradient(1px 1px at 55% 80%, rgba(244,194,208,.3) 50%, transparent 100%),
+    radial-gradient(1px 1px at 10% 85%, rgba(232,228,221,.25) 50%, transparent 100%),
+    radial-gradient(1px 1px at 90% 90%, rgba(232,228,221,.3) 50%, transparent 100%),
+    radial-gradient(1px 1px at 65% 50%, rgba(232,228,221,.2) 50%, transparent 100%),
+    radial-gradient(1px 1px at 35% 45%, rgba(244,194,208,.2) 50%, transparent 100%);
+  pointer-events:none;
+  animation:twinkle 6s ease-in-out infinite alternate;
+  z-index:0;
+}
+@keyframes twinkle{
+  from{opacity:.6}
+  to{opacity:1}
+}
+.wrap{
+  position:relative;z-index:1;
+  max-width:860px;margin:0 auto;padding:80px 40px 60px;
+}
+.breadcrumb{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faint);margin-bottom:30px;
+}
+.breadcrumb a{color:var(--ink-dim);text-decoration:none}
+.breadcrumb a:hover{color:var(--accent)}
+.breadcrumb span{margin:0 10px;color:var(--ink-faint)}
+.head{
+  border-bottom:1px solid var(--line);
+  padding-bottom:40px;margin-bottom:50px;
+  position:relative;
+}
+.badge{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--accent);padding:6px 14px;border:1px solid var(--line);border-radius:2px;
+  margin-bottom:24px;
+}
+.head h1{
+  font-size:48px;font-weight:500;line-height:1.2;letter-spacing:-.01em;margin-bottom:20px;
+}
+.head h1 em{color:var(--accent);font-style:italic;font-weight:400}
+.head p{
+  font-size:17px;color:var(--ink-dim);max-width:620px;
+}
+.subscribe{
+  margin-top:32px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;
+}
+.sub-code{
+  flex:1;min-width:280px;
+  background:var(--card);border:1px solid var(--line);border-radius:6px;
+  padding:14px 18px;
+  font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-dim);
+  word-break:break-all;
+}
+.sub-copy{
+  background:transparent;border:1px solid var(--line);color:var(--ink);
+  padding:14px 22px;border-radius:6px;font-family:'JetBrains Mono',monospace;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  transition:all .2s;
+}
+.sub-copy:hover{border-color:var(--accent);color:var(--accent)}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.opt{
+  display:flex;gap:14px;align-items:center;
+  background:var(--card);border:1px solid var(--line);border-radius:8px;
+  padding:14px 16px;text-decoration:none;color:inherit;
+  transition:all .2s;
+}
+.opt:hover{border-color:var(--accent);background:var(--card-hover);transform:translateY(-1px)}
+.opt .ico{
+  width:36px;height:36px;flex:0 0 36px;
+  background:var(--accent);color:#1a1018;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;
+}
+.opt .t{font-size:14px;font-weight:500;color:var(--ink)}
+.opt .m{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--ink-faint);margin-top:2px;letter-spacing:.02em}
+
+.item{
+  padding:34px 0;border-bottom:1px solid var(--line);
+  animation:fadeIn .5s ease both;
+}
+.item:last-child{border-bottom:none}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+.meta{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faint);margin-bottom:14px;
+  display:flex;gap:18px;align-items:center;
+}
+.meta .dot{color:var(--accent)}
+.item h2{
+  font-size:30px;font-weight:500;line-height:1.25;margin-bottom:16px;
+  letter-spacing:-.01em;
+}
+.item h2 a{color:var(--ink);text-decoration:none;transition:color .2s}
+.item h2 a:hover{color:var(--accent)}
+.item h3{
+  font-size:20px;font-weight:500;margin:28px 0 14px;color:var(--ink);
+}
+.item p{margin-bottom:14px}
+.item code{
+  font-family:'JetBrains Mono',monospace;font-size:13.5px;
+  background:rgba(244,194,208,.06);padding:2px 6px;border-radius:3px;
+  color:var(--accent);border:1px solid rgba(244,194,208,.12);
+}
+.item pre{
+  background:#0d0b12;border:1px solid var(--line);padding:18px 20px;border-radius:6px;
+  margin:18px 0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;color:var(--ink-dim);
+}
+.item pre code{background:none;border:none;padding:0;color:inherit}
+.item table{
+  width:100%;border-collapse:collapse;margin:18px 0;font-size:14px;
+}
+.item table th,.item table td{
+  padding:10px 14px;border-bottom:1px solid var(--line);text-align:left;
+}
+.item table th{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;font-weight:500;border-bottom:1px solid var(--line);background:rgba(244,194,208,.02)}
+.read-more{
+  margin-top:24px;display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(244,194,208,.3);padding-bottom:2px;
+  transition:all .2s;
+}
+.read-more:hover{border-bottom-color:var(--accent)}
+
+footer{
+  margin-top:60px;padding-top:30px;border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faint);text-align:center;
+}
+footer a{color:var(--ink-dim);text-decoration:none}
+footer a:hover{color:var(--accent)}
+
+@media (max-width:640px){
+  .wrap{padding:48px 22px 40px}
+  .head h1{font-size:32px}
+  .options{grid-template-columns:1fr}
+  .item h2{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="breadcrumb">
+    <a href="https://annieif.github.io">← annieif</a>
+    <span>/</span>
+    <a href="feed.xml">feed.xml</a>
+    <span>/</span>
+    <span style="color:var(--ink-dim)">notes</span>
+  </div>
+
+  <div class="head">
+    <span class="badge">RSS 2.0 · UTF-8 · feed.xml</span>
+    <h1>独立造物者的 <em>笔记订阅</em></h1>
+    <p>选择你喜欢的方式关注更新 —— 所有内容都来自本站 <em>notes</em> 区。无广告、无追踪、纯静态托管。</p>
+
+    <div class="subscribe">
+      <div class="sub-code">https://annieif.github.io/feed.xml</div>
+      <button class="sub-copy" onclick="copyLink(this)">复制</button>
+    </div>
+
+    <div class="options">
+      <a class="opt" href="feed.xml">
+        <div class="ico">✦</div>
+        <div>
+          <div class="t">RSS 2.0 · feed.xml</div>
+          <div class="m">Feedly · Inoreader · NetNewsWire</div>
+        </div>
+      </a>
+      <a class="opt" href="mailto:Qianlovean@outlook.com?subject=%E8%AE%A2%E9%98%85%20Annieif%20%E7%AC%94%E8%AE%B0%E6%9B%B4%E6%96%B0">
+        <div class="ico">✉</div>
+        <div>
+          <div class="t">邮件订阅</div>
+          <div class="m">Qianlovean@outlook.com</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div id="items"></div>
+
+  <footer>
+    annieif.github.io · <a href="feed.xml">feed.xml</a> · no ads · no tracking · statically hosted
+  </footer>
+</div>
+
+<script>
+const NOTES = [
+  {
+    date: '2026-06-21',
+    title: '地球仪与地图笔记',
+    url: 'https://annieif.github.io/#/notes/001',
+    desc: '空间坐标系的基础语言。经纬网、比例尺与方向判断 —— 一张地图是地球的缩影。',
+    content: `
+<p><strong>形状</strong>：两极稍扁、赤道略鼓的不规则椭球体。<br/>
+<strong>大小</strong>：平均半径约 6371 千米，赤道周长约 4 万千米。</p>
+<h3>经线与纬线</h3>
+<table><thead><tr><th>特点</th><th>经线</th><th>纬线</th></tr></thead><tbody>
+<tr><td><strong>形状</strong></td><td>半圆</td><td>圆圈</td></tr>
+<tr><td><strong>长度</strong></td><td>都相等，约 2 万千米</td><td>自赤道向两极递减</td></tr>
+<tr><td><strong>指示方向</strong></td><td>南北方向</td><td>东西方向</td></tr>
+</tbody></table>
+<h3>经纬网的应用</h3>
+<p><strong>算距离</strong>：同一条经线上，纬度相差 1°，实际距离约 <code>111 km</code>。同一条纬线上，经度相差 1°，实际距离约 <code>111 × cos(φ) km</code>（φ 为纬度）。<br/>
+<strong>定最短航线</strong>：球面上两点间的最短距离是经过这两点的大圆的劣弧段。</p>
+<p><strong>地理位置特征描述</strong>：经纬度位置、海陆位置、相对位置 —— 从半球到大洋，从热量带到交通线。</p>`
+  },
+  {
+    date: '2026-06-20',
+    title: 'code_wiki — Annieif 的个人作品集',
+    url: 'https://annieif.github.io/#/notes/002',
+    desc: '本站的技术架构与维护要点。一个零依赖的个人作品集站点：HTML / CSS / 原生 JavaScript / GitHub Pages。',
+    content: `
+<p>核心文件只有根目录的 <code>index.html</code>，其它一切内容都由它在浏览器中即时生成。</p>
+<h3>主题与排版</h3>
+<p>整站的配色、字体与节奏都集中在 <code>:root</code> 的 CSS 变量中。字体族三套各司其职：</p>
+<table><thead><tr><th>字体</th><th>用途</th><th>语境</th></tr></thead><tbody>
+<tr><td><strong>Fraunces</strong></td><td>正文与常规标题</td><td>叙述</td></tr>
+<tr><td><strong>Cormorant Garamond</strong></td><td>斜体、引用、英雄区大字</td><td>装饰</td></tr>
+<tr><td><strong>JetBrains Mono</strong></td><td>技术性信息（时间戳、编号、代码、导航）</td><td>技术</td></tr>
+</tbody></table>
+<h3>页面骨架</h3>
+<p><strong>星空层</strong>：CSS + 少量星星粒子，呼吸动画叠加视差感。<br/>
+<strong>自定义指针</strong>：跟随鼠标坐标，在链接/按钮上放大并着色。<br/>
+<strong>英雄区</strong>：占据首屏，内含导航栏、动画大标题、引用文字。<br/>
+<strong>左侧页面目录</strong>：滚动到内容区时淡入，当前 section 高亮。</p>
+<h3>维护速查</h3>
+<p>新增笔记 —— 在 <code>notes/data.js</code> 的 <code>NOTES_DATA</code> 头部插入一个对象。<br/>
+改配色 —— 只改 <code>:root</code> 中的 CSS 变量。<br/>
+改字体 —— 顶部 Google Fonts URL + 全局 <code>font-family</code>。</p>`
+  }
+];
+
+function fmtDate(d){
+  const parts = d.split('-');
+  return parts[1] + '.' + parts[2] + ' · ' + parts[0];
+}
+const items = document.getElementById('items');
+NOTES.forEach(n => {
+  const el = document.createElement('article');
+  el.className = 'item';
+  el.innerHTML = `
+    <div class="meta">
+      <span class="dot">◆</span><span>` + fmtDate(n.date) + `</span><span>·</span><span>note</span>
+    </div>
+    <h2><a href="` + n.url + `">` + n.title + `</a></h2>
+    <p style="color:var(--ink-dim);font-size:16px;margin-bottom:18px">` + n.desc + `</p>
+    ` + n.content + `
+    <a class="read-more" href="` + n.url + `">在主站阅读全文 →</a>
+  `;
+  items.appendChild(el);
+});
+
+function copyLink(btn){
+  const txt = 'https://annieif.github.io/feed.xml';
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(()=>{
+      const orig = btn.textContent; btn.textContent = '已复制 ✓'; btn.style.borderColor = 'var(--accent)'; btn.style.color = 'var(--accent)';
+      setTimeout(()=>{btn.textContent=orig;btn.style.borderColor='';btn.style.color=''},1500);
+    });
+  } else {
+    const ta = document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select();
+    try{document.execCommand('copy');btn.textContent='已复制 ✓'}catch(e){alert(txt)}
+    document.body.removeChild(ta);
+  }
+}
+</script>
+</body>
+</html>

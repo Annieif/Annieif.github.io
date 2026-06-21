@@ -375,114 +375,94 @@
   }
 
   /* ============================================================
-     RSS MODAL
+     RSS BLOCK (inline in contact section)
      ============================================================ */
-  .rss-modal{
-    position:fixed; inset:0; z-index:99999;
-    display:flex; align-items:center; justify-content:center;
-    animation:rssFade .25s var(--ease);
+  .rss-block{
+    margin-top:36px;
+    padding:24px;
+    background:rgba(244,194,208,.035);
+    border:1px solid rgba(244,194,208,.14);
+    border-radius:12px;
   }
-  @keyframes rssFade{
-    from{opacity:0}
-    to  {opacity:1}
+  .rss-head{
+    display:flex; align-items:baseline; gap:14px;
+    margin-bottom:12px;
   }
-  .rss-mask{
-    position:absolute; inset:0;
-    background:rgba(0,0,0,.72);
-    backdrop-filter:blur(3px);
+  .rss-head .ico{
+    font-family:"JetBrains Mono", monospace;
+    color:#f4c2d0;
+    font-size:13px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
   }
-  .rss-card{
-    position:relative;
-    width:min(560px, 92vw);
-    background:#13111a;
-    border:1px solid rgba(244,194,208,.2);
-    border-radius:14px;
-    padding:36px;
-    box-shadow:0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(244,194,208,.08);
-    animation:rssCardIn .35s var(--ease);
-  }
-  @keyframes rssCardIn{
-    from{transform:translateY(16px) scale(.98); opacity:0}
-    to  {transform:none; opacity:1}
-  }
-  .rss-close{
-    position:absolute; top:10px; right:14px;
-    background:transparent; border:none; color:#a9a39a;
-    font-size:28px; line-height:1; cursor:pointer;
-    transition:color .2s var(--ease), transform .2s var(--ease);
-    padding:4px 8px;
-    z-index:2;
-  }
-  .rss-close:hover{color:#f4c2d0; transform:rotate(90deg)}
-  .rss-title{
+  .rss-head h3{
     font-family:var(--serif-display);
     font-style:italic;
     font-weight:500;
-    font-size:28px;
+    font-size:22px;
     color:#e8e4dd;
-    margin:0 0 8px;
+    margin:0;
   }
-  .rss-desc{
+  .rss-block p.rss-desc{
     color:var(--ink-dim);
-    font-size:15px;
-    margin:0 0 26px;
+    font-size:14px;
+    margin:0 0 18px;
     line-height:1.7;
   }
-  .rss-options{
-    display:flex; flex-direction:column; gap:12px; margin-bottom:20px;
+  .rss-rows{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
   }
-  .rss-option{
-    display:flex; gap:16px; align-items:flex-start;
-    padding:16px 18px;
-    background:rgba(244,194,208,.035);
-    border:1px solid var(--line);
+  .rss-row{
+    display:flex; gap:14px; align-items:center;
+    padding:14px 16px;
+    background:rgba(244,194,208,.04);
+    border:1px solid rgba(244,194,208,.12);
     border-radius:10px;
     text-decoration:none;
     color:inherit;
-    transition:background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
-    cursor:pointer;
+    transition:background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease);
   }
-  .rss-option:hover{
-    background:rgba(244,194,208,.08);
-    border-color:rgba(244,194,208,.35);
-    transform:translateY(-2px);
-    box-shadow:0 10px 30px rgba(244,194,208,.15);
+  .rss-row:hover{
+    background:rgba(244,194,208,.07);
+    border-color:rgba(244,194,208,.24);
+    transform:translateY(-1px);
   }
-  .rss-ico{
-    width:38px; height:38px;
-    flex:0 0 38px;
+  .rss-row .ico{
+    width:36px; height:36px;
+    flex:0 0 36px;
     display:flex; align-items:center; justify-content:center;
     background:var(--accent); color:#1a1018;
-    border-radius:8px;
     font-size:18px; font-weight:700;
     font-family:var(--serif-display);
+    border-radius:8px;
   }
-  .rss-name{
-    font-family:var(--serif-display);
-    font-style:italic;
-    font-size:18px;
+  .rss-row .text{ flex:1; }
+  .rss-row .name{
+    font-size:14px;
     color:#e8e4dd;
-    margin-bottom:4px;
+    font-weight:500;
+    margin-bottom:2px;
   }
-  .rss-meta{
-    font-size:13.5px;
+  .rss-row .meta{
+    font-size:12px;
     color:var(--ink-dim);
-    line-height:1.6;
+    font-family:"JetBrains Mono", monospace;
+    word-break:break-all;
   }
   .rss-footer{
-    margin-top:18px;
-    padding-top:16px;
-    border-top:1px solid var(--line);
-    font-family:"JetBrains Mono",monospace;
-    font-size:11.5px;
+    font-family:"JetBrains Mono", monospace;
+    font-size:11px;
     color:var(--ink-faint);
     text-align:center;
+    margin-top:16px;
     letter-spacing:.1em;
     text-transform:uppercase;
   }
   @media (max-width: 500px){
-    .rss-card{padding:24px 20px}
-    .rss-title{font-size:22px}
+    .rss-block{padding:18px}
+    .rss-rows{grid-template-columns:1fr}
   }
 
   /* ============ TOP BAR (overlaid on hero) ============ */
@@ -1328,8 +1308,45 @@
     <a href="mailto:Qianlovean@outlook.com"><span data-i18n="contact.email">Email · Qianlovean@outlook.com</span></a>
     <span class="sep">/</span>
     <a href="#"><span data-i18n="contact.site">Website · annieif.dev</span></a>
-    <span class="sep">/</span>
-    <a href="#" id="rssLink"><span data-i18n="contact.rss">RSS · 订阅更新</span></a>
+  </div>
+
+  <div class="rss-block">
+    <div class="rss-head">
+      <span class="ico">01 / feed</span>
+      <h3 data-i18n="rss.title">RSS · 订阅更新</h3>
+    </div>
+    <p class="rss-desc" data-i18n="rss.desc">选择你的订阅方式 — 所有内容均来自本站笔记区。</p>
+    <div class="rss-rows">
+      <a class="rss-row" href="feed.xml">
+        <div class="ico">✦</div>
+        <div class="text">
+          <div class="name" data-i18n="rss.rssLabel">RSS 2.0 订阅</div>
+          <div class="meta">annieif.github.io/feed.xml</div>
+        </div>
+      </a>
+      <a class="rss-row" href="feed.html">
+        <div class="ico">◎</div>
+        <div class="text">
+          <div class="name" data-i18n="rss.htmlLabel">网页版 · 浏览器</div>
+          <div class="meta">annieif.github.io/feed.html</div>
+        </div>
+      </a>
+      <a class="rss-row" href="mailto:Qianlovean@outlook.com?subject=%E8%AE%A2%E9%98%85%20Annieif%20%E7%AC%94%E8%AE%B0%E6%9B%B4%E6%96%B0">
+        <div class="ico">✉</div>
+        <div class="text">
+          <div class="name" data-i18n="rss.emailLabel">邮件订阅</div>
+          <div class="meta">Qianlovean@outlook.com</div>
+        </div>
+      </a>
+      <a class="rss-row" href="https://github.com/Annieif" target="_blank" rel="noopener">
+        <div class="ico">⌬</div>
+        <div class="text">
+          <div class="name" data-i18n="rss.githubLabel">GitHub · 关注更新</div>
+          <div class="meta">github.com/Annieif</div>
+        </div>
+      </a>
+    </div>
+    <div class="rss-footer" data-i18n="rss.footer">no ads · no tracking · statically hosted</div>
   </div>
 </section>
 
@@ -1346,34 +1363,6 @@
   </div>
 </section>
 
-<!-- ============ RSS MODAL ============ -->
-<div id="rssModal" class="rss-modal" hidden>
-  <div class="rss-mask" data-close="1"></div>
-  <div class="rss-card" role="dialog" aria-modal="true" aria-label="RSS · 订阅更新">
-    <button class="rss-close" data-close="1" aria-label="关闭">×</button>
-    <h3 class="rss-title" data-i18n="rss.title">RSS · 订阅更新</h3>
-    <p  class="rss-desc"  data-i18n="rss.desc">选择你的订阅方式 — 所有内容均来自本站笔记区</p>
-
-    <div class="rss-options">
-      <a class="rss-option" href="feed.xml" type="application/rss+xml">
-        <div class="rss-ico">✦</div>
-        <div>
-          <div class="rss-name" data-i18n="rss.rssLabel">RSS 2.0 订阅</div>
-          <div class="rss-meta" data-i18n="rss.rssText">将 feed.xml 添加到 Feedly、Inoreader、NetNewsWire 等任意 RSS 阅读器</div>
-        </div>
-      </a>
-      <a class="rss-option" id="rssMail" href="#">
-        <div class="rss-ico">✉</div>
-        <div>
-          <div class="rss-name" data-i18n="rss.emailLabel">邮件订阅</div>
-          <div class="rss-meta" data-i18n="rss.emailText">给我发一封邮件，新笔记发布时我会单独通知你</div>
-        </div>
-      </a>
-    </div>
-
-    <div class="rss-footer" data-i18n="rss.footer">无广告 · 无追踪 · 纯静态托管</div>
-  </div>
-</div>
 
 <script src="notes/data.js"></script>
 <script>
@@ -1453,8 +1442,11 @@ const I18N = {
     'rss.desc': '选择你的订阅方式 — 所有内容均来自本站笔记区。',
     'rss.rssLabel': 'RSS 2.0 订阅',
     'rss.rssText': '将 feed.xml 添加到 Feedly、Inoreader、NetNewsWire 等任意 RSS 阅读器。',
+    'rss.htmlLabel': '网页版 · 浏览器',
+    'rss.htmlText': '在浏览器中查看格式化的订阅页面。',
     'rss.emailLabel': '邮件订阅',
     'rss.emailText': '给我发一封邮件，新笔记发布时我会单独通知你。',
+    'rss.githubLabel': 'GitHub · 关注更新',
     'rss.footer': '无广告 · 无追踪 · 纯静态托管',
   },
 
@@ -1521,8 +1513,11 @@ const I18N = {
     'rss.desc': 'Pick your preferred way to follow — all content flows from my notes.',
     'rss.rssLabel': 'RSS 2.0 feed',
     'rss.rssText': 'Add feed.xml to Feedly, Inoreader, NetNewsWire or any reader you like.',
+    'rss.htmlLabel': 'Web · in browser',
+    'rss.htmlText': 'Read the formatted feed page in your browser.',
     'rss.emailLabel': 'Email subscription',
     'rss.emailText': 'Drop me a line and I\'ll let you know whenever a new note is published.',
+    'rss.githubLabel': 'GitHub · follow for updates',
     'rss.footer': 'no ads · no tracking · statically hosted',
   },
 
@@ -1641,8 +1636,11 @@ const I18N = {
     'rss.desc': '선호하는 방식으로 구독해 주세요 — 모든 콘텐츠는 노트에서 생성됩니다.',
     'rss.rssLabel': 'RSS 2.0 피드',
     'rss.rssText': 'feed.xml 을 Feedly, Inoreader, NetNewsWire 등의 리더에 추가하세요.',
+    'rss.htmlLabel': '웹 버전 · 브라우저',
+    'rss.htmlText': '브라우저에서 포맷된 피드 페이지를 읽으세요.',
     'rss.emailLabel': '이메일 구독',
     'rss.emailText': '메일을 주시면 새 노트가 게시될 때 직접 알려드립니다.',
+    'rss.githubLabel': 'GitHub · 업데이트 팔로우',
     'rss.footer': '광고 없음 · 추적 없음 · 정적 호스팅',
   },
 
@@ -1701,8 +1699,11 @@ const I18N = {
     'rss.desc': 'Elige cómo seguirme — todo el contenido nace de mis notas.',
     'rss.rssLabel': 'Canal RSS 2.0',
     'rss.rssText': 'Añade feed.xml a Feedly, Inoreader, NetNewsWire o cualquier lector RSS.',
+    'rss.htmlLabel': 'Versión web · en navegador',
+    'rss.htmlText': 'Lee la página del feed formateada en tu navegador.',
     'rss.emailLabel': 'Suscripción por email',
     'rss.emailText': 'Envíame un correo y te avisaré cuando publique una nota nueva.',
+    'rss.githubLabel': 'GitHub · sigue las actualizaciones',
     'rss.footer': 'sin anuncios · sin seguimiento · alojamiento estático',
   },
 
@@ -1761,8 +1762,11 @@ const I18N = {
     'rss.desc': 'Choisissez votre façon de me suivre — tout le contenu vient de mes notes.',
     'rss.rssLabel': 'Flux RSS 2.0',
     'rss.rssText': 'Ajoutez feed.xml à Feedly, Inoreader, NetNewsWire ou tout lecteur RSS.',
+    'rss.htmlLabel': 'Version web · dans le navigateur',
+    'rss.htmlText': 'Lisez la page de flux formatée dans votre navigateur.',
     'rss.emailLabel': 'Abonnement par email',
     'rss.emailText': 'Écrivez-moi et je vous préviendrai directement à chaque nouvelle note.',
+    'rss.githubLabel': 'GitHub · suivez les mises à jour',
     'rss.footer': 'sans pub · sans pistage · hébergement statique',
   },
 
@@ -1821,8 +1825,11 @@ const I18N = {
     'rss.desc': 'اختر الطريقة التي تفضلها — كل المحتوى يأتي من قسم الملاحظات.',
     'rss.rssLabel': 'موجز RSS 2.0',
     'rss.rssText': 'أضف feed.xml إلى Feedly أو Inoreader أو NetNewsWire أو أي قارئ RSS.',
+    'rss.htmlLabel': 'النسخة الوبية · في المتصفح',
+    'rss.htmlText': 'اقرأ صفحة موجز منسقة في المتصفح.',
     'rss.emailLabel': 'الاشتراك بالبريد',
     'rss.emailText': 'راسلني وسأخبرك مباشرة عند نشر ملاحظة جديدة.',
+    'rss.githubLabel': 'GitHub · تابع التحديثات',
     'rss.footer': 'بدون إعلانات · بدون تتبع · استضافة ثابتة',
   },
 
@@ -1881,8 +1888,11 @@ const I18N = {
     'rss.desc': 'Выберите удобный способ — весь контент рождается из моих заметок.',
     'rss.rssLabel': 'RSS 2.0 лента',
     'rss.rssText': 'Добавьте feed.xml в Feedly, Inoreader, NetNewsWire или любой RSS-читатель.',
+    'rss.htmlLabel': 'Веб-версия · в браузере',
+    'rss.htmlText': 'Читайте форматированную страницу ленты в браузере.',
     'rss.emailLabel': 'Подписка по email',
     'rss.emailText': 'Напишите мне, и я сообщу вам напрямую о каждой новой заметке.',
+    'rss.githubLabel': 'GitHub · следите за обновлениями',
     'rss.footer': 'без рекламы · без отслеживания · статический хостинг',
   },
 };
@@ -2822,46 +2832,7 @@ document.addEventListener('click', function(e){
   }
 });
 
-/* =====================================================
-   RSS modal driver
-   ===================================================== */
-(function initRssModal(){
-  const modal = document.getElementById('rssModal');
-  if (!modal) return;
-  const trigger = document.getElementById('rssLink');
-  if (trigger) {
-    trigger.addEventListener('click', function(e){
-      e.preventDefault();
-      modal.hidden = false;
-      document.body.style.overflow = 'hidden';
-    });
-  }
-  // close on mask / close button click
-  modal.addEventListener('click', function(e){
-    if (e.target.getAttribute('data-close') === '1' || e.target.classList.contains('rss-mask')) {
-      modal.hidden = true;
-      document.body.style.overflow = '';
-    }
-  });
-  // escape key
-  window.addEventListener('keydown', function(e){
-    if (e.key === 'Escape' && !modal.hidden) {
-      modal.hidden = true;
-      document.body.style.overflow = '';
-    }
-  });
 
-  // email button preset
-  const mailBtn = document.getElementById('rssMail');
-  if (mailBtn) {
-    mailBtn.addEventListener('click', function(e){
-      e.preventDefault();
-      const subject = encodeURIComponent('订阅 Annieif 笔记更新');
-      const body = encodeURIComponent('你好 Annieif，\n\n我想订阅你的博客/笔记更新。\n\n—');
-      location.href = 'mailto:Qianlovean@outlook.com?subject=' + subject + '&body=' + body;
-    });
-  }
-})();
 
 /* =====================================================
    Boot.
