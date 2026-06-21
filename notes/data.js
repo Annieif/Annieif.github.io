@@ -103,33 +103,118 @@ const NOTES_DATA = [
   {
     date:'2026-06-21',
     title:'React 初探 · 从原生到框架',
-    desc:'写了大半年原生 JS，终于还是被推着来学 React 了。',
-    content:`写了大半年原生 JS，终于还是被推着来学 React 了。
+    desc:'一份提纲式的 React 速查 · 适合长时间反复翻阅',
+    content:`从零写了大半年原生 JS，后来开始学 React。笔记保留一份==提纲式速查==，只放核心概念，方便隔一段时间再翻回来。
 
-说实话，一开始是抗拒的。零依赖，不编译，写完 \`Ctrl+S\` 刷新浏览器 — 这种自由一旦尝过，就很难接受框架的条条框框。但周围的声音太响了："你真的该学个框架了。" 那就来吧。反正 ==美中不足，好事多磨==。
+> 美中不足，好事多磨。
 
-## 为什么是 React
+---
 
-三个框架摆在一起，Angular 太重，Vue 太甜。React 刚好卡在中间。
+## 一 · 为什么是它
 
-它概念少。JSX、组件、props、state、hooks — 一只手数得过来。它离原生近。JSX 本质就是 JavaScript，不用学新的模板语法。对于习惯了 \`document.createElement\` 的人来说，这是一种尊重。
+- 概念少 — JSX / 组件 / props / state / hooks — 一只手数得过来
+- 离原生近 — JSX 本质就是函数调用，不是新模板语言
+- 生态成熟 — 遇到问题几乎总能找到现成答案
 
-更重要的是，它的生态大到你几乎不可能踩到无人回答过的坑。
+三个框架放在一起，Angular 太重，Vue 太甜。React 刚好卡在中间。
 
-## JSX：把 HTML 写进 JS 里
+---
 
-第一眼：这什么鬼。
+## 二 · 五个最常用的概念
 
-\`\`\`
-// 原生 — 我写了半年
-const div = document.createElement('div');
-div.className = 'card';
-div.innerHTML = '<h2>' + title + '</h2>';
-div.addEventListener('click', handleClick);
-\`\`\`
+### 1. 组件
+- 一个函数，返回一段 JSX
+- 组件 = "把页面拆成积木"
+- 每个组件只做一件事
 
+### 2. Props
+- 从父组件传给子组件的参数
+- 只读，子组件不能直接改
+- 用来配置组件的行为或内容
+
+### 3. State
+- 组件自己的可变数据
+- 改 state → 组件自动重新渲染
+- 声明式 UI：你只管说"状态是什么"，框架把状态变成 DOM
+
+### 4. 事件
+- 驼峰命名：\`onClick\`、\`onChange\`、\`onSubmit\`
+- 直接绑定到 JSX 元素上
+- 不用再 \`addEventListener\`
+
+### 5. Hooks
+- 在函数组件里"钩"入 React 功能的函数
+- 三大核心：\`useState\`、\`useEffect\`、\`useRef\`
+- class 组件时代已过，==函数组件 + Hooks 是方向==
+
+---
+
+## 三 · 核心 Hook 速查
+
+### \`useState\`
+声明一个可响应的变量和它的 setter。
+
+### \`useEffect\`
+处理"不属于渲染逻辑"的事：定时器、数据请求、手动 DOM 操作。
+- 无依赖数组：每次渲染后执行
+- 空数组 \`[]\`：只在挂载后执行一次
+- 有依赖 \`[x, y]\`：当 x 或 y 变化时执行
+- 返回 cleanup 函数：组件卸载或下次 effect 前执行
+
+### \`useRef\`
+- 不触发重渲染的容器
+- 最常见用途：拿到真实 DOM 节点的引用
+- 也可用来存"不希望触发重渲染"的持久值
+
+---
+
+## 四 · 数据流与状态提升
+
+- 数据只往下走（父 → 子，通过 props）
+- 子想让父"改点什么"：父传一个函数给子，子调用它
+- 这叫==状态提升== — 把共享数据放在最近的公共祖先里
+
+数据流单向，bug 的来源就少了一半。
+
+---
+
+## 五 · 原生 vs 框架
+
+| | 原生 JS | React |
+| :--- | :--- | :--- |
+| 心智模型 | 命令式 — "我要做什么" | 声明式 — "我要什么" |
+| UI 更新 | 手动 DOM 操作 | 改 state → 自动重渲染 |
+| 组件化 | 靠约定和 discipline | 内置 |
+| 直接控制 | 完全自由 | 间接但清晰 |
+| 构建工具 | 不用 | 需要（Babel + Vite） |
+
+我最强烈的感受：框架拿走了自由，也拿走了重复劳动。大多数时候是划算的。
+
+---
+
+## 六 · 下一步路线
+
+1. 用 React 重写一个小项目 — 实践中理解
+2. React Router — SPA 路由
+3. TanStack Query — 服务端数据管理
+4. 最后再碰 Next.js
+
+---
+
+## 七 · 还没想通的
+
+- **性能优化**：\`useMemo\` / \`useCallback\` / \`React.memo\` — 什么时候用？我倾向"先写对，再写快"，遇到问题再加。
+- **状态管理**：Context 够用吗？什么时候上 Redux / Zustand？项目变大之后会不会失控？
+- **Next.js**：概念太多。先把 React 本身搞熟。
+
+---
+
+## · 代码片段
+
+全部示例集中在此，正文保持干净。
+
+**① Card 组件**
 \`\`\`jsx
-// React — 一行抵四行
 function Card({ title, onClick }) {
   return (
     <div className="card" onClick={onClick}>
@@ -139,61 +224,26 @@ function Card({ title, onClick }) {
 }
 \`\`\`
 
-视图结构、样式、事件绑定 — 全在一个地方。当组件从十行变成一百行，原生 JS 里你要在 \`createElement\` 和 \`innerHTML\` 之间来回跳。React 里，你只需要看一个函数的返回值。
-
-> JSX 是 \`React.createElement()\` 的语法糖。Babel 编译时把标签转成函数调用。拆开来看，并不神秘。
-
-## 组件：把页面拆成积木
-
-原生 JS 开发时，我经常写一个巨大的 \`index.html\`，所有逻辑混在一起。改一个按钮的状态，要先 \`querySelector\` 找到它，再手动改 \`textContent\`。改完刷新，发现忘了改另一个地方的联动。
-
-React 强制你把页面拆成小组件，每个只做一件事。
-
-| 概念 | 原生 JS | React |
-| :--- | :--- | :--- |
-| 组件 | 一个函数 + 一段 HTML 模板 | \`function X() { return <JSX /> }\` |
-| Props | 函数参数 | \`<Comp name="value" />\` |
-| State | 全局变量 + 手动 \`textContent\` | \`useState()\` |
-| 事件 | \`addEventListener\` | \`onClick={fn}\` |
-
-改一个按钮的逻辑，只需要在对应的组件文件里找。不用在几千行的 HTML 里翻。==这种局部性，是框架给我最大的礼物==。
-
-## Hooks：函数组件的灵魂
-
-class 组件我跳过了。**函数组件 + Hooks 是 React 的未来**，没必要走弯路。
-
-### \`useState\`
-
+**② useState — 计数器**
 \`\`\`jsx
 const [count, setCount] = useState(0);
 \`\`\`
 
-原生里改了变量，还要手动更新 DOM。React 里改了 state，组件自动重渲染。这就是声明式 UI — 你只管描述"状态是什么"，框架负责把状态变成 DOM。
-
-### \`useEffect\`
-
+**③ useEffect — 同步页面标题**
 \`\`\`jsx
 useEffect(() => {
   document.title = '你点击了 ' + count + ' 次';
 }, [count]);
 \`\`\`
 
-定时器、数据请求、手动 DOM 操作 — 这些不属于渲染逻辑的事情，都丢进 useEffect。第二个参数控制什么时候执行，不用再写一堆 \`if\` 判断。
-
-### \`useRef\`
-
+**④ useRef — DOM 引用**
 \`\`\`jsx
 const inputRef = useRef(null);
-// <input ref={inputRef} />
-// inputRef.current.focus();
+// 挂载后聚焦：inputRef.current.focus();
+// 渲染：<input ref={inputRef} />
 \`\`\`
 
-原生里我整天 \`document.querySelector\`，React 里用 ref。区别是 ref 不触发重渲染。它是"逃逸舱口" — 当声明式管不到的时候，用它直接操作 DOM。
-
-## 状态提升：数据往上传
-
-React 的数据流是单向的。父传子用 props，子传父不能直接改 props — 只能调用父组件传下来的函数。
-
+**⑤ 状态提升 — 父与子**
 \`\`\`jsx
 function Parent() {
   const [value, setValue] = useState('');
@@ -204,31 +254,18 @@ function Child({ value, onChange }) {
 }
 \`\`\`
 
-这叫"状态提升"。刚开始觉得绕 — 明明子组件可以直接改，为什么要传函数上去再传下来？习惯了之后才明白，==数据流单向，bug 的来源就少了一半==。
+**⑥ JSX 就是函数调用**
+\`\`\`jsx
+// 你写的：
+<Card title="你好" />
 
-## 原生 vs React
+// Babel 编译后（本质）：
+React.createElement(Card, { title: '你好' });
+\`\`\`
 
-写了大半年原生，突然切换到 React，几个最直接的感受：
+---
 
-1. **心智模型变了**。原生是"我要做什么"（命令式），React 是"我要什么"（声明式）。刚开始不习惯，习惯了回不去。
-2. **不用手动 DOM 了**。\`createElement\`、\`appendChild\`、\`innerHTML\` — 这些全部消失。虚拟 DOM 帮你 diff，只更新变化的部分。
-3. **但失去了直接控制**。原生里你想改哪个元素就改哪个。React 里要通过 state 和 props 间接操作。大多数时候是好事，偶尔会觉得 =="绕了一圈"==。
-4. **构建工具是必须的**。原生写完直接刷新。React 需要 Babel 编译 JSX，需要 Vite 打包。多了一步，但换来模块化、热更新、代码分割。
-
-## 还没想通的事
-
-- **性能优化**：\`useMemo\`、\`useCallback\`、\`React.memo\` — 什么时候用？社区说法不一。有人说"默认不需要，遇到性能问题再加"，有人说"从一开始就写好"。我选择前者。先写对，再写快。
-- **状态管理**：Context 够用吗？什么时候该上 Redux / Zustand？目前感觉够用，但不确定项目变大后会不会失控。
-- **Next.js**：概念太多了。先放一放。把 React 本身搞熟再说。
-
-## 接下来
-
-1. 用 React 重写一个小项目，在实践中理解概念
-2. React Router — 理解 SPA 路由
-3. TanStack Query — 处理服务端数据
-4. 最后再碰 Next.js
-
-> 原生 JS 教会我理解底层。React 教会我组织代码。两者不冲突，是互补的。就像 ==美中不足，好事多磨== — 框架不是完美的，但值得学。`
+> 原生 JS 教会我理解底层。React 教会我组织代码。两者不冲突，是互补的。框架不是完美的，但值得学。`
   },
   {
     date:'2026-06-21',
