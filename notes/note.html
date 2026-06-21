@@ -12,33 +12,13 @@
     --line:rgba(232,228,221,.10);--line-strong:rgba(232,228,221,.18);
     --serif-display:"Cormorant Garamond",serif;
     --serif-body:"Fraunces",serif;
-    --mono:"JetBrains Mono","IBM Plex Mono",monospace;
+    --mono:"JetBrains Mono",monospace;
     --ease:cubic-bezier(.2,.8,.2,1);
     --measure:62ch;  /* 理想正文行宽 */
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{cursor:none}
-  a,button,[data-cursor-hover],.back{cursor:none}
   html,body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-  body{font-family:var(--serif-body);min-height:100svh;font-size:17px;line-height:1.85;color:var(--ink-dim);font-weight:390;letter-spacing:.005em;position:relative;overflow-x:hidden}
-
-  /* 笔记页也有一层淡星空：给正文区底部加了一层微弱的星点 */
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
-    background:
-      radial-gradient(1px 1px at 15% 25%, rgba(244,194,208,.25),
-      radial-gradient(1px 1px at 80% 60%, rgba(244,194,208,.18),
-      radial-gradient(1px 1px at 45% 85%, rgba(122,180,216,.2),
-      radial-gradient(1px 1px at 70% 15%, rgba(232,228,221,.18),
-      radial-gradient(1px 1px at 25% 75%, rgba(232,228,221,.15);
-    background-size:420px 420px, 380px 380px, 340px 340px, 360px 360px, 400px 400px;
-    animation:starBreath 8s ease-in-out infinite alternate;
-    opacity:.5;
-  }
-  @keyframes starBreath{
-    from{opacity:.25;transform:translateY(0)}
-    to  {opacity:.65;transform:translateY(-6px)}
-  }
+  body{font-family:var(--serif-body);min-height:100svh;font-size:17px;line-height:1.85;color:var(--ink-dim);font-weight:390;letter-spacing:.005em}
   .back{
     display:inline-flex;align-items:center;gap:8px;
     font-family:var(--mono);font-size:11px;letter-spacing:.22em;
@@ -187,23 +167,14 @@
   article .content a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(244,194,208,.35);transition:border-color .25s var(--ease),background-color .25s var(--ease);padding:0 1px}
   article .content a:hover{border-bottom-color:var(--accent);background:rgba(244,194,208,.06)}
 
-  /* — 行内代码：更紧凑的等宽显示，降低 line-height 影响，颜色更有层次 */
+  /* — 行内代码 — */
   article .content code{
-    font-family:var(--mono);
-    font-size:.82em;
-    font-weight:450;
-    letter-spacing:.01em;
-    background:rgba(244,194,208,.06);
-    color:#f9d6e0;
-    padding:1px 6px 2px;
-    border-radius:4px;
-    border:1px solid rgba(244,194,208,.16);
+    font-family:var(--mono);font-size:.8em;letter-spacing:.02em;
+    background:rgba(232,228,221,.04);
+    padding:2px 7px;border-radius:4px;
+    color:#e8e4dd;border:1px solid var(--line);
     display:inline-block;
-    line-height:1.5;
-    vertical-align:baseline;
   }
-  /* 段落中包含代码时，代码与行高一致，不撑开段落 */
-  article .content p code{margin:0 1px}
   /* — 代码块 — */
   article .content pre{
     background:linear-gradient(180deg,rgba(232,228,221,.04),rgba(232,228,221,.02));
@@ -358,24 +329,6 @@
   article .desc{opacity:0;transform:translateY(10px);animation:fadeInUp .9s var(--ease) .25s forwards}
   article .ndate{opacity:0;transform:translateY(6px);animation:fadeInUp .7s var(--ease) forwards}
 
-  /* — 自定义指针（与主页一致） */
-  .cursor-dot, .cursor-ring{
-    position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
-    border-radius:50%;mix-blend-mode:difference;
-    transform:translate3d(-50%,-50%,0);
-  }
-  .cursor-dot{width:6px;height:6px;background:#fff;transition:transform .08s linear,background .2s var(--ease)}
-  .cursor-ring{
-    width:32px;height:32px;border:1px solid rgba(255,255,255,.55);
-    transition:transform .25s var(--ease),width .2s var(--ease),height .2s var(--ease),border-color .2s var(--ease),background .2s var(--ease);
-    box-shadow:0 0 16px rgba(244,194,208,.18);
-  }
-  body.is-hover .cursor-ring{
-    width:56px;height:56px;border-color:rgba(244,194,208,.85);
-    background:rgba(244,194,208,.10);box-shadow:0 0 24px rgba(244,194,208,.35);
-  }
-  body.is-hover .cursor-dot{background:#f4c2d0}
-
   /* — 响应式 — */
   @media(max-width:900px){
     body{font-size:16px;line-height:1.8}
@@ -395,10 +348,6 @@
     article .content h2{font-size:26px}
     article .content h3{font-size:20px}
     article .content pre{font-size:12.5px;padding:16px 18px}
-  }
-  @media(hover:none){
-    html{cursor:auto}
-    .cursor-dot, .cursor-ring{display:none}
   }
 
   .not-found{text-align:center;padding:120px 28px;color:var(--ink-faint);font-family:var(--mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase}
@@ -491,46 +440,6 @@
     });
   }, { rootMargin:'-15% 0px -75% 0px', threshold:0 });
   headings.forEach(h => observer.observe(h));
-})();
-
-/* 自定义指针：与主页一致的行为 */
-(function initCursor(){
-  const dot   = document.createElement('div');
-  const ring  = document.createElement('div');
-  dot.className  = 'cursor-dot';
-  ring.className = 'cursor-ring';
-  document.body.appendChild(dot);
-  document.body.appendChild(ring);
-
-  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-  let rx = mx, ry = my;
-  let raf = null;
-
-  function loop(){
-    rx += (mx - rx) * 0.18;
-    ry += (my - ry) * 0.18;
-    ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0) translate(-50%,-50%)';
-    raf = requestAnimationFrame(loop);
-  }
-  loop();
-
-  window.addEventListener('mousemove', function(e){
-    mx = e.clientX; my = e.clientY;
-    dot.style.transform = 'translate3d(' + mx + 'px,' + my + 'px,0) translate(-50%,-50%)';
-  }, {passive:true});
-
-  // 交互元素悬停时放大环
-  const hoverSelector = 'a, button, [data-cursor-hover], input, textarea, .back, .note-toc a, article .content a';
-  document.addEventListener('mouseover', function(e){
-    if (e.target.closest && e.target.closest(hoverSelector)) {
-      document.body.classList.add('is-hover');
-    }
-  });
-  document.addEventListener('mouseout', function(e){
-    if (e.target.closest && e.target.closest(hoverSelector)) {
-      document.body.classList.remove('is-hover');
-    }
-  });
 })();
 </script>
 </body>
