@@ -1083,6 +1083,13 @@
     <a href="mailto:Qianlovean@outlook.com"><span data-i18n="contact.email">Email · Qianlovean@outlook.com</span></a>
     <span class="sep">/</span>
     <a href="#"><span data-i18n="contact.site">Website · annieif.dev</span></a>
+    <span class="sep">/</span>
+    <a href="https://github.com/Annieif/Annieif.github.io/issues/new?title=New+Subscription&labels=subscription&body=Name%3A+%0AEmail%3A+"
+       target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;color:var(--ink-dim);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:13px;transition:color .3s"
+       onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''">
+      <span style="font-size:16px">@</span>
+      <span>Subscribe</span>
+    </a>
   </div>
 
   <div class="rss-block">
@@ -1907,12 +1914,21 @@ function renderNotesFeed(items) {
 }
 
 /* ---- notes controller: search + sort + load-more ---- */
-function initNotesController() {
+async function initNotesController() {
   const feed    = document.getElementById('notesFeed');
   const search  = document.getElementById('notesSearch');
   const countEl = document.getElementById('notesCount');
   const sortEl  = document.getElementById('notesSort');
   if (!feed || !search || !sortEl) return;
+
+  let autoNotes = [];
+  try {
+    const res = await fetch('notes/auto-published.json');
+    if (res.ok) autoNotes = await res.json();
+  } catch (e) { /* file may not exist yet */ }
+
+  const FULL_NOTES = [...NOTES_DATA, ...autoNotes];
+  FULL_NOTES.sort((a, b) => b.date.localeCompare(a.date));
 
   const PER_PAGE = 5;
   let sortKey = 'newest';
@@ -1920,7 +1936,7 @@ function initNotesController() {
   let visibleCount = PER_PAGE;
 
   function getSorted() {
-    const arr = [...NOTES_DATA];
+    const arr = [...FULL_NOTES];
     if (sortKey === 'newest')  return arr;
     if (sortKey === 'oldest')  return arr.reverse();
     if (sortKey === 'title')   return arr.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'zh'));
@@ -2230,7 +2246,7 @@ function setLang(lang) {
   })();
 
   // Notes (single-language, searchable + sortable + collapsible)
-  initNotesController();
+  (async () => { await initNotesController(); })();
 
   // Hero title — DOM node version (buildTitleHtml returns DocumentFragment)
   const tw = document.getElementById('typewriter');
