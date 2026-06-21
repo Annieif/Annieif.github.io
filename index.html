@@ -2355,7 +2355,8 @@ function runTypewriter(root, stepMs) {
 })();
 
 /* =====================================================
-   Starfield canvas driver — draws ~150 twinkling dots.
+   Starfield canvas driver — twinkling dots + meteors.
+   Hover (body.is-hover) triggers a pink meteor burst.
    ===================================================== */
 (function initStarfield(){
   const canvas = document.getElementById('starCanvas');
@@ -2364,23 +2365,22 @@ function runTypewriter(root, stepMs) {
 
   let w, h, dpr;
   const palette = ['#ffffff', '#f9d6e0', '#f4c2d0', '#9cc9e8', '#e8e4dd', '#b9c4d9'];
+  const pinkPalette = ['#ffd3e0', '#ffc4d6', '#f9bdd0', '#f4c2d0', '#fcdde6', '#ffb9d0'];
 
   function resize(){
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     w = window.innerWidth;
     h = window.innerHeight;
-    canvas.width  = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width  = w + 'px';
-    canvas.style.height = h + 'px';
     canvas.width  = Math.floor(w * dpr);
     canvas.height = Math.floor(h * dpr);
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
     generate();
   }
 
+  // ================= Stars =================
   let stars = [];
   function generate(){
-    // scale star count by viewport area — capped to keep draw time cheap.
     const target = Math.min(220, Math.floor((w * h) / 9000));
     stars = new Array(target);
     for (let i = 0; i < target; i++){
@@ -2392,22 +2392,64 @@ function runTypewriter(root, stepMs) {
         baseAlpha: 0.4 + Math.random() * 0.45,
         twinkleSpeed: 0.0005 + Math.random() * 0.0015,
         twinklePhase: Math.random() * Math.PI * 2,
-        depth: 0.3 + Math.random() * 0.7, // parallax depth
+        depth: 0.3 + Math.random() * 0.7,
       };
     }
   }
 
-  let rafId = null;
-  let running = false;
-  let scrollY = 0;
-  let targetScrollY = 0;
+  // ================= Meteors =================
+  // A meteor is a short diagonal streak. Its lifetime is 1s + speed variance.
+  // Meteors are drawn as additive lines with a small radial glow at the head.
+  let meteors = [];
+  let lastMeteorTs = -Infinity;
+  let hoverBurstUntil = 0;   // timestamp for burst mode
+  let hoverRateBoost = 0;    // gradually decays back to 0 after hover ends
+  let wasHovering = false;
+
+  // Normal cadence: one meteor every 1.8–3.2s. During burst: every 0.15–0.35s.
+  function spawnMeteor(color){
+    // Start from upper-left to upper-right region.
+    const startX = Math.random() * w;
+    const startY = -20 - Math.random() * 80;
+    const speedPx = (280 + Math.random() * 260); // px/s
+    const angle = (0.55 + Math.random() * 0.35); // radians, diagonal down-right
+    meteors.push({
+      x: startX,
+      y: startY,
+      vx: Math.cos(angle) * speedPx,
+      vy: Math.sin(angle) * speedPx,
+      length: 70 + Math.random() * 60,
+      color: color || palette[Math.floor(Math.random() * palette.length)],
+      life: 1.0 + Math.random() * 0.6,
+      age: 0,
+      thickness: 1.1 + Math.random() * 0.6,
+    });
+  }
+
+  function spawnBurst(count){
+    for (let i = 0; i < count; i++){
+      setTimeout(() => spawnMeteor(pinkPalette[Math.floor(Math.random() * pinkPalette.length)]), i * 60);
+    }
+  }
+
+  // Hover → instant burst + temporarily higher spawn rate
+  document.addEventListener('hover-burst', () => {
+    spawnBurst(5);
+    hoverBurstUntil = performance.now() + 800; // ~0.8s of high-rate pink meteors
+  });
+
+  let lastTs = 0;
 
   function draw(ts){
+    const dt = Math.min(0.05, (ts - lastTs) / 1000 || 0.016);
+    lastTs = ts;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // lerp scroll toward target for smooth parallax
+
     scrollY += (targetScrollY - scrollY) * 0.06;
     const scale = dpr;
-    const sy = scrollY * 0.08; // max parallax displacement
+    const sy = scrollY * 0.08;
+
+    // ------- Stars -------
     for (let i = 0, n = stars.length; i < n; i++){
       const s = stars[i];
       const alpha = s.baseAlpha + 0.12 * Math.sin(ts * s.twinkleSpeed + s.twinklePhase);
@@ -2419,8 +2461,96 @@ function runTypewriter(root, stepMs) {
       ctx.arc(dx, dy, s.r * scale, 0, Math.PI * 2);
       ctx.fill();
     }
+
+    // ------- Meteor spawning -------
+    const isHovering = document.body.classList.contains('is-hover');
+    const now = ts;
+
+    // detect hover *entry* to fire a burst
+    if (isHovering && !wasHovering){
+      spawnBurst(4);
+      hoverBurstUntil = now + 900;
+    }
+    wasHovering = isHovering;
+
+    let spawnInterval;
+    if (now < hoverBurstUntil){
+      // burst mode: short interval, pink meteors
+      spawnInterval = 200 + Math.random() * 180;
+    } else {
+      spawnInterval = 2200 + Math.random() * 2000;
+    }
+
+    if (now - lastMeteorTs > spawnInterval){
+      if (now < hoverBurstUntil){
+        spawnMeteor(pinkPalette[Math.floor(Math.random() * pinkPalette.length)]);
+      } else {
+        spawnMeteor();
+      }
+      lastMeteorTs = now;
+    }
+
+    // ------- Meteor drawing -------
+    const alive = [];
+    for (let i = 0; i < meteors.length; i++){
+      const m = meteors[i];
+      m.age += dt;
+      if (m.age >= m.life) continue;
+
+      m.x += m.vx * dt;
+      m.y += m.vy * dt;
+      if (m.x > w + 80 || m.y > h + 80) continue;
+
+      const t = m.age / m.life;
+      // Fade in then fade out, smooth bell-curve alpha.
+      const alpha = 4 * t * (1 - t);
+
+      const x0 = m.x * scale;
+      const y0 = m.y * scale;
+      const tailLen = m.length * scale;
+      const headX = x0;
+      const headY = y0;
+      // tail points backward relative to velocity direction
+      const len = Math.hypot(m.vx, m.vy) || 1;
+      const tailX = x0 - (m.vx / len) * tailLen;
+      const tailY = y0 - (m.vy / len) * tailLen;
+
+      // streak line with gradient
+      const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+      grad.addColorStop(0, 'rgba(255,255,255,0)');
+      grad.addColorStop(1, m.color);
+      ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+      ctx.beginPath();
+      ctx.lineWidth = m.thickness * scale;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = grad;
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(headX, headY);
+      ctx.stroke();
+
+      // small head glow
+      ctx.globalAlpha = Math.max(0, Math.min(1, alpha * 0.9));
+      const r = 2.2 * scale;
+      const glow = ctx.createRadialGradient(headX, headY, 0, headX, headY, r * 3.5);
+      glow.addColorStop(0, m.color);
+      glow.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(headX, headY, r * 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      alive.push(m);
+    }
+    meteors = alive;
+
+    ctx.globalAlpha = 1;
     rafId = requestAnimationFrame(draw);
   }
+
+  let rafId = null;
+  let running = false;
+  let scrollY = 0;
+  let targetScrollY = 0;
 
   // Pause when tab hidden to save CPU
   document.addEventListener('visibilitychange', function(){
@@ -2440,6 +2570,7 @@ function runTypewriter(root, stepMs) {
   }, { passive: true });
   resize();
   running = true;
+  lastTs = performance.now();
   rafId = requestAnimationFrame(draw);
 })();
 
