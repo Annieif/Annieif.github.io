@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Annieif Notes Admin</title>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --ink: #e8e4dd;
+  --ink-dim: #b8b0a4;
+  --ink-faint: #7d7565;
+  --accent: #f4c2d0;
+  --line: rgba(232,228,221,.10);
+  --card: #13111a;
+  --ease: cubic-bezier(.2,.8,.2,1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: 'Fraunces', 'Noto Serif SC', Georgia, serif;
+  min-height: 100vh; line-height: 1.7;
+}
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 28px; border-bottom: 1px solid var(--line);
+  background: var(--card);
+}
+.topbar h1 { font-size: 18px; font-weight: 500; }
+.topbar h1 em { color: var(--accent); font-style: italic; }
+.topbar .actions { display: flex; gap: 10px; align-items: center; }
+.btn {
+  background: transparent; border: 1px solid var(--line); color: var(--ink);
+  padding: 8px 16px; border-radius: 4px; cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: .08em; text-transform: uppercase;
+  transition: all .2s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary { background: var(--accent); color: #1a1018; border-color: var(--accent); }
+.btn.primary:hover { opacity: .85; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.status {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--ink-faint); margin-right: 16px;
+}
+.main { display: flex; height: calc(100vh - 57px); }
+.sidebar {
+  width: 240px; border-right: 1px solid var(--line); padding: 20px 0;
+  overflow-y: auto; flex-shrink: 0;
+}
+.tab {
+  display: block; width: 100%; text-align: left; padding: 10px 28px;
+  background: none; border: none; color: var(--ink-dim); cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: .08em; transition: all .2s;
+}
+.tab:hover, .tab.active { color: var(--accent); background: rgba(244,194,208,.04); }
+.tab .count { float: right; color: var(--ink-faint); }
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+.note-list { display: flex; flex-direction: column; gap: 8px; }
+.note-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px;
+  cursor: pointer; transition: all .2s;
+}
+.note-item:hover { border-color: rgba(244,194,208,.3); background: rgba(244,194,208,.02); }
+.note-item .date {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--ink-faint); white-space: nowrap; min-width: 80px;
+}
+.note-item .title { flex: 1; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.note-item .actions { display: flex; gap: 6px; }
+.icon-btn {
+  background: none; border: 1px solid var(--line); color: var(--ink-dim);
+  width: 28px; height: 28px; border-radius: 4px; cursor: pointer;
+  font-size: 12px; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.icon-btn.danger:hover { border-color: #e06060; color: #e06060; }
+
+.editor { display: none; flex-direction: column; gap: 16px; }
+.editor.active { display: flex; }
+.editor .field { display: flex; flex-direction: column; gap: 4px; }
+.editor label {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint);
+}
+.editor input, .editor textarea {
+  background: var(--card); border: 1px solid var(--line); color: var(--ink);
+  padding: 10px 14px; border-radius: 4px; font-family: inherit; font-size: 14px;
+  transition: border-color .2s;
+}
+.editor input:focus, .editor textarea:focus {
+  outline: none; border-color: var(--accent);
+}
+.editor textarea { resize: vertical; min-height: 200px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.editor .row { display: flex; gap: 12px; }
+.editor .row .field { flex: 1; }
+.editor .preview {
+  background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+  padding: 20px; min-height: 100px; max-height: 300px; overflow-y: auto;
+}
+.editor .preview h2 { font-size: 22px; margin-bottom: 12px; color: var(--accent); }
+.editor .preview h3 { font-size: 17px; margin: 18px 0 10px; }
+.editor .preview p { margin-bottom: 10px; }
+.editor .preview code {
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  background: rgba(244,194,208,.06); padding: 2px 6px; border-radius: 3px;
+  color: var(--accent);
+}
+.editor .preview blockquote {
+  border-left: 2px solid var(--accent); padding-left: 14px;
+  color: var(--ink-dim); font-style: italic; margin: 12px 0;
+}
+.editor .preview table {
+  width: 100%; border-collapse: collapse; margin: 12px 0;
+}
+.editor .preview th, .editor .preview td {
+  padding: 8px 12px; border-bottom: 1px solid var(--line); text-align: left;
+}
+.editor .preview th { color: var(--ink-faint); font-size: 12px; }
+.editor .preview strong { color: var(--accent); }
+.editor .preview mark {
+  background: rgba(244,194,208,.15); color: var(--accent);
+  padding: 1px 4px; border-radius: 2px; font-style: italic;
+}
+.editor .preview ul, .editor .preview ol { padding-left: 20px; margin: 8px 0; }
+.editor .preview li { margin-bottom: 4px; }
+.editor .preview pre {
+  background: #0d0b12; border: 1px solid var(--line); padding: 14px 16px;
+  border-radius: 4px; overflow-x: auto; margin: 12px 0;
+}
+.editor .preview pre code { background: none; border: none; padding: 0; }
+.editor .preview hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+.empty {
+  text-align: center; padding: 60px 20px; color: var(--ink-faint);
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>Annieif <em>Notes Admin</em></h1>
+  <div class="actions">
+    <span class="status" id="status">No project open</span>
+    <button class="btn" id="btnOpen">Open Project</button>
+    <button class="btn primary" id="btnNew" disabled>+ New Note</button>
+  </div>
+</div>
+<div class="main">
+  <div class="sidebar">
+    <button class="tab active" data-view="live">Live Notes <span class="count" id="liveCount">0</span></button>
+    <button class="tab" data-view="queue">Queue <span class="count" id="queueCount">0</span></button>
+  </div>
+  <div class="content" id="content">
+    <div id="listView" class="note-list"></div>
+    <div id="editorView" class="editor">
+      <div class="row">
+        <div class="field">
+          <label>Title</label>
+          <input type="text" id="edTitle" placeholder="笔记标题">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Date (YYYY-MM-DD)</label>
+          <input type="text" id="edDate" placeholder="2026-06-21">
+        </div>
+        <div class="field" id="publishDateGroup" style="display:none">
+          <label>Publish Date (YYYY-MM-DD)</label>
+          <input type="text" id="edPublishDate" placeholder="2026-07-01">
+        </div>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <input type="text" id="edDesc" placeholder="一句话描述">
+      </div>
+      <div class="field">
+        <label>Content (Markdown)</label>
+        <textarea id="edContent" rows="12" placeholder="Markdown 正文..."></textarea>
+      </div>
+      <div class="field">
+        <label>Preview</label>
+        <div class="preview" id="preview"></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn" id="btnCancel">Cancel</button>
+        <button class="btn" id="btnDelete" style="display:none">Delete</button>
+        <button class="btn primary" id="btnSave">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="notes/data.js"></script>
+<script>
+// ============ STATE ============
+let dirHandle = null;
+let liveNotes = [];
+let queueNotes = [];
+let currentView = 'live';
+let editingIndex = -1;
+let isNewNote = false;
+
+// ============ DOM REFS ============
+const $ = id => document.getElementById(id);
+const status = $('status');
+const btnOpen = $('btnOpen');
+const btnNew = $('btnNew');
+const listView = $('listView');
+const editorView = $('editorView');
+const liveCount = $('liveCount');
+const queueCount = $('queueCount');
+const publishDateGroup = $('publishDateGroup');
+const preview = $('preview');
+
+// ============ FILE SYSTEM ACCESS ============
+btnOpen.addEventListener('click', async () => {
+  try {
+    dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    status.textContent = 'Project opened';
+    btnNew.disabled = false;
+    await loadAll();
+  } catch (e) {
+    if (e.name !== 'AbortError') {
+      status.textContent = 'Error: ' + e.message;
+    }
+  }
+});
+
+async function navigateToFile(relativePath) {
+  const parts = relativePath.split('/');
+  const fileName = parts.pop();
+  let handle = dirHandle;
+  for (const part of parts) {
+    handle = await handle.getDirectoryHandle(part);
+  }
+  return await handle.getFileHandle(fileName);
+}
+
+async function readJSON(relativePath) {
+  try {
+    const fileHandle = await navigateToFile(relativePath);
+    const file = await fileHandle.getFile();
+    return JSON.parse(await file.text());
+  } catch (e) {
+    return [];
+  }
+}
+
+async function writeJSON(relativePath, data) {
+  const parts = relativePath.split('/');
+  const fileName = parts.pop();
+  let handle = dirHandle;
+  for (const part of parts) {
+    handle = await handle.getDirectoryHandle(part);
+  }
+  const fileHandle = await handle.getFileHandle(fileName, { create: true });
+  const writable = await fileHandle.createWritable();
+  await writable.write(JSON.stringify(data, null, 2) + '\n');
+  await writable.close();
+}
+
+async function readTextFile(relativePath) {
+  const fileHandle = await navigateToFile(relativePath);
+  const file = await fileHandle.getFile();
+  return await file.text();
+}
+
+async function writeTextFile(relativePath, text) {
+  const parts = relativePath.split('/');
+  const fileName = parts.pop();
+  let handle = dirHandle;
+  for (const part of parts) {
+    handle = await handle.getDirectoryHandle(part);
+  }
+  const fileHandle = await handle.getFileHandle(fileName, { create: true });
+  const writable = await fileHandle.createWritable();
+  await writable.write(text);
+  await writable.close();
+}
+
+// ============ DATA LOADING ============
+async function loadAll() {
+  try {
+    queueNotes = await readJSON('notes/queue.json');
+  } catch (e) {
+    queueNotes = [];
+  }
+  try {
+    const text = await readTextFile('notes/data.js');
+    liveNotes = extractNotesData(text);
+  } catch (e) {
+    liveNotes = [];
+  }
+  renderList();
+  updateCounts();
+}
+
+function extractNotesData(text) {
+  const start = text.indexOf('const NOTES_DATA = [');
+  if (start === -1) return [];
+  
+  const arrayStart = start + 'const NOTES_DATA = '.length;
+  let pos = arrayStart;
+  let depth = 1;
+  let inTemplate = false;
+  let inString = false;
+  let stringChar = '';
+  let inLineComment = false;
+  
+  while (pos < text.length && depth > 0) {
+    pos++;
+    const ch = text[pos];
+    const prev = pos > 0 ? text[pos - 1] : '';
+    
+    if (inTemplate) {
+      if (ch === '`' && prev !== '\\') inTemplate = false;
+      continue;
+    }
+    if (inString) {
+      if (ch === stringChar && prev !== '\\') inString = false;
+      continue;
+    }
+    if (inLineComment) {
+      if (ch === '\n') inLineComment = false;
+      continue;
+    }
+    
+    if (ch === '`') { inTemplate = true; continue; }
+    if (ch === '"' || ch === "'") { inString = true; stringChar = ch; continue; }
+    if (ch === '/' && text[pos + 1] === '/') { inLineComment = true; continue; }
+    
+    if (ch === '[' || ch === '{') depth++;
+    if (ch === ']' || ch === '}') depth--;
+  }
+  
+  if (depth !== 0) return [];
+  const arrayText = text.substring(arrayStart, pos + 1);
+  try {
+    return new Function('return ' + arrayText)();
+  } catch (e) {
+    console.error('Failed to parse NOTES_DATA:', e);
+    return [];
+  }
+}
+
+// ============ RENDERING ============
+function renderList() {
+  const notes = currentView === 'live' ? liveNotes : queueNotes;
+  if (notes.length === 0) {
+    listView.innerHTML = '<div class="empty">No notes yet. Click "+ New Note" to create one.</div>';
+    return;
+  }
+  listView.innerHTML = notes.map((n, i) => {
+    const dateLabel = currentView === 'queue' ? (n.publishDate || n.date) : n.date;
+    const prefix = currentView === 'queue' ? '\u23F3 ' : '';
+    return `<div class="note-item" data-index="${i}">
+      <span class="date">${prefix}${escapeHtml(dateLabel)}</span>
+      <span class="title">${escapeHtml(n.title)}</span>
+      <div class="actions">
+        <button class="icon-btn" data-action="edit" data-index="${i}" title="Edit">\u270E</button>
+        <button class="icon-btn danger" data-action="delete" data-index="${i}" title="Delete">\u2715</button>
+      </div>
+    </div>`;
+  }).join('');
+  
+  listView.querySelectorAll('[data-action="edit"]').forEach(btn => {
+    btn.addEventListener('click', () => editNote(parseInt(btn.dataset.index)));
+  });
+  listView.querySelectorAll('[data-action="delete"]').forEach(btn => {
+    btn.addEventListener('click', () => deleteNote(parseInt(btn.dataset.index)));
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function updateCounts() {
+  liveCount.textContent = liveNotes.length;
+  queueCount.textContent = queueNotes.length;
+}
+
+// ============ VIEW SWITCHING ============
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentView = tab.dataset.view;
+    publishDateGroup.style.display = currentView === 'queue' ? 'flex' : 'none';
+    hideEditor();
+    renderList();
+  });
+});
+
+// ============ EDITOR ============
+btnNew.addEventListener('click', () => {
+  isNewNote = true;
+  editingIndex = -1;
+  $('edTitle').value = '';
+  $('edDate').value = new Date().toISOString().slice(0, 10);
+  $('edPublishDate').value = '';
+  $('edDesc').value = '';
+  $('edContent').value = '';
+  $('btnDelete').style.display = 'none';
+  updatePreview();
+  showEditor();
+});
+
+function editNote(index) {
+  isNewNote = false;
+  editingIndex = index;
+  const notes = currentView === 'live' ? liveNotes : queueNotes;
+  const note = notes[index];
+  $('edTitle').value = note.title || '';
+  $('edDate').value = note.date || '';
+  $('edPublishDate').value = note.publishDate || '';
+  $('edDesc').value = note.desc || '';
+  $('edContent').value = note.content || '';
+  $('btnDelete').style.display = '';
+  updatePreview();
+  showEditor();
+}
+
+function showEditor() {
+  listView.style.display = 'none';
+  editorView.classList.add('active');
+}
+
+function hideEditor() {
+  listView.style.display = '';
+  editorView.classList.remove('active');
+}
+
+$('btnCancel').addEventListener('click', hideEditor);
+
+// ============ PREVIEW ============
+$('edContent').addEventListener('input', updatePreview);
+
+function updatePreview() {
+  const raw = $('edContent').value;
+  if (!raw) { preview.innerHTML = '<span style="color:var(--ink-faint)">Preview will appear here...</span>'; return; }
+  try {
+    if (typeof parseNoteContent === 'function') {
+      preview.innerHTML = parseNoteContent(raw);
+    } else {
+      preview.innerHTML = '<span style="color:#e06060">parseNoteContent not available. Open data.js project first.</span>';
+    }
+  } catch (e) {
+    preview.innerHTML = '<span style="color:#e06060">Preview error: ' + escapeHtml(e.message) + '</span>';
+  }
+}
+
+// ============ SAVE ============
+$('btnSave').addEventListener('click', async () => {
+  if (!dirHandle) { alert('Please open the project first.'); return; }
+  
+  const note = {
+    date: $('edDate').value.trim(),
+    title: $('edTitle').value.trim(),
+    desc: $('edDesc').value.trim(),
+    content: $('edContent').value
+  };
+  
+  if (currentView === 'queue') {
+    note.publishDate = $('edPublishDate').value.trim() || note.date;
+  }
+  
+  if (!note.title || !note.date || !note.content) {
+    alert('Title, date, and content are required.');
+    return;
+  }
+  
+  const notes = currentView === 'live' ? liveNotes : queueNotes;
+  
+  if (isNewNote) {
+    notes.unshift(note);
+  } else {
+    notes[editingIndex] = note;
+  }
+  
+  try {
+    if (currentView === 'live') {
+      await saveLiveNotes();
+    } else {
+      await writeJSON('notes/queue.json', queueNotes);
+    }
+    status.textContent = 'Saved \u2713';
+    setTimeout(() => { if (dirHandle) status.textContent = 'Project opened'; }, 2000);
+    hideEditor();
+    renderList();
+    updateCounts();
+  } catch (e) {
+    alert('Save failed: ' + e.message);
+  }
+});
+
+async function saveLiveNotes() {
+  const text = await readTextFile('notes/data.js');
+  
+  const start = text.indexOf('const NOTES_DATA = [');
+  const arrayStart = start + 'const NOTES_DATA = '.length;
+  let pos = arrayStart;
+  let depth = 1;
+  let inTemplate = false, inString = false, stringChar = '', inLineComment = false;
+  
+  while (pos < text.length && depth > 0) {
+    pos++;
+    const ch = text[pos];
+    const prev = pos > 0 ? text[pos - 1] : '';
+    if (inTemplate) { if (ch === '`' && prev !== '\\') inTemplate = false; continue; }
+    if (inString) { if (ch === stringChar && prev !== '\\') inString = false; continue; }
+    if (inLineComment) { if (ch === '\n') inLineComment = false; continue; }
+    if (ch === '`') { inTemplate = true; continue; }
+    if (ch === '"' || ch === "'") { inString = true; stringChar = ch; continue; }
+    if (ch === '/' && text[pos + 1] === '/') { inLineComment = true; continue; }
+    if (ch === '[' || ch === '{') depth++;
+    if (ch === ']' || ch === '}') depth--;
+  }
+  
+  const arrayEnd = pos + 1;
+  const newArray = serializeNotes(liveNotes);
+  const newText = text.substring(0, arrayStart) + newArray + text.substring(arrayEnd);
+  
+  await writeTextFile('notes/data.js', newText);
+}
+
+function serializeNotes(notes) {
+  const indent = '  ';
+  const items = notes.map(n => {
+    const escapedContent = n.content.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+    const escTitle = n.title.replace(/'/g, "\\'");
+    const escDesc = (n.desc || '').replace(/'/g, "\\'");
+    return `${indent}{\n${indent}  date:'${n.date}',\n${indent}  title:'${escTitle}',\n${indent}  desc:'${escDesc}',\n${indent}  content:\`${escapedContent}\`\n${indent}}`;
+  });
+  return '[\n' + items.join(',\n') + '\n]';
+}
+
+// ============ DELETE ============
+$('btnDelete').addEventListener('click', async () => {
+  if (!confirm('Delete this note?')) return;
+  const notes = currentView === 'live' ? liveNotes : queueNotes;
+  notes.splice(editingIndex, 1);
+  
+  try {
+    if (currentView === 'live') {
+      await saveLiveNotes();
+    } else {
+      await writeJSON('notes/queue.json', queueNotes);
+    }
+    status.textContent = 'Deleted \u2713';
+    setTimeout(() => { if (dirHandle) status.textContent = 'Project opened'; }, 2000);
+    hideEditor();
+    renderList();
+    updateCounts();
+  } catch (e) {
+    alert('Delete failed: ' + e.message);
+  }
+});
+
+function deleteNote(index) {
+  const notes = currentView === 'live' ? liveNotes : queueNotes;
+  if (!confirm('Delete "' + notes[index].title + '"?')) return;
+  notes.splice(index, 1);
+  
+  if (currentView === 'live') {
+    saveLiveNotes().then(() => { renderList(); updateCounts(); });
+  } else {
+    writeJSON('notes/queue.json', queueNotes).then(() => { renderList(); updateCounts(); });
+  }
+}
+</script>
+</body>
+</html>
