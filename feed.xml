@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="feed.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Annieif — 独立造物者的笔记</title>
+    <title>Annieif - Notes feed</title>
     <link>https://annieif.github.io/</link>
-    <atom:link href="https://annieif.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <description>Annieif 的个人作品集与数字花园 — 笔记更新订阅。</description>
+    <atom:link href="https://annieif.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Annieif's personal notes and writings — subscribe for updates.</description>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 21 Jun 2026 12:00:00 GMT</lastBuildDate>
-    <pubDate>Sat, 21 Jun 2026 12:00:00 GMT</pubDate>
-    <ttl>1440</ttl>
 
     <item>
       <title>地球仪与地图笔记</title>
@@ -16,38 +15,35 @@
       <guid isPermaLink="false">001</guid>
       <pubDate>Sat, 21 Jun 2026 12:00:00 GMT</pubDate>
       <description><![CDATA[
-        <p>空间坐标系的基础语言。经纬网、比例尺与方向判断 — 一张地图是地球的缩影。</p>
-        <h3>一、地球的形状与大小</h3>
-        <p><strong>形状</strong>：两极稍扁、赤道略鼓的不规则椭球体。<br>
-        <strong>大小</strong>：平均半径约 6371 千米，赤道周长约 4 万千米，赤道半径约 6378 千米，极半径约 6357 千米。</p>
-        <h3>二、地球仪</h3>
-        <p><strong>地轴</strong>：地球绕转的轴，其倾斜方向不变，北端始终指向 <strong>北极星</strong>。<br>
-        <strong>两极</strong>：地轴穿过地心，与地球表面相交的两点。</p>
-        <h3>三、经纬网的应用</h3>
-        <p><strong>经线距离</strong>：同一条经线上，纬度相差 1°，实际距离约 <strong>111 km</strong>。<br>
-        <strong>纬线距离</strong>：同一条纬线上，经度相差 1°，实际距离约 <strong>111 × cos(φ) km</strong>。<br>
-        <strong>最短航线</strong>：球面上两点间的最短距离是经过这两点的大圆的劣弧段。</p>
+<p>空间坐标系的基础语言。经纬网、比例尺与方向判断 — 一张地图是地球的缩影。</p>
+<h3>一、地球的形状与大小</h3>
+<p><strong>形状</strong>：两极稍扁、赤道略鼓的不规则椭球体。<br/>
+<strong>大小</strong>：平均半径约 6371 千米，赤道周长约 4 万千米。</p>
+<h3>二、经纬网的应用</h3>
+<p><strong>经线距离</strong>：同一条经线上，纬度相差 1 度，实际距离约 <strong>111 km</strong>。<br/>
+<strong>纬线距离</strong>：同一条纬线上，经度相差 1 度，实际距离约 <strong>111 x cos(纬度) km</strong>。<br/>
+<strong>最短航线</strong>：球面上两点间的最短距离是经过这两点的大圆的劣弧段。</p>
       ]]></description>
     </item>
 
     <item>
-      <title>code_wiki — Annieif 的个人作品集</title>
+      <title>code_wiki - Annieif 的个人作品集</title>
       <link>https://annieif.github.io/#/notes/002</link>
       <guid isPermaLink="false">002</guid>
       <pubDate>Fri, 20 Jun 2026 12:00:00 GMT</pubDate>
       <description><![CDATA[
-        <p>本站的技术架构与维护要点：HTML / CSS / 原生 JavaScript / GitHub Pages 的静态站点设计。</p>
-        <h3>项目文件结构</h3>
-        <p>核心文件只有根目录的 <code>index.html</code>，其它一切内容都由它在浏览器中即时生成。</p>
-        <h3>技术要点</h3>
-        <p><strong>多语言</strong>：手写的 JS 对象 I18N，按 8 种语言分分支，无第三方库依赖。<br>
-        <strong>渲染</strong>：全部使用 DOM API（createElement + appendChild + textContent），避免 XSS。<br>
-        <strong>星空</strong>：Canvas 2D 绘制 ~150 个闪烁星点 + CSS 流星，性能友好。<br>
-        <strong>笔记</strong>：数据与展示分离，notes/data.js 为唯一数据源，Markdown 风格内容自动渲染为 HTML。</p>
-        <h3>维护速查</h3>
-        <p>新增笔记：在 NOTES_DATA 头部插入 { date, title, desc, content } 即可。<br>
-        新增语言：在 I18N 中加一个分支、langSwitch 按钮行中加按钮、langMap 中登记映射。<br>
-        改配色：只改 :root 的 CSS 变量。</p>
+<p>本站的技术架构与维护要点。一个零依赖的个人作品集站点：HTML + CSS + 原生 JavaScript + GitHub Pages。</p>
+<h3>项目文件结构</h3>
+<p>核心文件只有根目录的 <code>index.html</code>，其它一切内容都由它在浏览器中即时生成。</p>
+<h3>技术要点</h3>
+<p><strong>多语言</strong>：手写的 JS 对象 I18N，按 8 种语言分分支，无第三方库依赖。<br/>
+<strong>渲染</strong>：全部使用 DOM API（createElement + appendChild + textContent），避免 XSS。<br/>
+<strong>星空</strong>：Canvas 2D 绘制 ~150 个闪烁星点 + CSS 流星，性能友好。<br/>
+<strong>笔记</strong>：数据与展示分离，notes/data.js 为唯一数据源，Markdown 风格内容自动渲染为 HTML。</p>
+<h3>维护速查</h3>
+<p>新增笔记：在 NOTES_DATA 头部插入 { date, title, desc, content } 即可。<br/>
+新增语言：在 I18N 中加一个分支，langSwitch 按钮行中加按钮，langMap 中登记映射。<br/>
+改配色：只改 :root 的 CSS 变量。</p>
       ]]></description>
     </item>
 

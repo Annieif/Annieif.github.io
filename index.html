@@ -378,7 +378,7 @@
      RSS MODAL
      ============================================================ */
   .rss-modal{
-    position:fixed; inset:0; z-index:200;
+    position:fixed; inset:0; z-index:99999;
     display:flex; align-items:center; justify-content:center;
     animation:rssFade .25s var(--ease);
   }
@@ -408,11 +408,12 @@
   .rss-close{
     position:absolute; top:10px; right:14px;
     background:transparent; border:none; color:#a9a39a;
-    font-size:28px; line-height:1; cursor:none;
+    font-size:28px; line-height:1; cursor:pointer;
     transition:color .2s var(--ease), transform .2s var(--ease);
     padding:4px 8px;
+    z-index:2;
   }
-  .rss-close:hover{color:var(--accent); transform:rotate(90deg)}
+  .rss-close:hover{color:#f4c2d0; transform:rotate(90deg)}
   .rss-title{
     font-family:var(--serif-display);
     font-style:italic;
@@ -439,6 +440,7 @@
     text-decoration:none;
     color:inherit;
     transition:background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+    cursor:pointer;
   }
   .rss-option:hover{
     background:rgba(244,194,208,.08);
