@@ -16,7 +16,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500;1,9..144,700;1,9..144,900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500;1,9..144,700;1,9..144,900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0a0a0a;
@@ -31,6 +31,7 @@
     --line-strong:rgba(232,228,221,.18);
     --grain-opacity:.10;
     --ease:cubic-bezier(.2,.8,.2,1);
+    --mono:"JetBrains Mono","IBM Plex Mono",monospace;
   }
 
   *{margin:0;padding:0;box-sizing:border-box}
@@ -61,136 +62,425 @@
   a{color:inherit;text-decoration:none}
 
   /* ============================================================
-     STARFIELD — three stacked dot layers for depth, fixed & covers viewport.
-     Pure CSS so no image assets required. Each layer is a repeating
-     radial-gradient tile, slightly offset, with different sizes
-     and opacities. The "twinkle" animation cycles the stars' opacity.
+     STARFIELD — single canvas layer for performance.
+     JS fills it with twinkling dots; 3 CSS comets on top for motion.
      ============================================================ */
   .stars{
-    position:fixed;inset:0;z-index:0;pointer-events:none;
-    overflow:hidden;
+    position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+    background:
+      radial-gradient(ellipse at 20% 15%, rgba(244,194,208,.07), transparent 60%),
+      radial-gradient(ellipse at 80% 75%, rgba(122,180,216,.08), transparent 55%),
+      radial-gradient(ellipse at 50% 110%, rgba(244,194,208,.05), transparent 60%);
   }
-  .stars .layer{
-    position:absolute;inset:-20%;
-    animation:twinkle 5s ease-in-out infinite alternate;
-  }
-  .stars .layer.s1{
-    background-image:
-      radial-gradient(1px 1px at 20px 30px, #fff, transparent 60%),
-      radial-gradient(1px 1px at 80px 120px, #fff, transparent 60%),
-      radial-gradient(1.5px 1.5px at 150px 60px, #e0dcd4, transparent 60%),
-      radial-gradient(1px 1px at 220px 180px, #fff, transparent 60%),
-      radial-gradient(1px 1px at 300px 40px, #8fb9d6, transparent 60%),
-      radial-gradient(1.5px 1.5px at 380px 220px, #fff, transparent 60%),
-      radial-gradient(1px 1px at 60px 260px, #f4c2d0, transparent 60%),
-      radial-gradient(1px 1px at 260px 320px, #fff, transparent 60%),
-      radial-gradient(1px 1px at 420px 100px, #fff, transparent 60%),
-      radial-gradient(1.5px 1.5px at 500px 280px, #e0dcd4, transparent 60%);
-    background-size:540px 400px;
-    opacity:.85;
-    animation-duration:6s;
-  }
-  .stars .layer.s2{
-    background-image:
-      radial-gradient(1.5px 1.5px at 40px 50px, #fff, transparent 60%),
-      radial-gradient(2px 2px at 180px 140px, #fff, transparent 60%),
-      radial-gradient(1.5px 1.5px at 320px 80px, #f4c2d0, transparent 60%),
-      radial-gradient(2px 2px at 260px 240px, #8fb9d6, transparent 60%),
-      radial-gradient(1.5px 1.5px at 460px 180px, #fff, transparent 60%),
-      radial-gradient(2px 2px at 120px 320px, #fff, transparent 60%),
-      radial-gradient(1.5px 1.5px at 540px 60px, #e0dcd4, transparent 60%),
-      radial-gradient(2px 2px at 220px 400px, #fff, transparent 60%),
-      radial-gradient(1.5px 1.5px at 380px 480px, #f4c2d0, transparent 60%),
-      radial-gradient(2px 2px at 80px 520px, #8fb9d6, transparent 60%);
-    background-size:620px 600px;
-    opacity:.65;
-    animation-duration:8s;
-    animation-delay:-2s;
-  }
-  .stars .layer.s3{
-    background-image:
-      radial-gradient(2.5px 2.5px at 100px 80px, #fff, transparent 60%),
-      radial-gradient(3px 3px at 280px 180px, #8fb9d6, transparent 60%),
-      radial-gradient(2.5px 2.5px at 460px 280px, #f4c2d0, transparent 60%),
-      radial-gradient(3px 3px at 160px 420px, #fff, transparent 60%),
-      radial-gradient(2.5px 2.5px at 580px 520px, #fff, transparent 60%),
-      radial-gradient(3px 3px at 400px 680px, #e0dcd4, transparent 60%);
-    background-size:700px 800px;
-    opacity:.55;
-    animation-duration:11s;
-    animation-delay:-4s;
-  }
-  @keyframes twinkle{
-    from{opacity:.55}
-    to{opacity:1}
-  }
+  #starCanvas{display:block;width:100vw;height:100vh;position:fixed;top:0;left:0}
 
-  /* Shooting stars. Each is a small, tilted gradient "comet" that travels
-     across the viewport. Three variants to avoid visual clutter. */
+  /* Shooting stars — kept CSS for variety, reduced to 3 for perf */
   .shooting-star{
     position:absolute;top:0;left:0;
-    width:110px;height:1px;
-    background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.6) 45%, #fff 65%, rgba(122,180,216,0) 100%);
-    filter:drop-shadow(0 0 4px rgba(244,194,208,.45));
+    width:130px;height:1px;
+    background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.55) 45%, #fff 65%, rgba(244,194,208,0) 100%);
+    filter:drop-shadow(0 0 6px rgba(244,194,208,.5));
     transform:rotate(18deg);
     border-radius:999px;
     opacity:0;
-    animation:shoot 9s linear infinite;
+    animation:shoot 11s linear infinite;
+    will-change:transform,opacity;
   }
   .shooting-star.pink{
     background:linear-gradient(90deg, transparent 0%, rgba(249,214,224,.55) 45%, #f9d6e0 65%, rgba(249,214,224,0) 100%);
-    filter:drop-shadow(0 0 5px rgba(244,194,208,.55));
-    width:80px;height:1px;
+    filter:drop-shadow(0 0 7px rgba(244,194,208,.6));
+    width:95px;height:1px;animation-duration:14s;animation-delay:-3s;
   }
   .shooting-star.blue{
     background:linear-gradient(90deg, transparent 0%, rgba(156,201,232,.55) 45%, #9cc9e8 65%, rgba(156,201,232,0) 100%);
-    filter:drop-shadow(0 0 5px rgba(122,180,216,.55));
-    width:95px;height:1px;
+    filter:drop-shadow(0 0 7px rgba(122,180,216,.55));
+    width:110px;height:1px;animation-duration:17s;animation-delay:-7s;
+  }
+  .shooting-star.soft{
+    background:linear-gradient(90deg, transparent 0%, rgba(232,228,221,.5) 45%, #fff 65%, transparent 100%);
+    filter:drop-shadow(0 0 5px rgba(232,228,221,.35));
+    width:140px;height:1px;animation-duration:22s;animation-delay:-15s;
   }
   @keyframes shoot{
-    0%{transform:translate(-140px, -140px) rotate(18deg);opacity:0}
-    3%{opacity:.9}
-    11%{transform:translate(120vw, 52vh) rotate(18deg);opacity:.9}
-    13%{opacity:0}
+    0%  {transform:translate(-200px, -200px) rotate(18deg);opacity:0}
+    2%  {opacity:.9}
+    12% {transform:translate(125vw, 55vh) rotate(18deg);opacity:.9}
+    14% {opacity:0}
     100%{opacity:0}
   }
 
   /* ============================================================
-     CUSTOM CURSOR — a small dot follows instantly, a soft halo ring
-     trails behind with easing. On hover of interactive elements,
-     the ring grows and adopts the accent colour.
+     CUSTOM CURSOR — lightweight: one dot via CSS transition,
+     no JS animation loop. Hover of interactive elements adds
+     a soft halo via box-shadow.
      ============================================================ */
   .cursor-dot, .cursor-ring{
     position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
     border-radius:50%;
     mix-blend-mode:difference;
     transform:translate3d(-50%,-50%,0);
+    will-change:transform;
   }
   .cursor-dot{
-    width:6px;height:6px;
+    width:5px;height:5px;
     background:#fff;
-    transition:transform .08s linear, width .15s var(--ease), height .15s var(--ease), background .2s var(--ease);
+    transition:background .2s var(--ease), width .15s var(--ease), height .15s var(--ease);
   }
   .cursor-ring{
-    width:32px;height:32px;
-    border:1px solid rgba(255,255,255,.55);
-    transition:transform .25s var(--ease), width .2s var(--ease), height .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
-    box-shadow:0 0 16px rgba(244,194,208,.18);
+    width:28px;height:28px;
+    border:1px solid rgba(255,255,255,.45);
+    transition:border-color .25s var(--ease), background .25s var(--ease), box-shadow .25s var(--ease), width .2s var(--ease), height .2s var(--ease);
   }
-  /* hover state on interactive elements */
   body.is-hover .cursor-ring{
-    width:56px;height:56px;
-    border-color:rgba(244,194,208,.85);
-    background:rgba(244,194,208,.10);
-    box-shadow:0 0 24px rgba(244,194,208,.35);
+    width:44px;height:44px;
+    border-color:rgba(244,194,208,.8);
+    background:rgba(244,194,208,.08);
+    box-shadow:0 0 18px rgba(244,194,208,.35);
   }
-  body.is-hover .cursor-dot{
-    background:#f4c2d0;
-  }
+  body.is-hover .cursor-dot{background:#f4c2d0}
 
   @media (hover:none){
     html{cursor:auto}
     .cursor-dot, .cursor-ring{display:none}
+  }
+
+  /* ============================================================
+     SPA ROUTE VIEW — notes shown inline when visiting #/notes/:id
+     ============================================================ */
+  .route-view{
+    position:fixed;
+    inset:0;
+    z-index:80;
+    background:var(--bg);
+    overflow-y:auto;
+    animation:routeIn .35s var(--ease);
+  }
+  @keyframes routeIn{
+    from{opacity:0; transform:translateY(8px)}
+    to  {opacity:1; transform:translateY(0)}
+  }
+  .route-top-bar{
+    position:sticky; top:0; z-index:3;
+    padding:18px 32px;
+    background:linear-gradient(to bottom, rgba(10,10,10,.92), rgba(10,10,10,.72) 70%, transparent);
+    backdrop-filter:blur(6px);
+  }
+  .route-back{
+    font-family:var(--serif-display);
+    font-style:italic;
+    color:#e8e4dd;
+    font-size:17px;
+    letter-spacing:.02em;
+    text-decoration:none;
+    display:inline-block;
+    opacity:.85;
+    transition:opacity .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+  }
+  .route-back:hover{opacity:1; color:var(--accent); transform:translateX(-3px)}
+
+  .route-inner{
+    max-width:720px;
+    margin:0 auto;
+    padding:40px 32px 120px;
+  }
+
+  /* note article — mirrors note.html layout */
+  .route-note .ndate{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12.5px;
+    color:var(--ink-faint);
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .route-note h1{
+    font-family:var(--serif-display);
+    font-style:italic;
+    font-weight:500;
+    font-size:42px;
+    line-height:1.15;
+    letter-spacing:-.01em;
+    color:#e8e4dd;
+    margin:18px 0 12px;
+  }
+  .route-note h1 em, .route-note h1 .accent{
+    color:var(--accent); font-style:italic;
+  }
+  .route-note .desc{
+    color:var(--ink-dim);
+    font-size:16px;
+    line-height:1.7;
+    font-family:var(--serif-body);
+    margin-bottom:36px;
+    padding-bottom:28px;
+    border-bottom:1px solid var(--line);
+  }
+  .route-note .content{
+    font-family:var(--serif-body);
+    font-size:17px;
+    line-height:1.9;
+    color:#d9d3c7;
+    font-weight:390;
+  }
+  .route-note .content h2{
+    font-family:var(--serif-display);
+    font-style:italic;
+    font-weight:500;
+    font-size:26px;
+    color:#e8e4dd;
+    margin:54px 0 14px;
+    scroll-margin-top:90px;
+  }
+  .route-note .content h3{
+    font-family:var(--serif-display);
+    font-size:19px;
+    color:#e8e4dd;
+    margin:36px 0 8px;
+    scroll-margin-top:90px;
+  }
+  .route-note .content p{margin:0 0 18px}
+  .route-note .content em{
+    color:var(--accent); font-style:italic;
+  }
+  .route-note .content strong{
+    color:#e8e4dd; font-weight:600;
+  }
+  .route-note .content code{
+    font-family:"JetBrains Mono",monospace;
+    font-size:.82em;
+    background:rgba(244,194,208,.06);
+    color:#f9d6e0;
+    padding:1px 6px 2px;
+    border-radius:4px;
+    border:1px solid rgba(244,194,208,.16);
+  }
+  .route-note .content pre{
+    background:rgba(244,194,208,.03);
+    border:1px solid rgba(244,194,208,.14);
+    border-left:3px solid var(--accent);
+    padding:18px 20px;
+    margin:24px 0;
+    font-family:"JetBrains Mono",monospace;
+    font-size:13.5px;
+    line-height:1.7;
+    overflow-x:auto;
+    border-radius:0 6px 6px 0;
+    color:#e8e4dd;
+  }
+  .route-note .content pre code{
+    background:transparent; border:none; padding:0; color:inherit; font-size:inherit;
+  }
+  .route-note .content blockquote{
+    margin:26px 0;
+    padding:8px 0 8px 24px;
+    border-left:2px solid var(--accent);
+    color:#d9d3c7;
+    font-style:italic;
+    font-family:var(--serif-display);
+    font-size:18px;
+    line-height:1.7;
+    background:linear-gradient(to right, rgba(244,194,208,.05), transparent);
+  }
+  .route-note .content ul{margin:0 0 20px; padding-left:0; list-style:none}
+  .route-note .content li{
+    position:relative; padding-left:22px; margin:6px 0;
+  }
+  .route-note .content ul li::before{
+    content:'◆'; position:absolute; left:0; top:1px;
+    color:var(--accent); font-size:10px;
+  }
+  .route-note .content ol{margin:0 0 20px; padding-left:0; list-style:none; counter-reset:li-counter}
+  .route-note .content ol li{counter-increment:li-counter}
+  .route-note .content ol li::before{
+    content:counter(li-counter, upper-roman);
+    position:absolute; left:0; top:0;
+    color:var(--accent);
+    font-family:var(--serif-display);
+    font-size:14px;
+  }
+  .route-note .content table{
+    width:100%;
+    border-collapse:collapse;
+    margin:26px 0;
+    font-size:15px;
+  }
+  .route-note .content th{
+    text-align:left;
+    padding:12px 14px;
+    background:rgba(244,194,208,.06);
+    color:#e8e4dd;
+    font-family:var(--serif-display);
+    font-weight:500;
+    border-bottom:1px solid rgba(244,194,208,.25);
+  }
+  .route-note .content td{
+    padding:12px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .route-note .content tr:nth-child(even) td{background:rgba(244,194,208,.025)}
+  .route-note .content a{color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(244,194,208,.35); transition:all .2s var(--ease)}
+  .route-note .content a:hover{border-bottom-color:var(--accent); color:#f9d6e0}
+  .route-note .content hr{border:none; border-top:1px solid var(--line); margin:40px auto; width:50%}
+
+  /* Inline TOC — small floating left rail (shares layout with note.html) */
+  .route-toc{
+    position:fixed;
+    top:50%;
+    transform:translateY(-50%);
+    left:calc(50% - 460px);
+    width:180px;
+    max-height:70vh;
+    overflow-y:auto;
+    padding:14px 0;
+    opacity:.9;
+  }
+  .route-toc .toc-label{
+    font-family:"JetBrains Mono",monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-faint);
+    margin-bottom:12px;
+  }
+  .route-toc a{
+    display:block;
+    padding:4px 0;
+    font-family:var(--serif-body);
+    font-size:14px;
+    color:#a9a39a;
+    text-decoration:none;
+    transition:color .2s var(--ease), padding-left .2s var(--ease);
+    border-left:2px solid transparent;
+    padding-left:12px;
+    line-height:1.45;
+  }
+  .route-toc a.toc-h3{
+    padding-left:24px;
+    font-size:13px;
+    color:#8a857d;
+  }
+  .route-toc a:hover{color:var(--accent); padding-left:16px}
+  .route-toc a.active{
+    color:var(--accent);
+    border-left-color:var(--accent);
+    padding-left:16px;
+  }
+
+  @media (max-width: 1100px){
+    .route-toc{display:none}
+  }
+  @media (max-width: 700px){
+    .route-note h1{font-size:32px}
+    .route-inner{padding:32px 22px 100px}
+    .route-top-bar{padding:14px 22px}
+  }
+
+  /* ============================================================
+     RSS MODAL
+     ============================================================ */
+  .rss-modal{
+    position:fixed; inset:0; z-index:200;
+    display:flex; align-items:center; justify-content:center;
+    animation:rssFade .25s var(--ease);
+  }
+  @keyframes rssFade{
+    from{opacity:0}
+    to  {opacity:1}
+  }
+  .rss-mask{
+    position:absolute; inset:0;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(3px);
+  }
+  .rss-card{
+    position:relative;
+    width:min(560px, 92vw);
+    background:#13111a;
+    border:1px solid rgba(244,194,208,.2);
+    border-radius:14px;
+    padding:36px;
+    box-shadow:0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(244,194,208,.08);
+    animation:rssCardIn .35s var(--ease);
+  }
+  @keyframes rssCardIn{
+    from{transform:translateY(16px) scale(.98); opacity:0}
+    to  {transform:none; opacity:1}
+  }
+  .rss-close{
+    position:absolute; top:10px; right:14px;
+    background:transparent; border:none; color:#a9a39a;
+    font-size:28px; line-height:1; cursor:none;
+    transition:color .2s var(--ease), transform .2s var(--ease);
+    padding:4px 8px;
+  }
+  .rss-close:hover{color:var(--accent); transform:rotate(90deg)}
+  .rss-title{
+    font-family:var(--serif-display);
+    font-style:italic;
+    font-weight:500;
+    font-size:28px;
+    color:#e8e4dd;
+    margin:0 0 8px;
+  }
+  .rss-desc{
+    color:var(--ink-dim);
+    font-size:15px;
+    margin:0 0 26px;
+    line-height:1.7;
+  }
+  .rss-options{
+    display:flex; flex-direction:column; gap:12px; margin-bottom:20px;
+  }
+  .rss-option{
+    display:flex; gap:16px; align-items:flex-start;
+    padding:16px 18px;
+    background:rgba(244,194,208,.035);
+    border:1px solid var(--line);
+    border-radius:10px;
+    text-decoration:none;
+    color:inherit;
+    transition:background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .rss-option:hover{
+    background:rgba(244,194,208,.08);
+    border-color:rgba(244,194,208,.35);
+    transform:translateY(-2px);
+    box-shadow:0 10px 30px rgba(244,194,208,.15);
+  }
+  .rss-ico{
+    width:38px; height:38px;
+    flex:0 0 38px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--accent); color:#1a1018;
+    border-radius:8px;
+    font-size:18px; font-weight:700;
+    font-family:var(--serif-display);
+  }
+  .rss-name{
+    font-family:var(--serif-display);
+    font-style:italic;
+    font-size:18px;
+    color:#e8e4dd;
+    margin-bottom:4px;
+  }
+  .rss-meta{
+    font-size:13.5px;
+    color:var(--ink-dim);
+    line-height:1.6;
+  }
+  .rss-footer{
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    text-align:center;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+  }
+  @media (max-width: 500px){
+    .rss-card{padding:24px 20px}
+    .rss-title{font-size:22px}
   }
 
   /* ============ TOP BAR (overlaid on hero) ============ */
@@ -873,17 +1163,14 @@
 </head>
 <body>
 
-<!-- Starfield: sits behind all content -->
+<!-- Starfield: single canvas for performance -->
 <div class="stars" aria-hidden="true">
-  <div class="layer s1"></div>
-  <div class="layer s2"></div>
-  <div class="layer s3"></div>
+  <canvas id="starCanvas" aria-hidden="true"></canvas>
   <!-- Shooting stars. Offset positions / durations / colours for variety. -->
-  <span class="shooting-star"      style="top:10%;left:5%;animation-duration:11s"></span>
+  <span class="shooting-star"       style="top:10%;left:5%;animation-duration:11s"></span>
   <span class="shooting-star pink"  style="top:30%;left:60%;animation-duration:14s;animation-delay:-3s"></span>
   <span class="shooting-star blue"  style="top:60%;left:20%;animation-duration:17s;animation-delay:-7s"></span>
-  <span class="shooting-star"       style="top:20%;left:80%;animation-duration:13s;animation-delay:-5s"></span>
-  <span class="shooting-star pink"  style="top:75%;left:40%;animation-duration:16s;animation-delay:-10s"></span>
+  <span class="shooting-star soft"  style="top:5%;left:35%;animation-duration:22s;animation-delay:-15s"></span>
 </div>
 
 <!-- Custom cursor -->
@@ -1040,12 +1327,51 @@
     <span class="sep">/</span>
     <a href="#"><span data-i18n="contact.site">Website · annieif.dev</span></a>
     <span class="sep">/</span>
-    <a href="#"><span data-i18n="contact.rss">RSS · 订阅更新</span></a>
+    <a href="#" id="rssLink"><span data-i18n="contact.rss">RSS · 订阅更新</span></a>
   </div>
 </section>
 
   </div><!-- .page-main -->
 </div><!-- .page-layout -->
+
+<!-- ============ ROUTE VIEW (SPA — notes shown inline) ============ -->
+<section id="routeView" class="route-view" hidden>
+  <div class="route-top-bar">
+    <a href="#/" class="route-back" aria-label="返回首页">← Annieif</a>
+  </div>
+  <div class="route-inner">
+    <!-- populated by JS -->
+  </div>
+</section>
+
+<!-- ============ RSS MODAL ============ -->
+<div id="rssModal" class="rss-modal" hidden>
+  <div class="rss-mask" data-close="1"></div>
+  <div class="rss-card" role="dialog" aria-modal="true" aria-label="RSS · 订阅更新">
+    <button class="rss-close" data-close="1" aria-label="关闭">×</button>
+    <h3 class="rss-title" data-i18n="rss.title">RSS · 订阅更新</h3>
+    <p  class="rss-desc"  data-i18n="rss.desc">选择你的订阅方式 — 所有内容均来自本站笔记区</p>
+
+    <div class="rss-options">
+      <a class="rss-option" href="feed.xml" type="application/rss+xml">
+        <div class="rss-ico">✦</div>
+        <div>
+          <div class="rss-name" data-i18n="rss.rssLabel">RSS 2.0 订阅</div>
+          <div class="rss-meta" data-i18n="rss.rssText">将 feed.xml 添加到 Feedly、Inoreader、NetNewsWire 等任意 RSS 阅读器</div>
+        </div>
+      </a>
+      <a class="rss-option" id="rssMail" href="#">
+        <div class="rss-ico">✉</div>
+        <div>
+          <div class="rss-name" data-i18n="rss.emailLabel">邮件订阅</div>
+          <div class="rss-meta" data-i18n="rss.emailText">给我发一封邮件，新笔记发布时我会单独通知你</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="rss-footer" data-i18n="rss.footer">无广告 · 无追踪 · 纯静态托管</div>
+  </div>
+</div>
 
 <script src="notes/data.js"></script>
 <script>
@@ -1121,6 +1447,13 @@ const I18N = {
     'contact.email': 'Email · Qianlovean@outlook.com',
     'contact.site': 'Website · annieif.dev',
     'contact.rss': 'RSS · 订阅更新',
+    'rss.title': 'RSS · 订阅更新',
+    'rss.desc': '选择你的订阅方式 — 所有内容均来自本站笔记区。',
+    'rss.rssLabel': 'RSS 2.0 订阅',
+    'rss.rssText': '将 feed.xml 添加到 Feedly、Inoreader、NetNewsWire 等任意 RSS 阅读器。',
+    'rss.emailLabel': '邮件订阅',
+    'rss.emailText': '给我发一封邮件，新笔记发布时我会单独通知你。',
+    'rss.footer': '无广告 · 无追踪 · 纯静态托管',
   },
 
   en: {
@@ -1182,6 +1515,13 @@ const I18N = {
     'contact.email': 'Email · Qianlovean@outlook.com',
     'contact.site': 'Website · annieif.dev',
     'contact.rss': 'RSS · Subscribe',
+    'rss.title': 'RSS · Subscribe',
+    'rss.desc': 'Pick your preferred way to follow — all content flows from my notes.',
+    'rss.rssLabel': 'RSS 2.0 feed',
+    'rss.rssText': 'Add feed.xml to Feedly, Inoreader, NetNewsWire or any reader you like.',
+    'rss.emailLabel': 'Email subscription',
+    'rss.emailText': 'Drop me a line and I\'ll let you know whenever a new note is published.',
+    'rss.footer': 'no ads · no tracking · statically hosted',
   },
 
   ja: {
@@ -1235,6 +1575,13 @@ const I18N = {
     'contact.email': 'Email · Qianlovean@outlook.com',
     'contact.site': 'Website · annieif.dev',
     'contact.rss': 'RSS · 購読する',
+    'rss.title': 'RSS · 購読する',
+    'rss.desc': 'お好きな方法で購読を — すべてのコンテンツはノートから生成されています。',
+    'rss.rssLabel': 'RSS 2.0 フィード',
+    'rss.rssText': 'feed.xml を Feedly、Inoreader、NetNewsWire などの RSS リーダーに追加してください。',
+    'rss.emailLabel': 'メールで購読',
+    'rss.emailText': 'メールをください。新しいノートが公開されたら直接お知らせします。',
+    'rss.footer': '広告なし · トラッキングなし · 静的ホスティング',
   },
 
   ko: {
@@ -1288,6 +1635,13 @@ const I18N = {
     'contact.email': 'Email · Qianlovean@outlook.com',
     'contact.site': 'Website · annieif.dev',
     'contact.rss': 'RSS · 구독하기',
+    'rss.title': 'RSS · 구독하기',
+    'rss.desc': '선호하는 방식으로 구독해 주세요 — 모든 콘텐츠는 노트에서 생성됩니다.',
+    'rss.rssLabel': 'RSS 2.0 피드',
+    'rss.rssText': 'feed.xml 을 Feedly, Inoreader, NetNewsWire 등의 리더에 추가하세요.',
+    'rss.emailLabel': '이메일 구독',
+    'rss.emailText': '메일을 주시면 새 노트가 게시될 때 직접 알려드립니다.',
+    'rss.footer': '광고 없음 · 추적 없음 · 정적 호스팅',
   },
 
   es: {
@@ -1341,6 +1695,13 @@ const I18N = {
     'contact.email': 'Email · Qianlovean@outlook.com',
     'contact.site': 'Website · annieif.dev',
     'contact.rss': 'RSS · Suscríbete',
+    'rss.title': 'RSS · Suscríbete',
+    'rss.desc': 'Elige cómo seguirme — todo el contenido nace de mis notas.',
+    'rss.rssLabel': 'Canal RSS 2.0',
+    'rss.rssText': 'Añade feed.xml a Feedly, Inoreader, NetNewsWire o cualquier lector RSS.',
+    'rss.emailLabel': 'Suscripción por email',
+    'rss.emailText': 'Envíame un correo y te avisaré cuando publique una nota nueva.',
+    'rss.footer': 'sin anuncios · sin seguimiento · alojamiento estático',
   },
 
   fr: {
@@ -1394,6 +1755,13 @@ const I18N = {
     'contact.email': 'Email · Qianlovean@outlook.com',
     'contact.site': 'Website · annieif.dev',
     'contact.rss': 'RSS · S\'abonner',
+    'rss.title': 'RSS · S\'abonner',
+    'rss.desc': 'Choisissez votre façon de me suivre — tout le contenu vient de mes notes.',
+    'rss.rssLabel': 'Flux RSS 2.0',
+    'rss.rssText': 'Ajoutez feed.xml à Feedly, Inoreader, NetNewsWire ou tout lecteur RSS.',
+    'rss.emailLabel': 'Abonnement par email',
+    'rss.emailText': 'Écrivez-moi et je vous préviendrai directement à chaque nouvelle note.',
+    'rss.footer': 'sans pub · sans pistage · hébergement statique',
   },
 
   ar: {
@@ -1447,6 +1815,13 @@ const I18N = {
     'contact.email': 'Email · Qianlovean@outlook.com',
     'contact.site': 'Website · annieif.dev',
     'contact.rss': 'RSS · اشتراك',
+    'rss.title': 'RSS · اشتراك',
+    'rss.desc': 'اختر الطريقة التي تفضلها — كل المحتوى يأتي من قسم الملاحظات.',
+    'rss.rssLabel': 'موجز RSS 2.0',
+    'rss.rssText': 'أضف feed.xml إلى Feedly أو Inoreader أو NetNewsWire أو أي قارئ RSS.',
+    'rss.emailLabel': 'الاشتراك بالبريد',
+    'rss.emailText': 'راسلني وسأخبرك مباشرة عند نشر ملاحظة جديدة.',
+    'rss.footer': 'بدون إعلانات · بدون تتبع · استضافة ثابتة',
   },
 
   ru: {
@@ -1500,7 +1875,14 @@ const I18N = {
     'contact.email': 'Email · Qianlovean@outlook.com',
     'contact.site': 'Website · annieif.dev',
     'contact.rss': 'RSS · Подписаться',
-  }
+    'rss.title': 'RSS · Подписаться',
+    'rss.desc': 'Выберите удобный способ — весь контент рождается из моих заметок.',
+    'rss.rssLabel': 'RSS 2.0 лента',
+    'rss.rssText': 'Добавьте feed.xml в Feedly, Inoreader, NetNewsWire или любой RSS-читатель.',
+    'rss.emailLabel': 'Подписка по email',
+    'rss.emailText': 'Напишите мне, и я сообщу вам напрямую о каждой новой заметке.',
+    'rss.footer': 'без рекламы · без отслеживания · статический хостинг',
+  },
 };
 
 /* =====================================================
@@ -1736,9 +2118,9 @@ function renderNotesFeed(items) {
     previewInner.textContent = (n.preview || n.desc || '') + ' …';
     const nlink = document.createElement('a');
     nlink.className = 'nlink';
-    nlink.href = 'notes/note.html#' + (n.id || '');
+    nlink.href = '#/notes/' + (n.id || '');
     nlink.textContent = '→ 阅读全文';
-    nlink.addEventListener('click', e => e.stopPropagation());
+    nlink.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); goToNote(n.id); });
     previewInner.appendChild(document.createElement('br'));
     previewInner.appendChild(nlink);
     preview.appendChild(previewInner);
@@ -2101,35 +2483,37 @@ function runTypewriter(root, stepMs) {
 }
 
 /* =====================================================
-   Custom cursor driver + hover detection.
+   Custom cursor — lightweight: CSS transition only.
+   Dot snaps to pointer; ring uses CSS transition for easing.
    ===================================================== */
 (function initCursor(){
-  const dot   = document.querySelector('.cursor-dot');
-  const ring  = document.querySelector('.cursor-ring');
+  const dot  = document.querySelector('.cursor-dot');
+  const ring = document.querySelector('.cursor-ring');
   if (!dot || !ring) return;
+  if (!window.matchMedia('(hover:hover)').matches) return;
 
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
-  let ringX = mouseX, ringY = mouseY;
-  let rafId;
-
-  // Interactive elements: anything we want to trigger the ring expansion.
   const interactiveSelector = 'a, button, .lang-switch .btn, input, textarea, select, [data-cursor-hover]';
+  let lastMove = 0, lastRing = 0;
+  let rx = window.innerWidth / 2, ry = window.innerHeight / 2;
 
+  // Dot uses JS instant snap via translate3d (cheap)
+  // Ring uses JS-managed translate3d with a simple lerp on requestAnimationFrame — but only when the pointer moves.
   function onMove(e){
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    // Dot snaps to pointer. Using translate3d keeps it on its own layer.
-    dot.style.transform = 'translate3d(' + mouseX + 'px,' + mouseY + 'px, 0) translate(-50%,-50%)';
+    const now = Date.now();
+    const x = e.clientX, y = e.clientY;
+    // dot — instant (but we throttle writes to ~60fps)
+    if (now - lastMove >= 16){
+      dot.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) translate(-50%,-50%)';
+      lastMove = now;
+    }
+    // ring — lerp toward pointer on the next frame (so easing happens in JS, no per-frame paint)
+    if (now - lastRing >= 30){
+      rx += (x - rx) * 0.25;
+      ry += (y - ry) * 0.25;
+      ring.style.transform = 'translate3d(' + rx.toFixed(1) + 'px,' + ry.toFixed(1) + 'px,0) translate(-50%,-50%)';
+      lastRing = now;
+    }
   }
-  function loop(){
-    // Ring eases toward the pointer (the "trail" look)
-    ringX += (mouseX - ringX) * 0.18;
-    ringY += (mouseY - ringY) * 0.18;
-    ring.style.transform = 'translate3d(' + ringX + 'px,' + ringY + 'px, 0) translate(-50%,-50%)';
-    rafId = requestAnimationFrame(loop);
-  }
-
   function onEnterHover(e){
     const t = e.target.closest(interactiveSelector);
     if (t) document.body.classList.add('is-hover');
@@ -2142,13 +2526,339 @@ function runTypewriter(root, stepMs) {
   window.addEventListener('mousemove', onMove, { passive:true });
   document.addEventListener('mouseover', onEnterHover);
   document.addEventListener('mouseout',  onLeaveHover);
-  // Re-center on window resize
-  window.addEventListener('resize', () => {
-    mouseX = Math.min(mouseX, window.innerWidth);
-    mouseY = Math.min(mouseY, window.innerHeight);
+
+  // Initial off-screen position so first move feels natural.
+  dot.style.transform  = 'translate3d(-100px,-100px,0)';
+  ring.style.transform = 'translate3d(-100px,-100px,0)';
+})();
+
+/* =====================================================
+   Starfield canvas driver — draws ~150 twinkling dots.
+   ===================================================== */
+(function initStarfield(){
+  const canvas = document.getElementById('starCanvas');
+  if (!canvas || !canvas.getContext) return;
+  const ctx = canvas.getContext('2d');
+
+  let w, h, dpr;
+  const palette = ['#ffffff', '#f9d6e0', '#f4c2d0', '#9cc9e8', '#e8e4dd', '#b9c4d9'];
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width  = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    canvas.width  = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    generate();
+  }
+
+  let stars = [];
+  function generate(){
+    // scale star count by viewport area — capped to keep draw time cheap.
+    const target = Math.min(220, Math.floor((w * h) / 9000));
+    stars = new Array(target);
+    for (let i = 0; i < target; i++){
+      stars[i] = {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: 0.4 + Math.random() * 1.6 + (Math.random() < 0.08 ? 1.2 : 0),
+        color: palette[Math.floor(Math.random() * palette.length)],
+        baseAlpha: 0.35 + Math.random() * 0.55,
+        twinkleSpeed: 0.0008 + Math.random() * 0.0022,
+        twinklePhase: Math.random() * Math.PI * 2,
+      };
+    }
+  }
+
+  let rafId = null;
+  let running = false;
+  function draw(ts){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // draw stars — simple opaque dots with alpha-driven twinkle
+    const scale = dpr;
+    for (let i = 0, n = stars.length; i < n; i++){
+      const s = stars[i];
+      const alpha = s.baseAlpha + 0.35 * Math.sin(ts * s.twinkleSpeed + s.twinklePhase);
+      ctx.beginPath();
+      ctx.fillStyle = s.color;
+      ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+      ctx.arc(s.x * scale, s.y * scale, s.r * scale, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // soft glow layer over a few random stars — subtle "breathe"
+    for (let i = 0; i < 5; i++){
+      const s = stars[(Math.floor(ts / 2000) + i * 31) % stars.length];
+      if (!s) continue;
+      const gAlpha = 0.15 + 0.15 * Math.sin(ts * 0.0006 + i);
+      const gr = ctx.createRadialGradient(s.x * scale, s.y * scale, 0, s.x * scale, s.y * scale, 28 * scale);
+      gr.addColorStop(0, 'rgba(244,194,208,' + gAlpha.toFixed(3) + ')');
+      gr.addColorStop(1, 'rgba(244,194,208,0)');
+      ctx.fillStyle = gr;
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.arc(s.x * scale, s.y * scale, 28 * scale, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    rafId = requestAnimationFrame(draw);
+  }
+
+  // Pause when tab hidden to save CPU
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden){
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = null;
+      running = false;
+    } else if (!running){
+      running = true;
+      rafId = requestAnimationFrame(draw);
+    }
   });
 
-  loop();
+  window.addEventListener('resize', resize);
+  resize();
+  running = true;
+  rafId = requestAnimationFrame(draw);
+})();
+
+/* =====================================================
+   SPA ROUTER — #/notes/:id → render note inline;
+   default → render main feed
+   ===================================================== */
+function goToNote(id){
+  if (history.replaceState) {
+    history.replaceState(null, '', '#/notes/' + (id || ''));
+  } else {
+    location.hash = '/notes/' + (id || '');
+  }
+  renderRoute();
+}
+
+function goHome(){
+  if (history.replaceState) history.replaceState(null, '', '#/');
+  else location.hash = '/';
+  renderRoute();
+}
+
+function parseRoute(){
+  const h = (location.hash || '').replace(/^#/, '');
+  // /notes/NNN
+  const m = h.match(/^\/notes\/(.+)$/);
+  if (m) return { view:'note', id:decodeURIComponent(m[1]) };
+  return { view:'home' };
+}
+
+function renderRoute(){
+  const r = parseRoute();
+  const routeView = document.getElementById('routeView');
+  const main = document.querySelector('.page-main');
+  const hero = document.querySelector('.hero');
+
+  if (r.view === 'note') {
+    const note = (typeof NOTES_DATA !== 'undefined') ? NOTES_DATA.find(n => n.id === r.id) : null;
+    if (!note) { goHome(); return; }
+    // hide main content, show route view
+    if (main) main.style.display = 'none';
+    if (hero) hero.style.display = 'none';
+    if (document.getElementById('pageToc')) document.getElementById('pageToc').style.display = 'none';
+    routeView.hidden = false;
+    document.title = (note.title || '笔记') + ' · Annieif';
+    document.body.classList.remove('is-hero-visible');
+    window.scrollTo(0, 0);
+
+    // build article
+    const inner = routeView.querySelector('.route-inner');
+    inner.innerHTML = '';
+
+    // TOC (only if there are h2/h3)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = note.content || '';
+    const headings = tempDiv.querySelectorAll('h2, h3');
+
+    if (headings.length > 1) {
+      const toc = document.createElement('div');
+      toc.className = 'route-toc';
+      const tocLabel = document.createElement('div');
+      tocLabel.className = 'toc-label';
+      tocLabel.textContent = '目录';
+      toc.appendChild(tocLabel);
+      headings.forEach((h, i) => {
+        const a = document.createElement('a');
+        const secId = 'sec-' + i;
+        h.id = secId;
+        a.href = '#' + secId;
+        a.textContent = h.textContent.trim();
+        if (h.tagName === 'H3') a.className = 'toc-h3';
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          const target = document.getElementById(secId);
+          if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+        toc.appendChild(a);
+      });
+      // assemble article first, then inject TOC outside inner
+    }
+
+    const article = document.createElement('article');
+    article.className = 'route-note';
+
+    const ndate = document.createElement('div');
+    ndate.className = 'ndate';
+    ndate.textContent = note.date || '';
+
+    const h1 = document.createElement('h1');
+    // allow emphasis in title (split around *)
+    const titleText = note.title || '';
+    const parts = titleText.split(/\*([^*]+)\*/);
+    parts.forEach((p, i) => {
+      if (i % 2 === 1) {
+        const em = document.createElement('em');
+        em.textContent = p;
+        h1.appendChild(em);
+      } else {
+        h1.appendChild(document.createTextNode(p));
+      }
+    });
+
+    const desc = document.createElement('div');
+    desc.className = 'desc';
+    desc.textContent = note.desc || '';
+
+    const content = document.createElement('div');
+    content.className = 'content';
+    content.id = 'noteContent';
+    // use the temp div (we've mutated it with h2/h3 ids)
+    content.innerHTML = tempDiv.innerHTML;
+
+    article.appendChild(ndate);
+    article.appendChild(h1);
+    article.appendChild(desc);
+    article.appendChild(content);
+
+    inner.appendChild(article);
+
+    // attach TOC to the route-view (outside inner so it can be positioned fixed)
+    if (headings.length > 1) {
+      const existingToc = routeView.querySelector('.route-toc');
+      if (existingToc) existingToc.remove();
+      // rebind the toc we built earlier but with correct DOM refs
+      const toc = document.createElement('nav');
+      toc.className = 'route-toc';
+      toc.setAttribute('aria-label', '目录');
+      const tocLabel = document.createElement('div');
+      tocLabel.className = 'toc-label';
+      tocLabel.textContent = '目录';
+      toc.appendChild(tocLabel);
+      const actualHeadings = content.querySelectorAll('h2, h3');
+      actualHeadings.forEach((h, i) => {
+        const secId = 'sec-' + i;
+        h.id = secId;
+        h.setAttribute('data-toc', '1');
+        const a = document.createElement('a');
+        a.href = '#' + secId;
+        a.textContent = h.textContent.trim();
+        if (h.tagName === 'H3') a.className = 'toc-h3';
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          h.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+        toc.appendChild(a);
+      });
+      routeView.appendChild(toc);
+
+      // IntersectionObserver — highlight active TOC link
+      const tocLinks = toc.querySelectorAll('a');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(ent => {
+          const id = ent.target.id;
+          const link = Array.from(tocLinks).find(l => l.getAttribute('href') === '#' + id);
+          if (link) {
+            if (ent.isIntersecting) {
+              tocLinks.forEach(l => l.classList.remove('active'));
+              link.classList.add('active');
+            }
+          }
+        });
+      }, { rootMargin:'-20% 0px -70% 0px', threshold:0 });
+      actualHeadings.forEach(h => obs.observe(h));
+    }
+
+    // attach "back to home" to the route-back link
+    const backBtn = routeView.querySelector('.route-back');
+    if (backBtn) {
+      backBtn.onclick = function(e){ e.preventDefault(); goHome(); };
+    }
+
+  } else {
+    // home view
+    if (main) main.style.display = '';
+    if (hero) hero.style.display = '';
+    if (document.getElementById('pageToc')) document.getElementById('pageToc').style.display = '';
+    routeView.hidden = true;
+    document.title = 'Annieif — 独立造物者';
+  }
+}
+
+window.addEventListener('popstate', renderRoute);
+// handle anchor hash jumps for section TOC too
+document.addEventListener('click', function(e){
+  const a = e.target.closest && e.target.closest('a[href^="#"]');
+  if (!a) return;
+  const href = a.getAttribute('href') || '';
+  if (href === '#/' || href === '#') {
+    e.preventDefault();
+    goHome();
+  } else if (href.match(/^#\/notes\//)) {
+    e.preventDefault();
+    const id = href.replace('#/notes/', '');
+    goToNote(id);
+  } else if (href.charAt(0) === '#') {
+    // allow normal anchor scrolling for #about, #notes etc
+  }
+});
+
+/* =====================================================
+   RSS modal driver
+   ===================================================== */
+(function initRssModal(){
+  const modal = document.getElementById('rssModal');
+  if (!modal) return;
+  const trigger = document.getElementById('rssLink');
+  if (trigger) {
+    trigger.addEventListener('click', function(e){
+      e.preventDefault();
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  // close on mask / close button click
+  modal.addEventListener('click', function(e){
+    if (e.target.getAttribute('data-close') === '1' || e.target.classList.contains('rss-mask')) {
+      modal.hidden = true;
+      document.body.style.overflow = '';
+    }
+  });
+  // escape key
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && !modal.hidden) {
+      modal.hidden = true;
+      document.body.style.overflow = '';
+    }
+  });
+
+  // email button preset
+  const mailBtn = document.getElementById('rssMail');
+  if (mailBtn) {
+    mailBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      const subject = encodeURIComponent('订阅 Annieif 笔记更新');
+      const body = encodeURIComponent('你好 Annieif，\n\n我想订阅你的博客/笔记更新。\n\n—');
+      location.href = 'mailto:Qianlovean@outlook.com?subject=' + subject + '&body=' + body;
+    });
+  }
 })();
 
 /* =====================================================
@@ -2167,6 +2877,9 @@ function runTypewriter(root, stepMs) {
 
   // Page TOC scroll-spy
   initPageTOC();
+
+  // Initial route
+  renderRoute();
 
   // Wire language switcher buttons
   document.querySelectorAll('#langSwitch .btn').forEach(btn => {
