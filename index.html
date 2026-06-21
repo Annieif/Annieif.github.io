@@ -2181,23 +2181,14 @@ function setLang(lang) {
     if (!pvEl || !uvEl) return;
     const pvHidden = document.getElementById('busuanzi_value_site_pv');
     const uvHidden = document.getElementById('busuanzi_value_site_uv');
-    let fmt = 'roman'; // 默认罗马数字
+    let fmt = 'roman';
 
     function toggle(el, hiddenEl){
       const raw = parseInt(hiddenEl.textContent, 10) || 0;
       if (raw <= 0) return;
       fmt = (fmt === 'roman') ? 'arabic' : 'roman';
-      const target = (fmt === 'roman') ? toRoman(raw) : raw.toLocaleString();
-      // 动画：缩小 → 换字 → 弹回
-      el.style.transition = 'transform .2s cubic-bezier(.2,.8,.2,1), opacity .2s cubic-bezier(.2,.8,.2,1)';
-      el.style.transform = 'scale(0.85)';
-      el.style.opacity = '0.3';
-      setTimeout(function(){
-        el.textContent = target;
-        el.style.transform = 'scale(1.08)';
-        el.style.opacity = '1';
-        setTimeout(function(){ el.style.transform = 'scale(1)'; }, 180);
-      }, 200);
+      const formatFn = (fmt === 'roman') ? toRoman : function(v){ return v.toLocaleString(); };
+      runCountUp(el, raw, 800, formatFn);
     }
 
     pvEl.style.cursor = 'pointer';
