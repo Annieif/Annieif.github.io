@@ -119,23 +119,23 @@
     border-radius:50%;
     mix-blend-mode:difference;
     transform:translate3d(-50%,-50%,0);
-    will-change:transform;
   }
   .cursor-dot{
-    width:5px;height:5px;
+    width:6px;height:6px;
     background:#fff;
-    transition:background .2s var(--ease), width .15s var(--ease), height .15s var(--ease);
+    transition:transform .08s linear, width .15s var(--ease), height .15s var(--ease), background .2s var(--ease);
   }
   .cursor-ring{
-    width:28px;height:28px;
-    border:1px solid rgba(255,255,255,.45);
-    transition:border-color .25s var(--ease), background .25s var(--ease), box-shadow .25s var(--ease), width .2s var(--ease), height .2s var(--ease);
+    width:32px;height:32px;
+    border:1px solid rgba(255,255,255,.55);
+    transition:transform .25s var(--ease), width .2s var(--ease), height .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+    box-shadow:0 0 16px rgba(244,194,208,.18);
   }
   body.is-hover .cursor-ring{
-    width:44px;height:44px;
-    border-color:rgba(244,194,208,.8);
-    background:rgba(244,194,208,.08);
-    box-shadow:0 0 18px rgba(244,194,208,.35);
+    width:56px;height:56px;
+    border-color:rgba(244,194,208,.85);
+    background:rgba(244,194,208,.10);
+    box-shadow:0 0 24px rgba(244,194,208,.35);
   }
   body.is-hover .cursor-dot{background:#f4c2d0}
 
@@ -2495,8 +2495,8 @@ function runTypewriter(root, stepMs) {
 }
 
 /* =====================================================
-   Custom cursor — lightweight: CSS transition only.
-   Dot snaps to pointer; ring uses CSS transition for easing.
+   Custom cursor — dot snaps instantly, ring trails with
+   RAF-based easing. Hover adds accent glow + expansion.
    ===================================================== */
 (function initCursor(){
   const dot  = document.querySelector('.cursor-dot');
@@ -2505,27 +2505,22 @@ function runTypewriter(root, stepMs) {
   if (!window.matchMedia('(hover:hover)').matches) return;
 
   const interactiveSelector = 'a, button, .lang-switch .btn, input, textarea, select, [data-cursor-hover]';
-  let lastMove = 0, lastRing = 0;
-  let rx = window.innerWidth / 2, ry = window.innerHeight / 2;
+  let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+  let ringX = mouseX, ringY = mouseY;
+  let rafId;
 
-  // Dot uses JS instant snap via translate3d (cheap)
-  // Ring uses JS-managed translate3d with a simple lerp on requestAnimationFrame — but only when the pointer moves.
   function onMove(e){
-    const now = Date.now();
-    const x = e.clientX, y = e.clientY;
-    // dot — instant (but we throttle writes to ~60fps)
-    if (now - lastMove >= 16){
-      dot.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) translate(-50%,-50%)';
-      lastMove = now;
-    }
-    // ring — lerp toward pointer on the next frame (so easing happens in JS, no per-frame paint)
-    if (now - lastRing >= 30){
-      rx += (x - rx) * 0.25;
-      ry += (y - ry) * 0.25;
-      ring.style.transform = 'translate3d(' + rx.toFixed(1) + 'px,' + ry.toFixed(1) + 'px,0) translate(-50%,-50%)';
-      lastRing = now;
-    }
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.transform = 'translate3d(' + mouseX + 'px,' + mouseY + 'px,0) translate(-50%,-50%)';
   }
+  function loop(){
+    ringX += (mouseX - ringX) * 0.18;
+    ringY += (mouseY - ringY) * 0.18;
+    ring.style.transform = 'translate3d(' + ringX.toFixed(1) + 'px,' + ringY.toFixed(1) + 'px,0) translate(-50%,-50%)';
+    rafId = requestAnimationFrame(loop);
+  }
+
   function onEnterHover(e){
     const t = e.target.closest(interactiveSelector);
     if (t) document.body.classList.add('is-hover');
@@ -2538,10 +2533,12 @@ function runTypewriter(root, stepMs) {
   window.addEventListener('mousemove', onMove, { passive:true });
   document.addEventListener('mouseover', onEnterHover);
   document.addEventListener('mouseout',  onLeaveHover);
+  window.addEventListener('resize', function(){
+    mouseX = Math.min(mouseX, window.innerWidth);
+    mouseY = Math.min(mouseY, window.innerHeight);
+  });
 
-  // Initial off-screen position so first move feels natural.
-  dot.style.transform  = 'translate3d(-100px,-100px,0)';
-  ring.style.transform = 'translate3d(-100px,-100px,0)';
+  loop();
 })();
 
 /* =====================================================
