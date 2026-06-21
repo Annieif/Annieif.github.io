@@ -2142,20 +2142,27 @@ function setLang(lang) {
   // Hero visibility → auto-hide TOC when the large title overlaps
   const heroEl = document.querySelector('.hero') || document.querySelector('#about');
   const toc = document.getElementById('page-toc');
+  let tocDebounce = null;
   if (heroEl && 'IntersectionObserver' in window) {
     const heroObs = new IntersectionObserver((entries) => {
       entries.forEach(ent => {
-        if (ent.isIntersecting && ent.intersectionRatio > 0.35) {
-          document.body.classList.add('is-hero-visible');
-          if (toc) toc.classList.remove('toc-enter');
-        } else {
-          document.body.classList.remove('is-hero-visible');
-          if (toc) {
-            toc.classList.remove('toc-enter');
-            void toc.offsetWidth; // force reflow to re-trigger animation
-            toc.classList.add('toc-enter');
+        const shouldHide = ent.isIntersecting && ent.intersectionRatio > 0.35;
+        const isHidden = document.body.classList.contains('is-hero-visible');
+        if (shouldHide === isHidden) { clearTimeout(tocDebounce); return; }
+        clearTimeout(tocDebounce);
+        tocDebounce = setTimeout(() => {
+          if (shouldHide) {
+            document.body.classList.add('is-hero-visible');
+            if (toc) toc.classList.remove('toc-enter');
+          } else {
+            document.body.classList.remove('is-hero-visible');
+            if (toc) {
+              toc.classList.remove('toc-enter');
+              void toc.offsetWidth;
+              toc.classList.add('toc-enter');
+            }
           }
-        }
+        }, 200);
       });
     }, { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1.0] });
     heroObs.observe(heroEl);
