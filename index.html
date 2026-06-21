@@ -789,11 +789,12 @@
     z-index:20;
     display:flex;flex-direction:column;gap:22px;
     width:auto;
-    transition:opacity .45s var(--ease);
+    transition:opacity .65s var(--ease), transform .65s var(--ease);
   }
   /* auto-hide when the hero (large title) overlaps — JS toggles .is-hero-visible on body */
   body.is-hero-visible #page-toc{
     opacity:0;pointer-events:none;
+    transform:translateY(-50%) translateX(-18px);
   }
   #page-toc .toc-line{
     position:absolute;left:4px;top:10px;bottom:10px;
@@ -858,15 +859,16 @@
   }
   #page-toc a.active .toc-num,
   #page-toc a.active .toc-label{color:var(--accent)}
-  /* entrance animation staggered */
-  #page-toc a{opacity:0;animation:tocEnter .6s var(--ease) forwards}
-  #page-toc a:nth-child(1){animation-delay:.1s}
-  #page-toc a:nth-child(2){animation-delay:.2s}
-  #page-toc a:nth-child(3){animation-delay:.3s}
-  #page-toc a:nth-child(4){animation-delay:.4s}
-  #page-toc a:nth-child(5){animation-delay:.5s}
+  /* entrance animation — re-triggered via .toc-enter class */
+  #page-toc a{opacity:1}
+  #page-toc.toc-enter a{animation:tocEnter .5s var(--ease) forwards;opacity:0}
+  #page-toc.toc-enter a:nth-child(1){animation-delay:0s}
+  #page-toc.toc-enter a:nth-child(2){animation-delay:.08s}
+  #page-toc.toc-enter a:nth-child(3){animation-delay:.16s}
+  #page-toc.toc-enter a:nth-child(4){animation-delay:.24s}
+  #page-toc.toc-enter a:nth-child(5){animation-delay:.32s}
   @keyframes tocEnter{
-    from{opacity:0;transform:translateX(-12px)}
+    from{opacity:0;transform:translateX(-10px)}
     to{opacity:1;transform:translateX(0)}
   }
   .page-main{width:100%}
@@ -2139,13 +2141,20 @@ function setLang(lang) {
 
   // Hero visibility → auto-hide TOC when the large title overlaps
   const heroEl = document.querySelector('.hero') || document.querySelector('#about');
+  const toc = document.getElementById('page-toc');
   if (heroEl && 'IntersectionObserver' in window) {
     const heroObs = new IntersectionObserver((entries) => {
       entries.forEach(ent => {
         if (ent.isIntersecting && ent.intersectionRatio > 0.35) {
           document.body.classList.add('is-hero-visible');
+          if (toc) toc.classList.remove('toc-enter');
         } else {
           document.body.classList.remove('is-hero-visible');
+          if (toc) {
+            toc.classList.remove('toc-enter');
+            void toc.offsetWidth; // force reflow to re-trigger animation
+            toc.classList.add('toc-enter');
+          }
         }
       });
     }, { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1.0] });
