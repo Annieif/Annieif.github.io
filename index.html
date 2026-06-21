@@ -2174,6 +2174,40 @@ function setLang(lang) {
     }, 5000);
   }
 
+  // 点击切换阿拉伯数字 / 罗马数字
+  (function initNumberToggle(){
+    const pvEl = document.getElementById('pvDisplay');
+    const uvEl = document.getElementById('uvDisplay');
+    if (!pvEl || !uvEl) return;
+    const pvHidden = document.getElementById('busuanzi_value_site_pv');
+    const uvHidden = document.getElementById('busuanzi_value_site_uv');
+    let fmt = 'roman'; // 默认罗马数字
+
+    function toggle(el, hiddenEl){
+      const raw = parseInt(hiddenEl.textContent, 10) || 0;
+      if (raw <= 0) return;
+      fmt = (fmt === 'roman') ? 'arabic' : 'roman';
+      const target = (fmt === 'roman') ? toRoman(raw) : raw.toLocaleString();
+      // 动画：缩小 → 换字 → 弹回
+      el.style.transition = 'transform .2s cubic-bezier(.2,.8,.2,1), opacity .2s cubic-bezier(.2,.8,.2,1)';
+      el.style.transform = 'scale(0.85)';
+      el.style.opacity = '0.3';
+      setTimeout(function(){
+        el.textContent = target;
+        el.style.transform = 'scale(1.08)';
+        el.style.opacity = '1';
+        setTimeout(function(){ el.style.transform = 'scale(1)'; }, 180);
+      }, 200);
+    }
+
+    pvEl.style.cursor = 'pointer';
+    pvEl.title = '点击切换数字格式';
+    pvEl.addEventListener('click', function(){ toggle(pvEl, pvHidden); });
+    uvEl.style.cursor = 'pointer';
+    uvEl.title = '点击切换数字格式';
+    uvEl.addEventListener('click', function(){ toggle(uvEl, uvHidden); });
+  })();
+
   // Notes (single-language, searchable + sortable + collapsible)
   initNotesController();
 
@@ -2321,23 +2355,31 @@ function runTypewriter(root, stepMs) {
         baseAlpha: 0.4 + Math.random() * 0.45,
         twinkleSpeed: 0.0005 + Math.random() * 0.0015,
         twinklePhase: Math.random() * Math.PI * 2,
+        depth: 0.3 + Math.random() * 0.7, // parallax depth
       };
     }
   }
 
   let rafId = null;
   let running = false;
+  let scrollY = 0;
+  let targetScrollY = 0;
+
   function draw(ts){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // draw stars — subtle twinkle, no glow
+    // lerp scroll toward target for smooth parallax
+    scrollY += (targetScrollY - scrollY) * 0.06;
     const scale = dpr;
+    const sy = scrollY * 0.08; // max parallax displacement
     for (let i = 0, n = stars.length; i < n; i++){
       const s = stars[i];
       const alpha = s.baseAlpha + 0.12 * Math.sin(ts * s.twinkleSpeed + s.twinklePhase);
+      const dx = s.x * scale + sy * s.depth * scale;
+      const dy = s.y * scale;
       ctx.beginPath();
       ctx.fillStyle = s.color;
       ctx.globalAlpha = Math.max(0.15, Math.min(1, alpha));
-      ctx.arc(s.x * scale, s.y * scale, s.r * scale, 0, Math.PI * 2);
+      ctx.arc(dx, dy, s.r * scale, 0, Math.PI * 2);
       ctx.fill();
     }
     rafId = requestAnimationFrame(draw);
@@ -2356,6 +2398,9 @@ function runTypewriter(root, stepMs) {
   });
 
   window.addEventListener('resize', resize);
+  window.addEventListener('scroll', function(){
+    targetScrollY = window.pageYOffset || document.documentElement.scrollTop;
+  }, { passive: true });
   resize();
   running = true;
   rafId = requestAnimationFrame(draw);
