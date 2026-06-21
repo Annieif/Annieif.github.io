@@ -317,7 +317,11 @@ function extractNotesData(text) {
     const prev = pos > 0 ? text[pos - 1] : '';
     
     if (inTemplate) {
-      if (ch === '`' && prev !== '\\') inTemplate = false;
+      if (ch === '`') {
+        let bsCount = 0, p = pos - 1;
+        while (p >= 0 && text[p] === '\\') { bsCount++; p--; }
+        if (bsCount % 2 === 0) inTemplate = false;
+      }
       continue;
     }
     if (inString) {
@@ -513,7 +517,7 @@ async function saveLiveNotes() {
     pos++;
     const ch = text[pos];
     const prev = pos > 0 ? text[pos - 1] : '';
-    if (inTemplate) { if (ch === '`' && prev !== '\\') inTemplate = false; continue; }
+    if (inTemplate) { if (ch === '`') { let bsCount = 0, p = pos - 1; while (p >= 0 && text[p] === '\\') { bsCount++; p--; } if (bsCount % 2 === 0) inTemplate = false; } continue; }
     if (inString) { if (ch === stringChar && prev !== '\\') inString = false; continue; }
     if (inLineComment) { if (ch === '\n') inLineComment = false; continue; }
     if (ch === '`') { inTemplate = true; continue; }
