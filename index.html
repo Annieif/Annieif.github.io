@@ -2577,10 +2577,10 @@ function runTypewriter(root, stepMs) {
       stars[i] = {
         x: Math.random() * w,
         y: Math.random() * h,
-        r: 0.4 + Math.random() * 1.6 + (Math.random() < 0.08 ? 1.2 : 0),
+        r: 0.25 + Math.random() * 0.7,
         color: palette[Math.floor(Math.random() * palette.length)],
-        baseAlpha: 0.35 + Math.random() * 0.55,
-        twinkleSpeed: 0.0008 + Math.random() * 0.0022,
+        baseAlpha: 0.4 + Math.random() * 0.45,
+        twinkleSpeed: 0.0005 + Math.random() * 0.0015,
         twinklePhase: Math.random() * Math.PI * 2,
       };
     }
@@ -2590,29 +2590,15 @@ function runTypewriter(root, stepMs) {
   let running = false;
   function draw(ts){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // draw stars — simple opaque dots with alpha-driven twinkle
+    // draw stars — subtle twinkle, no glow
     const scale = dpr;
     for (let i = 0, n = stars.length; i < n; i++){
       const s = stars[i];
-      const alpha = s.baseAlpha + 0.35 * Math.sin(ts * s.twinkleSpeed + s.twinklePhase);
+      const alpha = s.baseAlpha + 0.12 * Math.sin(ts * s.twinkleSpeed + s.twinklePhase);
       ctx.beginPath();
       ctx.fillStyle = s.color;
-      ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+      ctx.globalAlpha = Math.max(0.15, Math.min(1, alpha));
       ctx.arc(s.x * scale, s.y * scale, s.r * scale, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    // soft glow layer over a few random stars — subtle "breathe"
-    for (let i = 0; i < 5; i++){
-      const s = stars[(Math.floor(ts / 2000) + i * 31) % stars.length];
-      if (!s) continue;
-      const gAlpha = 0.15 + 0.15 * Math.sin(ts * 0.0006 + i);
-      const gr = ctx.createRadialGradient(s.x * scale, s.y * scale, 0, s.x * scale, s.y * scale, 28 * scale);
-      gr.addColorStop(0, 'rgba(244,194,208,' + gAlpha.toFixed(3) + ')');
-      gr.addColorStop(1, 'rgba(244,194,208,0)');
-      ctx.fillStyle = gr;
-      ctx.globalAlpha = 1;
-      ctx.beginPath();
-      ctx.arc(s.x * scale, s.y * scale, 28 * scale, 0, Math.PI * 2);
       ctx.fill();
     }
     rafId = requestAnimationFrame(draw);
