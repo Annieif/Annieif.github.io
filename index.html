@@ -654,13 +654,6 @@
     border-top:1px solid var(--line);
     position:relative;
   }
-  .notes-year{
-    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;
-    color:var(--accent);text-transform:uppercase;
-    padding:40px 0 14px 0;
-    position:sticky;top:20px;z-index:2;
-    background:linear-gradient(180deg,var(--bg) 60%,transparent);
-  }
   .note-row{
     display:grid;
     grid-template-columns:28px 90px 1fr;
@@ -1841,18 +1834,8 @@ function renderNotesFeed(items) {
     return d;
   }
   const frag = document.createDocumentFragment();
-  let lastYear = '';
 
   items.forEach((n, idx) => {
-    const y = (n.date || '').slice(0, 4);
-    if (y && y !== lastYear) {
-      const yearDiv = document.createElement('div');
-      yearDiv.className = 'notes-year';
-      yearDiv.textContent = y;
-      frag.appendChild(yearDiv);
-      lastYear = y;
-    }
-
     const row = document.createElement('div');
     row.className = 'note-row';
     row.dataset.index = idx;
