@@ -3,581 +3,1068 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Annieif Notes Admin</title>
+<title>Admin · Annieif Notes</title>
 <style>
-:root {
-  --bg: #0a0a0a;
-  --ink: #e8e4dd;
-  --ink-dim: #b8b0a4;
-  --ink-faint: #7d7565;
-  --accent: #f4c2d0;
-  --line: rgba(232,228,221,.10);
-  --card: #13111a;
-  --ease: cubic-bezier(.2,.8,.2,1);
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  background: var(--bg); color: var(--ink);
-  font-family: 'Fraunces', 'Noto Serif SC', Georgia, serif;
-  min-height: 100vh; line-height: 1.7;
-}
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 28px; border-bottom: 1px solid var(--line);
-  background: var(--card);
-}
-.topbar h1 { font-size: 18px; font-weight: 500; }
-.topbar h1 em { color: var(--accent); font-style: italic; }
-.topbar .actions { display: flex; gap: 10px; align-items: center; }
-.btn {
-  background: transparent; border: 1px solid var(--line); color: var(--ink);
-  padding: 8px 16px; border-radius: 4px; cursor: pointer;
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  letter-spacing: .08em; text-transform: uppercase;
-  transition: all .2s;
-}
-.btn:hover { border-color: var(--accent); color: var(--accent); }
-.btn.primary { background: var(--accent); color: #1a1018; border-color: var(--accent); }
-.btn.primary:hover { opacity: .85; }
-.btn:disabled { opacity: .4; cursor: not-allowed; }
-.status {
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  color: var(--ink-faint); margin-right: 16px;
-}
-.main { display: flex; height: calc(100vh - 57px); }
-.sidebar {
-  width: 240px; border-right: 1px solid var(--line); padding: 20px 0;
-  overflow-y: auto; flex-shrink: 0;
-}
-.tab {
-  display: block; width: 100%; text-align: left; padding: 10px 28px;
-  background: none; border: none; color: var(--ink-dim); cursor: pointer;
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  letter-spacing: .08em; transition: all .2s;
-}
-.tab:hover, .tab.active { color: var(--accent); background: rgba(244,194,208,.04); }
-.tab .count { float: right; color: var(--ink-faint); }
-.content { flex: 1; overflow-y: auto; padding: 28px; }
-.note-list { display: flex; flex-direction: column; gap: 8px; }
-.note-item {
-  display: flex; align-items: center; gap: 14px;
-  padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px;
-  cursor: pointer; transition: all .2s;
-}
-.note-item:hover { border-color: rgba(244,194,208,.3); background: rgba(244,194,208,.02); }
-.note-item .date {
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  color: var(--ink-faint); white-space: nowrap; min-width: 80px;
-}
-.note-item .title { flex: 1; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.note-item .actions { display: flex; gap: 6px; }
-.icon-btn {
-  background: none; border: 1px solid var(--line); color: var(--ink-dim);
-  width: 28px; height: 28px; border-radius: 4px; cursor: pointer;
-  font-size: 12px; display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
-}
-.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
-.icon-btn.danger:hover { border-color: #e06060; color: #e06060; }
+  :root {
+    --bg: #0a0a0a;
+    --ink: #e8e4dd;
+    --ink-dim: #c4bfb4;
+    --ink-faint: #6e6a62;
+    --accent: #f4c2d0;
+    --line: rgba(232, 228, 221, .10);
+    --line-strong: rgba(232, 228, 221, .18);
+    --card: #13111a;
+    --danger: #e06060;
+    --warn: #d8a86b;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+  }
 
-.editor { display: none; flex-direction: column; gap: 16px; }
-.editor.active { display: flex; }
-.editor .field { display: flex; flex-direction: column; gap: 4px; }
-.editor label {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint);
-}
-.editor input, .editor textarea {
-  background: var(--card); border: 1px solid var(--line); color: var(--ink);
-  padding: 10px 14px; border-radius: 4px; font-family: inherit; font-size: 14px;
-  transition: border-color .2s;
-}
-.editor input:focus, .editor textarea:focus {
-  outline: none; border-color: var(--accent);
-}
-.editor textarea { resize: vertical; min-height: 200px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
-.editor .row { display: flex; gap: 12px; }
-.editor .row .field { flex: 1; }
-.editor .preview {
-  background: var(--card); border: 1px solid var(--line); border-radius: 6px;
-  padding: 20px; min-height: 100px; max-height: 300px; overflow-y: auto;
-}
-.editor .preview h2 { font-size: 22px; margin-bottom: 12px; color: var(--accent); }
-.editor .preview h3 { font-size: 17px; margin: 18px 0 10px; }
-.editor .preview p { margin-bottom: 10px; }
-.editor .preview code {
-  font-family: 'JetBrains Mono', monospace; font-size: 13px;
-  background: rgba(244,194,208,.06); padding: 2px 6px; border-radius: 3px;
-  color: var(--accent);
-}
-.editor .preview blockquote {
-  border-left: 2px solid var(--accent); padding-left: 14px;
-  color: var(--ink-dim); font-style: italic; margin: 12px 0;
-}
-.editor .preview table {
-  width: 100%; border-collapse: collapse; margin: 12px 0;
-}
-.editor .preview th, .editor .preview td {
-  padding: 8px 12px; border-bottom: 1px solid var(--line); text-align: left;
-}
-.editor .preview th { color: var(--ink-faint); font-size: 12px; }
-.editor .preview strong { color: var(--accent); }
-.editor .preview mark {
-  background: rgba(244,194,208,.15); color: var(--accent);
-  padding: 1px 4px; border-radius: 2px; font-style: italic;
-}
-.editor .preview ul, .editor .preview ol { padding-left: 20px; margin: 8px 0; }
-.editor .preview li { margin-bottom: 4px; }
-.editor .preview pre {
-  background: #0d0b12; border: 1px solid var(--line); padding: 14px 16px;
-  border-radius: 4px; overflow-x: auto; margin: 12px 0;
-}
-.editor .preview pre code { background: none; border: none; padding: 0; }
-.editor .preview hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
-.empty {
-  text-align: center; padding: 60px 20px; color: var(--ink-faint);
-  font-family: 'JetBrains Mono', monospace; font-size: 12px;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── 顶栏 ─────────────────────────────── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--line);
+    background: var(--card);
+  }
+  .topbar h1 {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -.01em;
+  }
+  .topbar h1 em { color: var(--accent); }
+  .topbar .actions { display: flex; gap: 10px; align-items: center; }
+  .status {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; letter-spacing: .15em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+  .status.connected { color: var(--accent); }
+
+  .btn {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    transition: all .25s var(--ease);
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary {
+    background: var(--accent); color: #1a1018; border-color: var(--accent);
+  }
+  .btn.primary:hover { opacity: .88; color: #1a1018; }
+  .btn.ghost { border-color: transparent; color: var(--ink-faint); }
+  .btn.ghost:hover { color: var(--accent); border-color: var(--line); }
+  .btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+  .btn:disabled { opacity: .35; cursor: not-allowed; }
+
+  /* ── 主体布局 ─────────────────────────────── */
+  .main {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ── 左侧：Tab 栏 + 列表 ────────────────── */
+  .sidebar {
+    width: 340px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    background: var(--card);
+  }
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--line);
+  }
+  .tab {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 14px 12px;
+    cursor: pointer;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: .14em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    transition: all .25s var(--ease);
+    position: relative;
+  }
+  .tab .count {
+    display: inline-block;
+    margin-left: 6px;
+    color: var(--ink-faint);
+    font-size: 10px;
+  }
+  .tab:hover { color: var(--ink); background: rgba(244, 194, 208, .03); }
+  .tab.active { color: var(--accent); background: rgba(244, 194, 208, .06); }
+  .tab.active::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -1px;
+    height: 1px;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(244, 194, 208, .5);
+  }
+  .tab.active .count { color: var(--accent); }
+
+  .list-toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .list-search {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 7px 12px;
+    border-radius: 4px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    outline: none;
+    transition: border-color .25s var(--ease);
+  }
+  .list-search:focus { border-color: var(--accent); }
+  .list-search::placeholder { color: var(--ink-faint); }
+
+  .note-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .note-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all .2s var(--ease);
+    margin-bottom: 2px;
+  }
+  .note-item:hover {
+    border-color: rgba(244, 194, 208, .25);
+    background: rgba(244, 194, 208, .03);
+  }
+  .note-item.active {
+    border-color: var(--accent);
+    background: rgba(244, 194, 208, .06);
+  }
+  .note-item .row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .note-item .date {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    letter-spacing: .1em;
+  }
+  .note-item .badge {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 2px;
+    color: var(--warn);
+    border: 1px solid rgba(216, 168, 107, .3);
+  }
+  .note-item .badge.draft { color: var(--ink-faint); border-color: var(--line); }
+  .note-item .badge.published { color: var(--accent); border-color: rgba(244, 194, 208, .3); }
+  .note-item .title {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .note-item .desc {
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .note-item .slug {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    opacity: .7;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-faint);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+
+  /* ── 右侧：编辑器 ─────────────────────────── */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+  }
+
+  .welcome {
+    max-width: 520px;
+    margin: 80px auto 0;
+    text-align: center;
+  }
+  .welcome h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 44px;
+    letter-spacing: -.015em;
+    margin-bottom: 20px;
+  }
+  .welcome h2 em { color: var(--accent); font-style: italic; }
+  .welcome p {
+    color: var(--ink-dim);
+    font-size: 15px;
+    margin-bottom: 10px;
+    line-height: 1.8;
+  }
+  .welcome .btn-row {
+    margin-top: 32px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .welcome .hint {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: .08em;
+    line-height: 1.8;
+  }
+  .welcome .hint code {
+    background: rgba(244, 194, 208, .06);
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  .editor {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .editor .head-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+  }
+  .editor .head-row .title {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--ink);
+  }
+  .editor .head-row .actions { display: flex; gap: 8px; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .field input, .field textarea {
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .25s var(--ease);
+  }
+  .field input:focus, .field textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(244, 194, 208, .1);
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 240px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  .row { display: flex; gap: 12px; }
+  .row .field { flex: 1; }
+
+  /* 状态切换 */
+  .status-switch {
+    display: flex;
+    gap: 8px;
+  }
+  .status-switch button {
+    flex: 1;
+    padding: 10px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .25s var(--ease);
+  }
+  .status-switch button:hover { color: var(--ink); border-color: var(--line-strong); }
+  .status-switch button.active {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(244, 194, 208, .06);
+  }
+  .status-switch button.scheduled.active { color: var(--warn); border-color: var(--warn); background: rgba(216, 168, 107, .06); }
+
+  /* 预览区 */
+  .preview-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .preview {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 22px 28px;
+    min-height: 100px;
+    color: var(--ink-dim);
+    line-height: 1.8;
+  }
+  .preview h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 26px;
+    color: var(--ink);
+    margin: 1.4em 0 .6em;
+  }
+  .preview h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--ink);
+    margin: 1.2em 0 .5em;
+  }
+  .preview p { margin-bottom: 12px; }
+  .preview code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    background: rgba(232, 228, 221, .04);
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .preview blockquote {
+    border-left: 2px solid var(--accent);
+    padding: 2px 0 2px 18px;
+    color: var(--ink-dim);
+    font-style: italic;
+    font-family: "Cormorant Garamond", serif;
+    margin: 1.2em 0;
+    background: linear-gradient(90deg, rgba(244, 194, 208, .08), transparent 70%);
+    border-radius: 0 4px 4px 0;
+  }
+  .preview table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.4em 0;
+    font-size: 14px;
+  }
+  .preview table th, .preview table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .preview table th {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .preview mark {
+    background: rgba(244, 194, 208, .12);
+    color: var(--accent);
+    font-style: italic;
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+  .preview strong, .preview em { color: var(--accent); font-style: italic; font-weight: 500; }
+  .preview ul, .preview ol { padding-left: 22px; margin: 1em 0; }
+  .preview li { margin-bottom: 4px; }
+  .preview ul li { list-style: none; position: relative; }
+  .preview ul li::before {
+    content: '◆';
+    position: absolute;
+    left: -18px;
+    color: var(--accent);
+    font-size: 10px;
+  }
+  .preview pre {
+    background: #0d0b12;
+    border: 1px solid var(--line);
+    padding: 18px 22px;
+    border-radius: 6px;
+    margin: 1.4em 0;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  .preview pre code { background: none; border: none; padding: 0; }
+  .preview hr {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 2em 0;
+  }
+
+  /* toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--card);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .4);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: all .3s var(--ease);
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.error { color: var(--danger); border-color: var(--danger); }
+
+  /* 响应式 */
+  @media (max-width: 900px) {
+    .main { flex-direction: column; }
+    .sidebar { width: 100%; max-height: 40vh; border-right: none; border-bottom: 1px solid var(--line); }
+    .content { padding: 20px 18px; }
+    .row { flex-direction: column; }
+  }
 </style>
 </head>
 <body>
+
+<!-- ── 顶栏 ── -->
 <div class="topbar">
-  <h1>Annieif <em>Notes Admin</em></h1>
+  <h1>Annieif · <em>Notes Admin</em></h1>
   <div class="actions">
-    <span class="status" id="status">No project open</span>
-    <button class="btn" id="btnOpen">Open Project</button>
-    <button class="btn primary" id="btnNew" disabled>+ New Note</button>
+    <span class="status" id="status">未连接项目</span>
+    <button class="btn" id="btnOpen">打开项目</button>
+    <button class="btn primary" id="btnNew" disabled>+ 新建笔记</button>
   </div>
 </div>
+
+<!-- ── 主体 ── -->
 <div class="main">
-  <div class="sidebar">
-    <button class="tab active" data-view="live">Live Notes <span class="count" id="liveCount">0</span></button>
-    <button class="tab" data-view="queue">Queue <span class="count" id="queueCount">0</span></button>
-  </div>
-  <div class="content" id="content">
-    <div id="listView" class="note-list"></div>
-    <div id="editorView" class="editor">
-      <div class="row">
-        <div class="field">
-          <label>Title</label>
-          <input type="text" id="edTitle" placeholder="笔记标题">
-        </div>
+  <!-- 左侧 -->
+  <aside class="sidebar">
+    <div class="tabs">
+      <button class="tab active" data-view="published">已发布 <span class="count" id="countPublished">0</span></button>
+      <button class="tab" data-view="drafts">草稿箱 <span class="count" id="countDrafts">0</span></button>
+      <button class="tab" data-view="scheduled">待发布 <span class="count" id="countScheduled">0</span></button>
+    </div>
+    <div class="list-toolbar">
+      <input class="list-search" id="searchInput" placeholder="搜索标题 / 描述…" />
+    </div>
+    <div class="note-list" id="noteList">
+      <div class="empty">打开项目以管理笔记</div>
+    </div>
+  </aside>
+
+  <!-- 右侧：内容区 -->
+  <main class="content" id="content">
+
+    <!-- 欢迎页 -->
+    <div class="welcome" id="welcome">
+      <h2>独立造物者的<em> 笔记工作台</em></h2>
+      <p>在此新建、编辑、草稿化笔记。所有文件将写入本地 <code>notes/</code> 目录，<br>并由 <code>scripts/build.js</code> 自动生成索引与订阅源。</p>
+      <div class="btn-row">
+        <button class="btn primary" id="btnOpen2">打开项目目录</button>
       </div>
-      <div class="row">
-        <div class="field">
-          <label>Date (YYYY-MM-DD)</label>
-          <input type="text" id="edDate" placeholder="2026-06-21">
-        </div>
-        <div class="field" id="publishDateGroup" style="display:none">
-          <label>Publish Date (YYYY-MM-DD)</label>
-          <input type="text" id="edPublishDate" placeholder="2026-07-01">
-        </div>
-      </div>
-      <div class="field">
-        <label>Description</label>
-        <input type="text" id="edDesc" placeholder="一句话描述">
-      </div>
-      <div class="field">
-        <label>Content (Markdown)</label>
-        <textarea id="edContent" rows="12" placeholder="Markdown 正文..."></textarea>
-      </div>
-      <div class="field">
-        <label>Preview</label>
-        <div class="preview" id="preview"></div>
-      </div>
-      <div style="display:flex;gap:10px;justify-content:flex-end">
-        <button class="btn" id="btnCancel">Cancel</button>
-        <button class="btn" id="btnDelete" style="display:none">Delete</button>
-        <button class="btn primary" id="btnSave">Save</button>
+      <div class="hint">
+        使用浏览器的 File System Access API（需基于 Chromium 的现代浏览器）<br>
+        文件布局：<code>notes/yyyy-mm-dd-slug.json</code> · 草稿存于 <code>notes/_drafts/</code> · 待发布存于 <code>notes/_scheduled/</code>
       </div>
     </div>
-  </div>
+
+    <!-- 编辑器 (默认隐藏) -->
+    <div class="editor" id="editor" style="display:none">
+      <div class="head-row">
+        <div class="title" id="editorTitle">新建笔记</div>
+        <div class="actions">
+          <button class="btn ghost" id="btnCancel">关闭</button>
+          <button class="btn danger" id="btnDelete" style="display:none">删除</button>
+          <button class="btn primary" id="btnSave">保存</button>
+        </div>
+      </div>
+
+      <!-- 状态切换 -->
+      <div class="field">
+        <label>状态</label>
+        <div class="status-switch" id="statusSwitch">
+          <button data-status="draft">草稿</button>
+          <button class="scheduled" data-status="scheduled">待发布</button>
+          <button data-status="published">已发布</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>标题</label>
+          <input type="text" id="edTitle" placeholder="笔记标题">
+        </div>
+        <div class="field">
+          <label>发布日期 (YYYY-MM-DD)</label>
+          <input type="text" id="edDate" placeholder="2026-06-22">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>一句话描述</label>
+        <input type="text" id="edDesc" placeholder="简介（自动生成正文预览的兜底）">
+      </div>
+
+      <div class="field">
+        <label>正文（Markdown）</label>
+        <textarea id="edContent" rows="14" placeholder="## 标题
+
+正文段落，支持 **粗体**、*斜体*、==高亮==、`代码`、代码块、表格、引用、列表。
+
+> 引用段落
+
+- 列表项 1
+- 列表项 2"></textarea>
+      </div>
+
+      <div class="preview-wrap">
+        <label style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);">实时预览</label>
+        <div class="preview" id="preview"></div>
+      </div>
+    </div>
+
+  </main>
 </div>
 
-<script src="notes/data.js"></script>
+<!-- toast -->
+<div class="toast" id="toast">已保存</div>
+
+<script src="notes/core.js"></script>
 <script>
-// ============ STATE ============
-let dirHandle = null;
-let liveNotes = [];
-let queueNotes = [];
-let currentView = 'live';
-let editingIndex = -1;
-let isNewNote = false;
+/* ================================================================
+   Admin · 笔记管理工具
+   - File System Access API 读写本地 notes/ 目录
+   - 三状态 Tab：已发布 / 草稿箱 / 待发布
+   - 实时 Markdown 预览（来自 notes/core.js）
+   - slugify 自动生成文件名
+   ================================================================ */
 
-// ============ DOM REFS ============
-const $ = id => document.getElementById(id);
-const status = $('status');
-const btnOpen = $('btnOpen');
-const btnNew = $('btnNew');
-const listView = $('listView');
-const editorView = $('editorView');
-const liveCount = $('liveCount');
-const queueCount = $('queueCount');
-const publishDateGroup = $('publishDateGroup');
-const preview = $('preview');
+(function () {
 
-// ============ FILE SYSTEM ACCESS ============
-btnOpen.addEventListener('click', async () => {
-  try {
-    dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-    status.textContent = 'Project opened';
-    btnNew.disabled = false;
-    await loadAll();
-  } catch (e) {
-    if (e.name !== 'AbortError') {
-      status.textContent = 'Error: ' + e.message;
-    }
+  // ---------- 状态 ----------
+  let dirHandle = null;
+  let notesCache = []; // [{slug, status, date, title, desc, file}]
+  let currentView = 'published';
+  let currentNote = null; // {slug, status, ...}
+  let editingIsNew = false;
+
+  // ---------- DOM ----------
+  const $ = (id) => document.getElementById(id);
+  const statusEl = $('status');
+  const btnOpen = $('btnOpen');
+  const btnOpen2 = $('btnOpen2');
+  const btnNew = $('btnNew');
+  const noteList = $('noteList');
+  const welcome = $('welcome');
+  const editor = $('editor');
+  const searchInput = $('searchInput');
+
+  const edTitle = $('edTitle');
+  const edDate = $('edDate');
+  const edDesc = $('edDesc');
+  const edContent = $('edContent');
+  const preview = $('preview');
+  const btnSave = $('btnSave');
+  const btnDelete = $('btnDelete');
+  const btnCancel = $('btnCancel');
+  const statusSwitch = $('statusSwitch');
+  const editorTitle = $('editorTitle');
+
+  // ---------- 工具 ----------
+  function toast(msg, isError) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.toggle('error', !!isError);
+    t.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => t.classList.remove('show'), 1800);
   }
-});
 
-async function navigateToFile(relativePath) {
-  const parts = relativePath.split('/');
-  const fileName = parts.pop();
-  let handle = dirHandle;
-  for (const part of parts) {
-    handle = await handle.getDirectoryHandle(part);
+  function todayStr() {
+    const d = new Date();
+    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
   }
-  return await handle.getFileHandle(fileName);
-}
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
-async function readJSON(relativePath) {
-  try {
-    const fileHandle = await navigateToFile(relativePath);
-    const file = await fileHandle.getFile();
-    return JSON.parse(await file.text());
-  } catch (e) {
-    return [];
-  }
-}
-
-async function writeJSON(relativePath, data) {
-  const parts = relativePath.split('/');
-  const fileName = parts.pop();
-  let handle = dirHandle;
-  for (const part of parts) {
-    handle = await handle.getDirectoryHandle(part);
-  }
-  const fileHandle = await handle.getFileHandle(fileName, { create: true });
-  const writable = await fileHandle.createWritable();
-  await writable.write(JSON.stringify(data, null, 2) + '\n');
-  await writable.close();
-}
-
-async function readTextFile(relativePath) {
-  const fileHandle = await navigateToFile(relativePath);
-  const file = await fileHandle.getFile();
-  return await file.text();
-}
-
-async function writeTextFile(relativePath, text) {
-  const parts = relativePath.split('/');
-  const fileName = parts.pop();
-  let handle = dirHandle;
-  for (const part of parts) {
-    handle = await handle.getDirectoryHandle(part);
-  }
-  const fileHandle = await handle.getFileHandle(fileName, { create: true });
-  const writable = await fileHandle.createWritable();
-  await writable.write(text);
-  await writable.close();
-}
-
-// ============ DATA LOADING ============
-async function loadAll() {
-  try {
-    queueNotes = await readJSON('notes/queue.json');
-  } catch (e) {
-    queueNotes = [];
-  }
-  try {
-    const text = await readTextFile('notes/data.js');
-    liveNotes = extractNotesData(text);
-  } catch (e) {
-    liveNotes = [];
-  }
-  renderList();
-  updateCounts();
-}
-
-function extractNotesData(text) {
-  const start = text.indexOf('const NOTES_DATA = [');
-  if (start === -1) return [];
-  
-  const arrayStart = start + 'const NOTES_DATA = '.length;
-  let pos = arrayStart;
-  let depth = 1;
-  let inTemplate = false;
-  let inString = false;
-  let stringChar = '';
-  let inLineComment = false;
-  
-  while (pos < text.length && depth > 0) {
-    pos++;
-    const ch = text[pos];
-    const prev = pos > 0 ? text[pos - 1] : '';
-    
-    if (inTemplate) {
-      if (ch === '`') {
-        let bsCount = 0, p = pos - 1;
-        while (p >= 0 && text[p] === '\\') { bsCount++; p--; }
-        if (bsCount % 2 === 0) inTemplate = false;
-      }
-      continue;
-    }
-    if (inString) {
-      if (ch === stringChar && prev !== '\\') inString = false;
-      continue;
-    }
-    if (inLineComment) {
-      if (ch === '\n') inLineComment = false;
-      continue;
-    }
-    
-    if (ch === '`') { inTemplate = true; continue; }
-    if (ch === '"' || ch === "'") { inString = true; stringChar = ch; continue; }
-    if (ch === '/' && text[pos + 1] === '/') { inLineComment = true; continue; }
-    
-    if (ch === '[' || ch === '{') depth++;
-    if (ch === ']' || ch === '}') depth--;
-  }
-  
-  if (depth !== 0) return [];
-  const arrayText = text.substring(arrayStart, pos + 1);
-  try {
-    return new Function('return ' + arrayText)();
-  } catch (e) {
-    console.error('Failed to parse NOTES_DATA:', e);
-    return [];
-  }
-}
-
-// ============ RENDERING ============
-function renderList() {
-  const notes = currentView === 'live' ? liveNotes : queueNotes;
-  if (notes.length === 0) {
-    listView.innerHTML = '<div class="empty">No notes yet. Click "+ New Note" to create one.</div>';
-    return;
-  }
-  listView.innerHTML = notes.map((n, i) => {
-    const dateLabel = currentView === 'queue' ? (n.publishDate || n.date) : n.date;
-    const prefix = currentView === 'queue' ? '\u23F3 ' : '';
-    return `<div class="note-item" data-index="${i}">
-      <span class="date">${prefix}${escapeHtml(dateLabel)}</span>
-      <span class="title">${escapeHtml(n.title)}</span>
-      <div class="actions">
-        <button class="icon-btn" data-action="edit" data-index="${i}" title="Edit">\u270E</button>
-        <button class="icon-btn danger" data-action="delete" data-index="${i}" title="Delete">\u2715</button>
-      </div>
-    </div>`;
-  }).join('');
-  
-  listView.querySelectorAll('[data-action="edit"]').forEach(btn => {
-    btn.addEventListener('click', () => editNote(parseInt(btn.dataset.index)));
-  });
-  listView.querySelectorAll('[data-action="delete"]').forEach(btn => {
-    btn.addEventListener('click', () => deleteNote(parseInt(btn.dataset.index)));
-  });
-}
-
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function updateCounts() {
-  liveCount.textContent = liveNotes.length;
-  queueCount.textContent = queueNotes.length;
-}
-
-// ============ VIEW SWITCHING ============
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    currentView = tab.dataset.view;
-    publishDateGroup.style.display = currentView === 'queue' ? 'flex' : 'none';
-    hideEditor();
-    renderList();
-  });
-});
-
-// ============ EDITOR ============
-btnNew.addEventListener('click', () => {
-  isNewNote = true;
-  editingIndex = -1;
-  $('edTitle').value = '';
-  $('edDate').value = new Date().toISOString().slice(0, 10);
-  $('edPublishDate').value = '';
-  $('edDesc').value = '';
-  $('edContent').value = '';
-  $('btnDelete').style.display = 'none';
-  updatePreview();
-  showEditor();
-});
-
-function editNote(index) {
-  isNewNote = false;
-  editingIndex = index;
-  const notes = currentView === 'live' ? liveNotes : queueNotes;
-  const note = notes[index];
-  $('edTitle').value = note.title || '';
-  $('edDate').value = note.date || '';
-  $('edPublishDate').value = note.publishDate || '';
-  $('edDesc').value = note.desc || '';
-  $('edContent').value = note.content || '';
-  $('btnDelete').style.display = '';
-  updatePreview();
-  showEditor();
-}
-
-function showEditor() {
-  listView.style.display = 'none';
-  editorView.classList.add('active');
-}
-
-function hideEditor() {
-  listView.style.display = '';
-  editorView.classList.remove('active');
-}
-
-$('btnCancel').addEventListener('click', hideEditor);
-
-// ============ PREVIEW ============
-$('edContent').addEventListener('input', updatePreview);
-
-function updatePreview() {
-  const raw = $('edContent').value;
-  if (!raw) { preview.innerHTML = '<span style="color:var(--ink-faint)">Preview will appear here...</span>'; return; }
-  try {
-    if (typeof parseNoteContent === 'function') {
-      preview.innerHTML = parseNoteContent(raw);
-    } else {
-      preview.innerHTML = '<span style="color:#e06060">parseNoteContent not available. Open data.js project first.</span>';
-    }
-  } catch (e) {
-    preview.innerHTML = '<span style="color:#e06060">Preview error: ' + escapeHtml(e.message) + '</span>';
-  }
-}
-
-// ============ SAVE ============
-$('btnSave').addEventListener('click', async () => {
-  if (!dirHandle) { alert('Please open the project first.'); return; }
-  
-  const note = {
-    date: $('edDate').value.trim(),
-    title: $('edTitle').value.trim(),
-    desc: $('edDesc').value.trim(),
-    content: $('edContent').value
+  const slugify = (window.NoteCore && window.NoteCore.slugify) || function (s) {
+    return String(s || 'untitled').trim().toLowerCase().replace(/[·\s—–_/\\]+/g, '-').replace(/[^a-z0-9\-\u4e00-\u9fff]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'untitled';
   };
-  
-  if (currentView === 'queue') {
-    note.publishDate = $('edPublishDate').value.trim() || note.date;
-  }
-  
-  if (!note.title || !note.date || !note.content) {
-    alert('Title, date, and content are required.');
-    return;
-  }
-  
-  const notes = currentView === 'live' ? liveNotes : queueNotes;
-  
-  if (isNewNote) {
-    notes.unshift(note);
-  } else {
-    notes[editingIndex] = note;
-  }
-  
-  try {
-    if (currentView === 'live') {
-      await saveLiveNotes();
-    } else {
-      await writeJSON('notes/queue.json', queueNotes);
+
+  // ---------- FS 操作 ----------
+  async function openProject() {
+    try {
+      dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+      statusEl.textContent = '已连接';
+      statusEl.classList.add('connected');
+      btnNew.disabled = false;
+      await refreshAll();
+      toast('项目已加载');
+    } catch (e) {
+      if (e.name !== 'AbortError') {
+        toast('无法打开：' + e.message, true);
+      }
     }
-    status.textContent = 'Saved \u2713';
-    setTimeout(() => { if (dirHandle) status.textContent = 'Project opened'; }, 2000);
-    hideEditor();
+  }
+
+  async function ensureDir(name) {
+    return dirHandle.getDirectoryHandle(name, { create: true });
+  }
+
+  async function writeFile(relPath, data) {
+    const parts = relPath.split('/');
+    const fileName = parts.pop();
+    let handle = dirHandle;
+    for (const p of parts) {
+      handle = await handle.getDirectoryHandle(p, { create: true });
+    }
+    const file = await handle.getFileHandle(fileName, { create: true });
+    const writable = await file.createWritable();
+    await writable.write(typeof data === 'string' ? data : JSON.stringify(data, null, 2) + '\n');
+    await writable.close();
+  }
+
+  async function deleteFile(relPath) {
+    const parts = relPath.split('/');
+    const fileName = parts.pop();
+    let handle = dirHandle;
+    for (const p of parts) {
+      handle = await handle.getDirectoryHandle(p, { create: true });
+    }
+    try {
+      await handle.removeEntry(fileName);
+    } catch (e) {
+      // 文件可能不存在，忽略
+    }
+  }
+
+  async function readJSONFile(handle) {
+    const file = await handle.getFile();
+    const text = await file.text();
+    try { return JSON.parse(text); }
+    catch (e) { return null; }
+  }
+
+  // ---------- 扫描所有笔记 ----------
+  async function scanNotes() {
+    const result = [];
+
+    // 已发布：notes/*.json (排除子目录)
+    try {
+      const notesDir = await dirHandle.getDirectoryHandle('notes');
+      for await (const entry of notesDir.values()) {
+        if (entry.kind !== 'file') continue;
+        if (!entry.name.endsWith('.json')) continue;
+        if (entry.name === '_index.json') continue;
+        const data = await readJSONFile(entry);
+        if (!data || !data.date) continue;
+        result.push({
+          slug: entry.name.replace('.json', ''),
+          status: 'published',
+          date: data.date,
+          title: data.title || '',
+          desc: data.desc || '',
+          content: data.content || '',
+          file: 'notes/' + entry.name,
+        });
+      }
+    } catch (e) { /* notes 目录不存在 */ }
+
+    // 草稿箱：notes/_drafts/*.json
+    try {
+      const draftsDir = await dirHandle.getDirectoryHandle('notes').then(d => d.getDirectoryHandle('_drafts'));
+      for await (const entry of draftsDir.values()) {
+        if (entry.kind !== 'file') continue;
+        if (!entry.name.endsWith('.json')) continue;
+        const data = await readJSONFile(entry);
+        if (!data) continue;
+        result.push({
+          slug: entry.name.replace('.json', ''),
+          status: 'draft',
+          date: data.date || '',
+          title: data.title || '(未命名草稿)',
+          desc: data.desc || '',
+          content: data.content || '',
+          file: 'notes/_drafts/' + entry.name,
+        });
+      }
+    } catch (e) { /* _drafts 目录可能不存在 */ }
+
+    // 待发布：notes/_scheduled/*.json
+    try {
+      const schedDir = await dirHandle.getDirectoryHandle('notes').then(d => d.getDirectoryHandle('_scheduled'));
+      for await (const entry of schedDir.values()) {
+        if (entry.kind !== 'file') continue;
+        if (!entry.name.endsWith('.json')) continue;
+        const data = await readJSONFile(entry);
+        if (!data) continue;
+        result.push({
+          slug: entry.name.replace('.json', ''),
+          status: 'scheduled',
+          date: data.date || data.publishDate || '',
+          publishDate: data.publishDate || data.date || '',
+          title: data.title || '(未命名待发布)',
+          desc: data.desc || '',
+          content: data.content || '',
+          file: 'notes/_scheduled/' + entry.name,
+        });
+      }
+    } catch (e) { /* _scheduled 目录可能不存在 */ }
+
+    return result;
+  }
+
+  // ---------- 渲染 ----------
+  function updateCounts() {
+    const counts = { published: 0, drafts: 0, scheduled: 0 };
+    for (const n of notesCache) {
+      if (n.status === 'published') counts.published++;
+      else if (n.status === 'draft') counts.drafts++;
+      else if (n.status === 'scheduled') counts.scheduled++;
+    }
+    $('countPublished').textContent = counts.published;
+    $('countDrafts').textContent = counts.drafts;
+    $('countScheduled').textContent = counts.scheduled;
+  }
+
+  function renderList() {
+    const q = (searchInput.value || '').trim().toLowerCase();
+    const list = notesCache
+      .filter((n) => n.status === currentView)
+      .filter((n) => !q || (n.title + ' ' + (n.desc || '')).toLowerCase().indexOf(q) !== -1)
+      .sort((a, b) => (b.date || '') < (a.date || '') ? -1 : (b.date || '') > (a.date || '') ? 1 : 0);
+
+    if (list.length === 0) {
+      noteList.innerHTML = '<div class="empty">— 此处还没有笔记 —</div>';
+      return;
+    }
+
+    const badgeText = {
+      published: '已发布',
+      draft: '草稿',
+      scheduled: '待发布',
+    };
+
+    noteList.innerHTML = list.map((n) => {
+      const isActive = currentNote && currentNote.slug === n.slug && currentNote.status === n.status;
+      return `
+        <div class="note-item ${isActive ? 'active' : ''}" data-slug="${n.slug}" data-status="${n.status}">
+          <div class="row">
+            <span class="date">${n.date || '—'}</span>
+            <span class="badge ${n.status}">${badgeText[n.status]}</span>
+          </div>
+          <div class="title">${escapeHtml(n.title)}</div>
+          ${n.desc ? `<div class="desc">${escapeHtml(n.desc)}</div>` : ''}
+          <div class="slug">${escapeHtml(n.file)}</div>
+        </div>`;
+    }).join('');
+
+    // 绑定点击
+    noteList.querySelectorAll('.note-item').forEach((el) => {
+      el.addEventListener('click', () => {
+        const slug = el.dataset.slug;
+        const status = el.dataset.status;
+        const note = notesCache.find((n) => n.slug === slug && n.status === status);
+        if (note) openNote(note);
+      });
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // ---------- 编辑器 ----------
+  function openNote(note) {
+    currentNote = JSON.parse(JSON.stringify(note)); // 深拷贝，避免直接修改缓存
+    editingIsNew = false;
+    editorTitle.textContent = '编辑笔记';
+    btnDelete.style.display = '';
+    edTitle.value = note.title || '';
+    edDate.value = note.date || todayStr();
+    edDesc.value = note.desc || '';
+    edContent.value = note.content || '';
+    setStatus(note.status);
+    updatePreview();
+    showEditor();
+    renderList(); // 刷新 active 高亮
+  }
+
+  function newNote() {
+    currentNote = {
+      slug: '',
+      status: 'draft',
+      date: todayStr(),
+      title: '',
+      desc: '',
+      content: '',
+      file: '',
+    };
+    editingIsNew = true;
+    editorTitle.textContent = '新建笔记';
+    btnDelete.style.display = 'none';
+    edTitle.value = '';
+    edDate.value = todayStr();
+    edDesc.value = '';
+    edContent.value = '';
+    setStatus('draft');
+    updatePreview();
+    showEditor();
+  }
+
+  function showEditor() {
+    welcome.style.display = 'none';
+    editor.style.display = 'flex';
+  }
+  function hideEditor() {
+    editor.style.display = 'none';
+    welcome.style.display = '';
+    currentNote = null;
     renderList();
+  }
+
+  function setStatus(st) {
+    statusSwitch.querySelectorAll('button').forEach((b) => {
+      b.classList.toggle('active', b.dataset.status === st);
+    });
+    if (currentNote) currentNote.status = st;
+  }
+
+  function updatePreview() {
+    const raw = edContent.value;
+    if (!raw) {
+      preview.innerHTML = '<span style="color:var(--ink-faint);font-style:italic;font-family:\'Cormorant Garamond\',serif;font-size:16px;">预览将在你输入 Markdown 时实时显示…</span>';
+      return;
+    }
+    try {
+      if (window.NoteCore && typeof window.NoteCore.parseNoteContent === 'function') {
+        preview.innerHTML = window.NoteCore.parseNoteContent(raw);
+      } else {
+        preview.innerHTML = '<span style="color:var(--danger)">parseNoteContent 不可用</span>';
+      }
+    } catch (e) {
+      preview.innerHTML = '<span style="color:var(--danger)">预览错误: ' + escapeHtml(e.message) + '</span>';
+    }
+  }
+
+  // ---------- 保存 / 删除 ----------
+  async function save() {
+    if (!dirHandle) { toast('请先打开项目', true); return; }
+    if (!currentNote) return;
+
+    const title = edTitle.value.trim();
+    const date = edDate.value.trim();
+    const desc = edDesc.value.trim();
+    const content = edContent.value.trim();
+
+    if (!title) { toast('请填写标题', true); return; }
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      toast('日期格式应为 YYYY-MM-DD', true);
+      return;
+    }
+    if (!content) { toast('请填写正文', true); return; }
+
+    // 从旧状态位置确定新位置
+    const newStatus = currentNote.status;
+    let newSlug;
+    if (editingIsNew || !currentNote.slug) {
+      newSlug = date + '-' + slugify(title);
+    } else {
+      // 若 date 或 title 改变导致 slug 变化，则移到新位置
+      const parts = currentNote.slug.split('-');
+      const originalDate = parts.slice(0, 3).join('-');
+      const bodySlug = slugify(title);
+      if (originalDate !== date || !currentNote.slug.endsWith(bodySlug)) {
+        newSlug = date + '-' + bodySlug;
+      } else {
+        newSlug = currentNote.slug;
+      }
+    }
+
+    const newData = { date, title, desc, content };
+    if (newStatus === 'scheduled') newData.publishDate = date;
+
+    // 目标路径
+    let targetPath;
+    if (newStatus === 'draft') targetPath = 'notes/_drafts/' + newSlug + '.json';
+    else if (newStatus === 'scheduled') targetPath = 'notes/_scheduled/' + newSlug + '.json';
+    else targetPath = 'notes/' + newSlug + '.json';
+
+    // 如果状态/位置变化，删除旧文件
+    const oldPath = (editingIsNew ? null : currentNote.file);
+    if (oldPath && oldPath !== targetPath) {
+      await deleteFile(oldPath);
+    }
+
+    // 写新文件
+    await writeFile(targetPath, newData);
+
+    // 更新缓存
+    if (oldPath && oldPath !== targetPath) {
+      notesCache = notesCache.filter((n) => !(n.slug === currentNote.slug && n.status === (currentNote.status)));
+    } else if (!editingIsNew) {
+      notesCache = notesCache.filter((n) => !(n.slug === currentNote.slug && n.status === currentNote.status));
+    }
+    notesCache.push({
+      slug: newSlug,
+      status: newStatus,
+      date, title, desc, content,
+      file: targetPath,
+      publishDate: newStatus === 'scheduled' ? date : undefined,
+    });
+
+    // 之后视为编辑已有笔记
+    editingIsNew = false;
+    currentNote = { slug: newSlug, status: newStatus, date, title, desc, content, file: targetPath };
+    btnDelete.style.display = '';
+
     updateCounts();
-  } catch (e) {
-    alert('Save failed: ' + e.message);
+    renderList();
+    toast('已保存 · ' + targetPath);
   }
-});
 
-async function saveLiveNotes() {
-  const text = await readTextFile('notes/data.js');
-  
-  const start = text.indexOf('const NOTES_DATA = [');
-  const arrayStart = start + 'const NOTES_DATA = '.length;
-  let pos = arrayStart;
-  let depth = 1;
-  let inTemplate = false, inString = false, stringChar = '', inLineComment = false;
-  
-  while (pos < text.length && depth > 0) {
-    pos++;
-    const ch = text[pos];
-    const prev = pos > 0 ? text[pos - 1] : '';
-    if (inTemplate) { if (ch === '`') { let bsCount = 0, p = pos - 1; while (p >= 0 && text[p] === '\\') { bsCount++; p--; } if (bsCount % 2 === 0) inTemplate = false; } continue; }
-    if (inString) { if (ch === stringChar && prev !== '\\') inString = false; continue; }
-    if (inLineComment) { if (ch === '\n') inLineComment = false; continue; }
-    if (ch === '`') { inTemplate = true; continue; }
-    if (ch === '"' || ch === "'") { inString = true; stringChar = ch; continue; }
-    if (ch === '/' && text[pos + 1] === '/') { inLineComment = true; continue; }
-    if (ch === '[' || ch === '{') depth++;
-    if (ch === ']' || ch === '}') depth--;
+  async function deleteCurrent() {
+    if (!dirHandle || !currentNote) return;
+    if (!confirm('确定要删除这篇笔记？\n' + (currentNote.file || currentNote.slug))) return;
+
+    if (!editingIsNew && currentNote.file) {
+      await deleteFile(currentNote.file);
+    }
+    notesCache = notesCache.filter((n) => !(n.slug === currentNote.slug && n.status === currentNote.status));
+    currentNote = null;
+    hideEditor();
+    updateCounts();
+    toast('已删除');
   }
-  
-  const arrayEnd = pos + 1;
-  const newArray = serializeNotes(liveNotes);
-  const newText = text.substring(0, arrayStart) + newArray + text.substring(arrayEnd);
-  
-  await writeTextFile('notes/data.js', newText);
-}
 
-function serializeNotes(notes) {
-  const indent = '  ';
-  const items = notes.map(n => {
-    const escapedContent = n.content.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-    const escTitle = n.title.replace(/'/g, "\\'");
-    const escDesc = (n.desc || '').replace(/'/g, "\\'");
-    return `${indent}{\n${indent}  date:'${n.date}',\n${indent}  title:'${escTitle}',\n${indent}  desc:'${escDesc}',\n${indent}  content:\`${escapedContent}\`\n${indent}}`;
+  // ---------- 刷新 ----------
+  async function refreshAll() {
+    notesCache = await scanNotes();
+    updateCounts();
+    renderList();
+  }
+
+  // ---------- 事件绑定 ----------
+  btnOpen.addEventListener('click', openProject);
+  btnOpen2.addEventListener('click', openProject);
+  btnNew.addEventListener('click', newNote);
+  btnCancel.addEventListener('click', hideEditor);
+  btnSave.addEventListener('click', save);
+  btnDelete.addEventListener('click', deleteCurrent);
+
+  edContent.addEventListener('input', updatePreview);
+  searchInput.addEventListener('input', renderList);
+
+  statusSwitch.querySelectorAll('button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (!currentNote) return;
+      setStatus(btn.dataset.status);
+    });
   });
-  return '[\n' + items.join(',\n') + '\n]';
-}
 
-// ============ DELETE ============
-$('btnDelete').addEventListener('click', async () => {
-  if (!confirm('Delete this note?')) return;
-  const notes = currentView === 'live' ? liveNotes : queueNotes;
-  notes.splice(editingIndex, 1);
-  
-  try {
-    if (currentView === 'live') {
-      await saveLiveNotes();
-    } else {
-      await writeJSON('notes/queue.json', queueNotes);
+  document.querySelectorAll('.tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentView = tab.dataset.view;
+      renderList();
+    });
+  });
+
+  // Ctrl/Cmd + S 保存
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      if (editor.style.display !== 'none') {
+        e.preventDefault();
+        save();
+      }
     }
-    status.textContent = 'Deleted \u2713';
-    setTimeout(() => { if (dirHandle) status.textContent = 'Project opened'; }, 2000);
-    hideEditor();
-    renderList();
-    updateCounts();
-  } catch (e) {
-    alert('Delete failed: ' + e.message);
-  }
-});
+    if (e.key === 'Escape' && editor.style.display !== 'none') {
+      hideEditor();
+    }
+  });
 
-function deleteNote(index) {
-  const notes = currentView === 'live' ? liveNotes : queueNotes;
-  if (!confirm('Delete "' + notes[index].title + '"?')) return;
-  notes.splice(index, 1);
-  
-  if (currentView === 'live') {
-    saveLiveNotes().then(() => { renderList(); updateCounts(); });
-  } else {
-    writeJSON('notes/queue.json', queueNotes).then(() => { renderList(); updateCounts(); });
-  }
-}
+})();
 </script>
 </body>
 </html>

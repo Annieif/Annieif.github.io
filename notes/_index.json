@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "2026-06-26-gr",
+    "date": "2026-06-26",
+    "title": "GR · 让 BERT 在 GitHub 上自己长大",
+    "desc": "用 GitHub Actions 免费算力，每天自动微调中文 BERT。MoE + Multi-LoRA + 随机数据集，让模型随时间演化。",
+    "preview": "一直想用 GitHub 的免费 runner 做点有意思的事"
+  },
+  {
+    "slug": "2026-06-21-limbus-ch4",
+    "date": "2026-06-21",
+    "title": "边狱巴士第四章 · 梦、镜与花海",
+    "desc": "从九人会到东柏、东朗、李箱，第四章讲的不是绝望，而是废墟上的嫩芽。",
+    "preview": "Limbus Company 第四章完结后，我很久没有缓过来"
+  },
+  {
+    "slug": "2026-06-21-react-chu-tan",
+    "date": "2026-06-21",
+    "title": "React 初探 · 从原生到框架",
+    "desc": "一份提纲式的 React 速查 · 适合长时间反复翻阅",
+    "preview": "从零写了大半年原生 JS，后来开始学 React"
+  },
+  {
+    "slug": "2026-06-20-code-wiki",
+    "date": "2026-06-20",
+    "title": "code_wiki — Annieif 的个人作品集",
+    "desc": "本站的技术架构与维护要点：HTML / CSS / 原生 JavaScript / GitHub Pages 的静态站点设计。",
+    "preview": "一个零依赖的个人作品集站点 — 核心文件只有根目录的 index"
+  }
+]

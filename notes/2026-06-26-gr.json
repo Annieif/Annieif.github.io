@@ -1,0 +1,6 @@
+{
+  "date": "2026-06-26",
+  "title": "GR · 让 BERT 在 GitHub 上自己长大",
+  "desc": "用 GitHub Actions 免费算力，每天自动微调中文 BERT。MoE + Multi-LoRA + 随机数据集，让模型随时间演化。",
+  "content": "一直想用 GitHub 的免费 runner 做点有意思的事。不是跑 CI、不是自动部署 — 我想让它每天帮我训练模型。\n\n> 美中不足，好事多磨。\n\n于是有了 GR：一个每天自动微调中文 BERT 的 GitHub 仓库。每天凌晨，Actions 启动一台虚拟机，从 HuggingFace 随机拉一个没用过的中文数据集，用 MoE + Multi-LoRA 的方式微调 chinese-macbert-base，评估 PPL 与 top-k 准确率，打包发布到 GitHub Release。第二天，它从昨天的 Release 下载模型，接着练。\n\n核心是 momo_lora.py — 在 BERT 的 attention 层注入 96 个 LoRA expert，配一个 router 做 top-k 路由，总计约 2.4MB 可训练参数。router 加负载均衡 auxiliary loss，防止坍缩到单一 expert。\n\n数据自动增长：基础语料约 200 行，每天从 HF 拉一个随机中文数据集追加约 300-500 行。三十天后自然增长到约 9000 行。全自动，零人工。\n\n跨日累积微调是核心设计：每次跑完自动创建 GitHub Release，下次从最新 release 下载模型继续训。模型在时间轴上持续演进，数据与架构两个维度同时演化。\n\n三种模式：全参（约 400M）、PEFT LoRA（约 10M）、MoE+Multi-LoRA（约 2.4M）。默认用 MoMo — 参数量最小，可能性最多。"
+}

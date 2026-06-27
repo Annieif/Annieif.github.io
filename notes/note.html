@@ -370,76 +370,128 @@
 
 <div class="footer">Annieif · notes</div>
 
-<script src="data.js"></script>
+<script src="core.js"></script>
 <script>
-(function renderNote(){
-  const hash = location.hash.replace('#','');
-  if (!hash) { location.hash = '001'; return; }
+(function renderNote() {
+  const params = new URLSearchParams(location.search);
+  let slug = params.get('slug');
 
-  const note = NOTES_DATA.find(n => n.id === hash);
-  const article = document.getElementById('noteArticle');
-  if (!article) return;
-
-  if (!note) {
-    article.innerHTML = '<div class="not-found">没有找到笔记 <em>#' + hash + '</em></div>';
-    document.title = '未找到 — Annieif';
+  if (!slug) {
+    const hash = location.hash.replace('#', '');
+    if (hash) {
+      try {
+        fetch('_index.json')
+          .then(function (r) { return r.ok ? r.json() : []; })
+          .then(function (list) {
+            const found = list.find(function (n) {
+              return n.title && (n.title.indexOf(hash) !== -1)
+                || n.slug && (n.slug.indexOf(hash) !== -1);
+            });
+            if (found) {
+              location.search = '?slug=' + found.slug;
+            } else if (list.length) {
+              location.search = '?slug=' + list[0].slug;
+            }
+          })
+          .catch(function () {
+            renderNotFound('无法加载笔记索引');
+          });
+        return;
+      } catch (e) {}
+    }
+    fetch('_index.json')
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (list) {
+        if (!list.length) { renderNotFound('没有找到笔记'); return; }
+        location.search = '?slug=' + list[0].slug;
+      })
+      .catch(function () { renderNotFound('无法加载笔记索引'); });
     return;
   }
 
-  document.title = note.title + ' — Annieif';
+  fetch(slug + '.json')
+    .then(function (response) {
+      if (!response.ok) throw new Error('http ' + response.status);
+      return response.json();
+    })
+    .then(function (note) {
+      var article = document.getElementById('noteArticle');
+      if (!article) return;
 
-  const ndate = document.createElement('div');
-  ndate.className = 'ndate';
-  ndate.textContent = note.date;
+      document.title = note.title + ' — Annieif';
 
-  const h1 = document.createElement('h1');
-  h1.textContent = note.title;
+      var frag = document.createDocumentFragment();
 
-  const content = document.createElement('div');
-  content.className = 'content';
-  content.id = 'noteContent';
-  content.innerHTML = note.content;
+      var ndate = document.createElement('div');
+      ndate.className = 'ndate';
+      ndate.textContent = note.date;
+      frag.appendChild(ndate);
 
-  article.innerHTML = '';
-  article.appendChild(ndate);
-  article.appendChild(h1);
-  article.appendChild(content);
+      var h1 = document.createElement('h1');
+      h1.textContent = note.title;
+      frag.appendChild(h1);
 
-  // Build TOC from h2/h3
-  const toc = document.getElementById('noteTOC');
-  const headings = content.querySelectorAll('h2, h3');
-  if (!toc || !headings.length) { if (toc) toc.classList.remove('show'); return; }
-
-  // 先清空原目录内容（保留 .toc-label）
-  toc.innerHTML = '<div class="toc-label">目录</div>';
-  toc.classList.add('show');
-
-  const links = [];
-  headings.forEach(h => {
-    if (!h.id) h.id = (h.textContent || '').trim().replace(/\s+/g,'-').replace(/[^\w\u4e00-\u9fff\-]/g,'').slice(0,30) || 'sec-' + Math.random().toString(36).slice(2,6);
-    const a = document.createElement('a');
-    a.href = '#' + h.id;
-    a.textContent = h.textContent.trim();
-    if (h.tagName === 'H3') a.className = 'toc-h3';
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      h.scrollIntoView({ behavior:'smooth', block:'start' });
-    });
-    toc.appendChild(a);
-    links.push({ el:h, link:a });
-  });
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      const match = links.find(l => l.el === e.target);
-      if (!match) return;
-      if (e.isIntersecting) {
-        links.forEach(l => l.link.classList.remove('active'));
-        match.link.classList.add('active');
+      if (note.desc) {
+        var descEl = document.createElement('div');
+        descEl.className = 'desc';
+        descEl.textContent = note.desc;
+        frag.appendChild(descEl);
       }
+
+      var content = document.createElement('div');
+      content.className = 'content';
+      var parser = (window.NoteCore && window.NoteCore.parseNoteContent)
+        ? window.NoteCore.parseNoteContent
+        : function fallback(t) { return '<p>' + String(t).replace(/</g, '&lt;') + '</p>'; };
+      content.innerHTML = parser(note.content || '');
+      frag.appendChild(content);
+
+      article.innerHTML = '';
+      article.appendChild(frag);
+
+      var toc = document.getElementById('noteTOC');
+      if (toc) {
+        var headings = article.querySelectorAll('h2, h3');
+        if (headings.length > 2) {
+          toc.classList.add('show');
+          var tocHTML = '<div class="toc-label">目录</div>';
+          headings.forEach(function (h, i) {
+            var id = 'sec-' + i;
+            h.id = id;
+            tocHTML += '<a href="#' + id + '" class="'
+              + (h.tagName === 'H3' ? 'toc-h3' : '') + '">'
+              + h.textContent + '</a>';
+          });
+          toc.innerHTML = tocHTML;
+
+          var links = toc.querySelectorAll('a');
+          if ('IntersectionObserver' in window) {
+            var activeClass = 'active';
+            var observer = new IntersectionObserver(function (entries) {
+              entries.forEach(function (entry) {
+                var id = entry.target.id;
+                var link = toc.querySelector('a[href="#' + id + '"]');
+                if (!link) return;
+                if (entry.isIntersecting) {
+                  links.forEach(function (l) { l.classList.remove(activeClass); });
+                  link.classList.add(activeClass);
+                }
+              });
+            }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+            headings.forEach(function (h) { observer.observe(h); });
+          }
+        }
+      }
+    })
+    .catch(function (err) {
+      renderNotFound('没有找到笔记 <em>#' + slug + '</em>');
     });
-  }, { rootMargin:'-15% 0px -75% 0px', threshold:0 });
-  headings.forEach(h => observer.observe(h));
+
+  function renderNotFound(msg) {
+    var article = document.getElementById('noteArticle');
+    if (!article) return;
+    article.innerHTML = '<div class="not-found">' + msg + '</div>';
+  }
 })();
 </script>
 </body>

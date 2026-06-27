@@ -1,45 +1,220 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Annieif - Notes feed</title>
+    <title>Annieif · 笔记订阅</title>
     <link>https://annieif.github.io/</link>
     <atom:link href="https://annieif.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <description>Annieif's personal notes and writings — subscribe for updates.</description>
-    <language>zh-cn</language>
-    <lastBuildDate>Sat, 21 Jun 2026 12:00:00 GMT</lastBuildDate>
+    <description>独立造物者的笔记 — 美中不足，好事多磨。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 27 Jun 2026 12:00:00 GMT</lastBuildDate>
 
     <item>
-      <title>边狱巴士第四章 · 梦、镜与花海</title>
-      <link>https://annieif.github.io/notes/note.html#001</link>
-      <guid isPermaLink="false">001</guid>
-      <pubDate>Sat, 21 Jun 2026 12:00:00 GMT</pubDate>
-      <description><![CDATA[
-<p>从九人会到东柏、东朗、李箱，第四章讲的不是绝望，而是废墟上的嫩芽。</p>
-<p>Limbus Company 第四章完结后，整个第四章的主旨一句话就能说清楚：从梦想到现实，再到现实的理想。卡门梦想拯救都市，艾因从断壁残垣中拾起卡门梦想的残余，将飘渺的梦想化作可行的理想。而当这句话缩小到都市间的渺小众生时，它的缩影就是九人会。</p>
-<p>东柏的原型是金裕贞笔下的山茶花，她组建技术解放联盟，口号是摧毁一切技术，但真正的原因是对专利垄断的反抗。东朗是"一群天才中的凡人"，他的才能撑不起他想终结整个都市苦难的梦想，最终在 K 公司治愈安瓿的刺激下崩溃。李箱的笔名真的来自一个箱子，九人会对他是家，镜中展示的并不是平行世界，而是可能性。</p>
-<p>都市的故事看起来是绝望的，但 Project Moon 想写的从来不是绝望。跨过无尽的苦难，前人的尸骨会滋养后世的土壤。在一切的尽头，是梦想中的无边花海。</p>
-      ]]></description>
+      <title>GR · 让 BERT 在 GitHub 上自己长大</title>
+      <link>https://annieif.github.io/notes/note.html?slug=2026-06-26-gr</link>
+      <pubDate>Fri, 26 Jun 2026 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2026-06-26-gr</guid>
+      <description><![CDATA[<p>一直想用 GitHub 的免费 runner 做点有意思的事。不是跑 CI、不是自动部署 — 我想让它每天帮我训练模型。</p>
+<blockquote>美中不足，好事多磨。</blockquote>
+<p>于是有了 GR：一个每天自动微调中文 BERT 的 GitHub 仓库。每天凌晨，Actions 启动一台虚拟机，从 HuggingFace 随机拉一个没用过的中文数据集，用 MoE + Multi-LoRA 的方式微调 chinese-macbert-base，评估 PPL 与 top-k 准确率，打包发布到 GitHub Release。第二天，它从昨天的 Release 下载模型，接着练。</p>
+<p>核心是 momo_lora.py — 在 BERT 的 attention 层注入 96 个 LoRA expert，配一个 router 做 top-k 路由，总计约 2.4MB 可训练参数。router 加负载均衡 auxiliary loss，防止坍缩到单一 expert。</p>
+<p>数据自动增长：基础语料约 200 行，每天从 HF 拉一个随机中文数据集追加约 300-500 行。三十天后自然增长到约 9000 行。全自动，零人工。</p>
+<p>跨日累积微调是核心设计：每次跑完自动创建 GitHub Release，下次从最新 release 下载模型继续训。模型在时间轴上持续演进，数据与架构两个维度同时演化。</p>
+<p>三种模式：全参（约 400M）、PEFT LoRA（约 10M）、MoE+Multi-LoRA（约 2.4M）。默认用 MoMo — 参数量最小，可能性最多。</p>]]></description>
     </item>
 
     <item>
-      <title>code_wiki - Annieif 的个人作品集</title>
-      <link>https://annieif.github.io/notes/note.html#002</link>
-      <guid isPermaLink="false">002</guid>
-      <pubDate>Fri, 20 Jun 2026 12:00:00 GMT</pubDate>
-      <description><![CDATA[
-<p>本站的技术架构与维护要点。一个零依赖的个人作品集站点：HTML + CSS + 原生 JavaScript + GitHub Pages。</p>
-<h3>项目文件结构</h3>
-<p>核心文件只有根目录的 <code>index.html</code>，其它一切内容都由它在浏览器中即时生成。</p>
-<h3>技术要点</h3>
-<p><strong>多语言</strong>：手写的 JS 对象 I18N，按 8 种语言分分支，无第三方库依赖。<br/>
-<strong>渲染</strong>：全部使用 DOM API（createElement + appendChild + textContent），避免 XSS。<br/>
-<strong>星空</strong>：Canvas 2D 绘制 ~150 个闪烁星点 + CSS 流星，性能友好。<br/>
-<strong>笔记</strong>：数据与展示分离，notes/data.js 为唯一数据源，Markdown 风格内容自动渲染为 HTML。</p>
-<h3>维护速查</h3>
-<p>新增笔记：在 NOTES_DATA 头部插入 { date, title, desc, content } 即可。<br/>
-新增语言：在 I18N 中加一个分支，langSwitch 按钮行中加按钮，langMap 中登记映射。<br/>
-改配色：只改 :root 的 CSS 变量。</p>
-      ]]></description>
+      <title>边狱巴士第四章 · 梦、镜与花海</title>
+      <link>https://annieif.github.io/notes/note.html?slug=2026-06-21-limbus-ch4</link>
+      <pubDate>Sun, 21 Jun 2026 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2026-06-21-limbus-ch4</guid>
+      <description><![CDATA[<p><em>Limbus Company</em> 第四章完结后，我很久没有缓过来。Project Moon 从脑叶公司时期就在写一种东西——让你在废墟里找花。第四章把这件事做到了极致。</p>
+<h2>一个循环</h2>
+<p>整个第四章的主旨，一句话就能说清楚：从梦想到现实，再到现实的理想。</p>
+<p>卡门梦想拯救都市，创造了与都市格格不入的研究所。然后首脑来了，一切被摧毁。艾因从断壁残垣中拾起卡门梦想的残余，用首脑的大脑理解现实的全貌，将飘渺的梦想化作可行的理想，再用最现实的方式去实现它。这就是脑叶公司。</p>
+<p>而当这句话从世界之翼的尺度缩小到都市间的渺小众生时，它的缩影就是九人会。</p>
+<p>东朗想在不伤害任何人的前提下，治愈全都市的苦难。东柏想让每一个研究者都能自由地享受探索的乐趣。李箱想让技术远离现实的污秽，永远进行纯粹的、为了研究而进行的研究。三个人，三种梦想，同样不切实际。</p>
+<p>他们因梦想聚在一起，又在不同的时间点被迫向现实屈膝。有人的梦想消失在亲手把技术扔进焚化炉的那一天，有人的梦想在 T 公司日益频繁的搜查中逐渐腐烂，有人的梦想则在办公室地下的炸药引爆后灰飞烟灭。</p>
+<p>但最终，他们都找到了自己的路。</p>
+<p>这是我第一次觉得，"从梦想到现实"后面接的不一定是"破灭"。它可以是"再到现实的理想"——一个更残酷、也更清醒的循环。</p>
+<h2>东柏 · 山茶</h2>
+<p>东柏的原型不是人。她是九人会成员金裕贞笔下的一株山茶花。韩语中，山茶树别名就是"东柏"。山茶花的花语是谦让、高洁、可爱、美丽，以及——理想的爱。</p>
+<p>她组建技术解放联盟，口号是摧毁一切技术。但作为把纯粹研究当作理念的九人会核心成员，她怎么可能真心想要技术消失？这只是幌子。</p>
+<p>真正的原因很冷硬：在都市，几乎所有值得一提的技术都会被申请专利。而拥有专利的技术，就相当于被持有者垄断，在首脑的保护下合法地牟取暴利。九人会之所以分崩离析，始于 T 公司对会长杨吉所发明的玻璃窗技术的觊觎。当某个公司拥有的专利太多，它就会限制普通人研究的自由，最终让类似九人会这样为纯粹研究而存在的团体，永远失去诞生的土壤。</p>
+<p>所以东柏要让现存技术消失。一方面，让后人能够探索的空间变大；另一方面，让世界之翼对底层的压制力变小。果实已然枯萎，埋下未来的嫩芽。让过去与现实的一切都成为养料，最终开出一片比现在更美丽的花田。</p>
+<p>她在实现理想的过程中杀死了很多人。她自己知道，自己不是好人。但她从未扭曲——因为要走的路，从九人会覆灭那天就已经确定了。</p>
+<p>在都市，不直面实现理想所必经的残酷，是永远无法成功的。世界之翼都是如此，何况个人呢。从梦想的尸骨中诞生的理想，无论荒谬与否，都是唯一且必将践行的选择。</p>
+<h2>东朗 · 天才中的凡人</h2>
+<p>东朗是第四章我最喜欢的角色。如果用一句话形容他，就是"一群天才中的凡人"。</p>
+<p>他的原型可能是现实九人会成员柳志珍，但经历更接近韩国生物科学家黄玉熹——出身赤贫，自幼丧父，母亲靠老黄牛耕田养活全家。黄玉熹从小喜欢牛，立志成为兽医，治愈全世界的病牛。东朗的梦想比这更宏大：他想终结整个都市的苦难。</p>
+<p>可惜，他的才能撑不起他的梦想。</p>
+<p>九人会是天才的聚集地。启迪者大会的每一样小东西，流到外界都可能成为重大发明。所以他们对自己发明的要求极高——除非能改变整个都市，否则就是"玩具"。绝大多数成员也确实以创造玩具的心态做研究。所以在得知自己的技术可能被 T 公司利用时，他们用概念焚化炉摧毁它们，纵使不舍，也没过多挣扎。</p>
+<p>只有东朗不同。别人做研究是为了玩，只有他是认真的。他想治愈全都市，这不只是一句口号，而是从小支撑他到现在的信念。小黄牛、三桥、他的科员——这些都是东朗良善的象征。</p>
+<p>但他第一次动摇，来自同乡的一句嘲弄。那句评价是：你做的东西就是一堆玩具，根本派不上用场。所有人都在做玩具，只有他觉得自己做的可以真正应用。当他把自己的技术扔进概念焚化炉的那一刻，内心的某个部分就已经死去了。</p>
+<p>后来他看到 K 公司推出的治愈安瓿——有人做出了能让人近乎起死回生的起点技术。他终于崩溃了。自己一直以来的努力，真的如同东柏所说，是一个玩具，完完全全的一文不值。</p>
+<p>所以当 T 公司明里暗里威胁他时，他把九人会地下室的秘密出卖了。</p>
+<p>但噩梦还没结束。加入 K 公司后，阿方索的话里话外都在暗示：我们要你，不是因为你的能力，而是因为你是九人会的前成员。比起期待你，我们更希望你能帮我们找到杨吉。九人会纵使毁灭，它的阴影也笼罩在东朗的生活之上。</p>
+<p>他仿造了阳极的玻璃窗。从此再也无法摆脱九人会。那一刻他清楚地意识到——自己拥有的一切都属于九人会。那些奖杯里空无一物。他永远无法用自己的能力去填满它。</p>
+<p>于是他扭曲了。扭曲形态的后缀是<strong>否定一切者</strong>。他否定九人会的一切，否定曾经的自己，杀死心中那头小黄牛，舍弃最后的善良。背景中的金色麦田被工厂包围——他决心用一己之力，用都市的做法，去守护自己最初的梦想。</p>
+<p>但当他被李箱击败，破碎的翅膀在九人会的旧房间里重新凝结，他才意识到：九人会不是敌人，而是那个永远包容他的家。</p>
+<h2>李箱 · 镜中花海</h2>
+<p>李箱的笔名，真的来自一个箱子。</p>
+<p>韩国的画家好友为了庆祝他考上大学，送了他一幅画。李箱本身也非常喜欢画画，对这个箱子爱不释手。正好那时还没有笔名——为了纪念他们的友谊，就把"箱"作为名。至于姓李，是因为箱子是木头做的，木姓之中，李最符合他的气质。他的原名是金海清。</p>
+<p>作为一号罪人，李箱是监狱里第一个完成自我拯救的角色。也是在第四章，我们才知道，原来 3.5 章里那个对着烧焦土豆吟诗的厨子诗人，并不是 Project Moon 在 OOC——那就是李箱的本性。</p>
+<p>九人会对李箱的意义，和东柏、东朗有本质区别。东柏看重的是九人会所代表的意义，东朗看重的是技术能否被应用。但对李箱来说，九人会是他的<strong>家</strong>。他的钱、技术、权利，一切都是为了九人会而存在。他不在乎自己废寝忘食创造的镜子是否得到应用，也不在乎当建筑师时赚取的巨额财产。</p>
+<p>所以，当东柏为了保护玻璃窗技术而引爆办公室地下的炸药后，李箱的世界崩塌了。他失去了家，失去了生存的意义。</p>
+<p>被囚夫带走后，他终日与镜中的自己对话。他羡慕镜中那个拥有翅膀的自己——无数平行世界有无数的李箱，但只有一个李箱能拥有飞向高空的翅膀。他始终认为，自己的翅膀已被折断。只能在无尽的平行世界里，用镜子注视唯一拥有翅膀的那个自己，来排解那无边的孤独。</p>
+<p>失败早已注定。无论怎么挣扎，似乎都无济于事。</p>
+<p>然后，第四章最精彩的一幕来了。</p>
+<p>李箱站在无数画面之前，看着无数平行宇宙中没有翅膀的自己。他闭上眼睛，回忆起在启迪者大会第一次向九人会展示镜子的场景。画面消散。已经死去的东柏，通过金枝的力量，在镜中的花海之前，告诉了他最后一件事。</p>
+<p>她其实在那时就已经发现：镜中展示的，并不是平行世界的李箱，而是<strong>可能性</strong>。</p>
+<p>一瞬间，无数画面带来的绝望，全都变成了希望。那不是李箱遥不可及的其他世界。那是李箱本人拥有的可能性。无限的可能性。镜中李箱所拥有的翅膀，既是他的，也是李箱自己的。因为镜中映照的是自己的模样——这是常识。</p>
+<p>随后，李箱挥动翅膀。在九人会的旧日指引下，为走入歧途的老友东朗写下结局。也就此正式走出了过去的九人会，将巴士视作自己的新家。</p>
+<p>一个关于把绝望变成希望的故事，用一面镜子，一片花海，就这样讲完了。</p>
+<h2>写在最后</h2>
+<p>都市的故事看起来是绝望的：它毁灭一个又一个梦想，催生一个又一个悲剧。放眼望去，似乎只有无垠黑暗。</p>
+<p>但第四章让我觉得，Project Moon 想写的从来不是绝望。跨过无尽的苦难，前人的尸骨会滋养后世的土壤。在一切的尽头，是梦想中的无边花海。从萌芽到毁灭，从毁灭到新生。脑叶公司如是，废墟图书馆如是，边狱巴士亦如是。</p>
+<blockquote>拥抱过去，才能创造未来。</blockquote>]]></description>
+    </item>
+
+    <item>
+      <title>React 初探 · 从原生到框架</title>
+      <link>https://annieif.github.io/notes/note.html?slug=2026-06-21-react-chu-tan</link>
+      <pubDate>Sun, 21 Jun 2026 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2026-06-21-react-chu-tan</guid>
+      <description><![CDATA[<p>从零写了大半年原生 JS，后来开始学 React。笔记保留一份<mark>提纲式速查</mark>，只放核心概念，方便隔一段时间再翻回来。</p>
+<blockquote>美中不足，好事多磨。</blockquote>
+<hr>
+<h2>一 · 为什么是它</h2>
+<ul><li>概念少 — JSX / 组件 / props / state / hooks — 一只手数得过来</li>
+<li>离原生近 — JSX 本质就是函数调用，不是新模板语言</li>
+<li>生态成熟 — 遇到问题几乎总能找到现成答案</li>
+<p></ul>三个框架放在一起，Angular 太重，Vue 太甜。React 刚好卡在中间。</p>
+<hr>
+<h2>二 · 五个最常用的概念</h2>
+<h3>1. 组件</h3>
+<ul><li>一个函数，返回一段 JSX</li>
+<li>组件 = "把页面拆成积木"</li>
+<li>每个组件只做一件事</li>
+</ul><h3>2. Props</h3>
+<ul><li>从父组件传给子组件的参数</li>
+<li>只读，子组件不能直接改</li>
+<li>用来配置组件的行为或内容</li>
+</ul><h3>3. State</h3>
+<ul><li>组件自己的可变数据</li>
+<li>改 state → 组件自动重新渲染</li>
+<li>声明式 UI：你只管说"状态是什么"，框架把状态变成 DOM</li>
+</ul><h3>4. 事件</h3>
+<ul><li>驼峰命名：<code>onClick</code>、<code>onChange</code>、<code>onSubmit</code></li>
+<li>直接绑定到 JSX 元素上</li>
+<li>不用再 <code>addEventListener</code></li>
+</ul><h3>5. Hooks</h3>
+<ul><li>在函数组件里"钩"入 React 功能的函数</li>
+<li>三大核心：<code>useState</code>、<code>useEffect</code>、<code>useRef</code></li>
+<li>class 组件时代已过，<mark>函数组件 + Hooks 是方向</mark></li>
+</ul><hr>
+<h2>三 · 核心 Hook 速查</h2>
+<h3><code>useState</code></h3>
+声明一个可响应的变量和它的 setter。
+<h3><code>useEffect</code></h3>
+处理"不属于渲染逻辑"的事：定时器、数据请求、手动 DOM 操作。
+<ul><li>无依赖数组：每次渲染后执行</li>
+<li>空数组 <code>[]</code>：只在挂载后执行一次</li>
+<li>有依赖 <code>[x, y]</code>：当 x 或 y 变化时执行</li>
+<li>返回 cleanup 函数：组件卸载或下次 effect 前执行</li>
+</ul><h3><code>useRef</code></h3>
+<ul><li>不触发重渲染的容器</li>
+<li>最常见用途：拿到真实 DOM 节点的引用</li>
+<li>也可用来存"不希望触发重渲染"的持久值</li>
+</ul><hr>
+<h2>四 · 数据流与状态提升</h2>
+<ul><li>数据只往下走（父 → 子，通过 props）</li>
+<li>子想让父"改点什么"：父传一个函数给子，子调用它</li>
+<li>这叫<mark>状态提升</mark> — 把共享数据放在最近的公共祖先里</li>
+<p></ul>数据流单向，bug 的来源就少了一半。</p>
+<hr>
+<h2>五 · 原生 vs 框架</h2>
+<table><thead><tr><th></th><th>原生 JS</th><th>React</th></tr></thead><tbody><tr><td>心智模型</td><td>命令式 — "我要做什么"</td><td>声明式 — "我要什么"</td></tr><tr><td>UI 更新</td><td>手动 DOM 操作</td><td>改 state → 自动重渲染</td></tr><tr><td>组件化</td><td>靠约定和 discipline</td><td>内置</td></tr><tr><td>直接控制</td><td>完全自由</td><td>间接但清晰</td></tr><tr><td>构建工具</td><td>不用</td><td>需要（Babel + Vite）</td></tr></tbody></table>
+<p>我最强烈的感受：框架拿走了自由，也拿走了重复劳动。大多数时候是划算的。</p>
+<hr>
+<h2>六 · 下一步路线</h2>
+<ol><ul><li>用 React 重写一个小项目 — 实践中理解</li>
+<li>React Router — SPA 路由</li>
+<li>TanStack Query — 服务端数据管理</li>
+<li>最后再碰 Next.js</li>
+</ul></ol><hr>
+<h2>七 · 还没想通的</h2>
+<ul><li><strong>性能优化</strong>：<code>useMemo</code> / <code>useCallback</code> / <code>React.memo</code> — 什么时候用？我倾向"先写对，再写快"，遇到问题再加。</li>
+<li><strong>状态管理</strong>：Context 够用吗？什么时候上 Redux / Zustand？项目变大之后会不会失控？</li>
+<li><strong>Next.js</strong>：概念太多。先把 React 本身搞熟。</li>
+</ul><hr>
+<h2>· 代码片段</h2>
+<p>全部示例集中在此，正文保持干净。</p>
+<p><strong>① Card 组件</strong></p>
+---PREBLOCK0<hr>
+<p><strong>② useState — 计数器</strong></p>
+---PREBLOCK1<hr>
+<p><strong>③ useEffect — 同步页面标题</strong></p>
+---PREBLOCK2<hr>
+<p><strong>④ useRef — DOM 引用</strong></p>
+---PREBLOCK3<hr>
+<p><strong>⑤ 状态提升 — 父与子</strong></p>
+---PREBLOCK4<hr>
+<p><strong>⑥ JSX 就是函数调用</strong></p>
+---PREBLOCK5<hr>
+<hr>
+<blockquote>原生 JS 教会我理解底层。React 教会我组织代码。两者不冲突，是互补的。框架不是完美的，但值得学。</blockquote>]]></description>
+    </item>
+
+    <item>
+      <title>code_wiki — Annieif 的个人作品集</title>
+      <link>https://annieif.github.io/notes/note.html?slug=2026-06-20-code-wiki</link>
+      <pubDate>Sat, 20 Jun 2026 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2026-06-20-code-wiki</guid>
+      <description><![CDATA[<p>一个零依赖的个人作品集站点 — 核心文件只有根目录的 <code>index.html</code>，其它一切内容都由它在浏览器中即时生成。</p>
+<h2>项目文件结构</h2>
+<p>文件按三类划分：入口文件、作品页、笔记系统。</p>
+<table><thead><tr><th>类型</th><th>文件</th><th>说明</th></tr></thead><tbody><tr><td><strong>入口</strong></td><td><code>index.html</code></td><td>主页、CSS、多语言字典、所有渲染逻辑</td></tr><tr><td><strong>图标</strong></td><td><code>icon.png</code></td><td>浏览器标签页与手机主屏图标</td></tr><tr><td><strong>作品</strong></td><td><code>works/001.html</code>、<code>works/002.html</code> …</td><td>每一条作品的详情页，可独立访问</td></tr><tr><td><strong>笔记数据</strong></td><td><code>notes/data.js</code></td><td>所有笔记的纯文本，以 JS 数组形式维护</td></tr><tr><td><strong>笔记模板</strong></td><td><code>notes/note.html</code></td><td>所有笔记共用的渲染模板</td></tr></tbody></table>
+<blockquote>GitHub Pages 配置在仓库设置中指向 main 分支根目录 — 没有构建步骤，推送即发布。</blockquote>
+<h2>主题与排版</h2>
+<p>整站的配色、字体与节奏都集中在 <code>:root</code> 的 CSS 变量中：</p>
+---PREBLOCK0<hr>
+字体族三套各司其职：
+<ul><li><strong>Fraunces</strong> — 正文与常规标题。可变字宽从 regular 到 black，在标题处撑出足够的分量。</li>
+<li><strong>Cormorant Garamond</strong> — 斜体、引用、英雄区最显眼的那几行字。它的笔触偏薄、字尾细腻，用作装饰性标题能带来"杂志感"。</li>
+<li><strong>JetBrains Mono</strong> — 所有技术性信息（时间戳、编号、代码、导航）。替换了之前的 IBM Plex Mono，JetBrains Mono 的连字和字符间距在窄栏中可读性更强，字符高度一致，便于代码块对齐。</li>
+</ul><blockquote>关键判断：<strong>只用一套字体族并不够</strong>。三个字体分别覆盖"叙述—装饰—技术"三种语境，读者能从字形变化中感知内容的切换，而无需依赖字号层级。</blockquote>
+<h2>页面骨架</h2>
+主页 <code>index.html</code> 按顺序堆叠以下元素：
+<ol><ul><li><strong>星空层 <code>.stars</code></strong> — 5 层静态星点 + 7 颗流星。每层 tile 尺寸不同，产生视差感；呼吸动画通过 <code>opacity</code> 与缓慢位移叠加实现。</li>
+<li><strong>自定义指针</strong> — <code>.cursor-dot</code> 直接跟随鼠标坐标；<code>.cursor-ring</code> 用 <code>requestAnimationFrame</code> 做插值延迟跟随，在链接/按钮上放大并着色。</li>
+<li><strong>英雄区 <code>.hero</code></strong> — 占据首屏，内含导航栏、动画大标题、引用文字。</li>
+<li><strong>左侧页面目录 <code>.page-toc</code></strong> — 5 个编号节点，滚动到内容区时才淡入。</li>
+<li><strong>各 section</strong> — <code>#about</code>、<code>#projects</code>、<code>#insights</code>、<code>#notes</code>、<code>#contact</code>，每个 section 都由一个 <code>sec-head</code>（编号 + 大字标题）与一个内容容器组成。</li>
+<li><strong>页脚</strong> — 一句话声明。</li>
+</ul></ol><h2>多语言：零依赖 I18N</h2>
+<p>不使用任何 i18n 库。多语言由一个手写的 JS 对象驱动：</p>
+---PREBLOCK1<hr>
+<p>每个语言分支都包含同样的键结构：</p>
+<table><thead><tr><th>字段</th><th>用途</th></tr></thead><tbody><tr><td><code>meta.*</code></td><td>页头元信息、document.title</td></tr><tr><td><code>nav.*</code></td><td>导航栏文字</td></tr><tr><td><code>sec.*</code> / <code>sec.*Sub</code></td><td>section 编号小标题与大字副标题</td></tr><tr><td><code>hero.title.lines</code></td><td>英雄区三行标题，每行一个 {text, style} 对象</td></tr><tr><td><code>hero.quote</code></td><td>英雄区下方引用文字</td></tr><tr><td><code>marquee.items</code></td><td>走马灯词条数组</td></tr><tr><td><code>about.cards</code></td><td>三张介绍卡片，每张含 label / title / text</td></tr><tr><td><code>works.items</code></td><td>作品列表，每张含 title / tag / text / href</td></tr></tbody></table>
+<blockquote>设计决策：<strong>所有语言共享同一套 HTML 骨架</strong>，而我只在 DOM 文本层面做替换。这样，任何语言都能使用同一套样式系统，无需单独维护。</blockquote>
+<h2>笔记系统：数据驱动</h2>
+<p>笔记的"数据"与"展示"完全分离。数据源只在 <code>notes/data.js</code> 的 <code>NOTES_DATA</code> 数组中维护。每条笔记有四个字段：</p>
+<table><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td><code>date</code></td><td>写作日期，格式 YYYY-MM-DD</td></tr><tr><td><code>title</code></td><td>标题</td></tr><tr><td><code>desc</code></td><td>一句话描述 — 在主页笔记列表中显示</td></tr><tr><td><code>content</code></td><td>正文 — 支持轻量 Markdown 语法</td></tr></tbody></table>
+<p>id、preview、HTML 化内容都由后处理自动生成，不需要手工填写：</p>
+---PREBLOCK2<hr>
+<p><code>parseNoteContent</code> 支持的语法：</p>
+<table><thead><tr><th>语法</th><th>输出</th></tr></thead><tbody><tr><td><code>## 标题</code> / <code>### 标题</code></td><td>二级 / 三级标题</td></tr><tr><td><code>- 条目</code></td><td>无序列表</td></tr><tr><td><code>1. 条目</code></td><td>有序列表</td></tr><tr><td><code>**粗体**</code> / <code>*斜体*</code></td><td>strong / em</td></tr><tr><td><code>==高亮==</code></td><td>mark（粉色背景 + 光晕）</td></tr><tr><td>`<code>代码</code>`</td><td>行内代码，浅灰框包裹</td></tr><tr><td>``<code> ... </code>``</td><td>代码块，深灰框 + 左边粉色竖条</td></tr><tr><td><code>&gt; 引用</code></td><td>blockquote</td></tr><tr><td><code></td><td>表格</td><td>表格</td><td></code></td><td>HTML 表格</td></tr><tr><td><code>---</code></td><td>水平线</td></tr><tr><td>空行</td><td>分段</td></tr></tbody></table>
+<p>主页上的笔记列表由 <code>initNotesController</code> 驱动：搜索（标题/描述/preview 中关键字匹配）、排序（最新 / 最早 / 标题）、分页（每次渲染 PER_PAGE 条）、折叠 preview。</p>
+<p>在笔记详情页 <code>note.html</code> 中，<code>IntersectionObserver</code> 监视每一个 h2、h3，当某个标题接近视口中心时把它对应的目录条目高亮。这让目录像一根"阅读进度条"一样随滚动自动更新。</p>
+<h2>性能考量</h2>
+<ul><li><strong>零依赖</strong>：不加载任何第三方 JS 库或 CSS 框架。</li>
+<li><strong>静态输出</strong>：GitHub Pages 提供静态文件，无构建步骤。</li>
+<li><strong>Canvas 星空</strong>：约 150 个星点在单个 Canvas 上绘制，只在 resize 时重绘。</li>
+<li><strong>光标跟随</strong>：throttle 到约 30fps，ring 用 lerp 做缓动跟随。</li>
+<li><strong>列表条目</strong>：使用原生 DOM 操作而非 innerHTML，避免重排与潜在 XSS。</li>
+<li><strong>Markdown 解析</strong>：手写轻量子集 parser，约 100 行，覆盖常见格式。</li>
+</ul><h2>维护速查</h2>
+<table><thead><tr><th>要做的事</th><th>改哪里</th></tr></thead><tbody><tr><td><strong>新增作品</strong></td><td>新建 <code>works/002.html</code>；在 <code>I18N.*.works.items</code> 中加一条</td></tr><tr><td><strong>新增笔记</strong></td><td>在 <code>notes/data.js</code> 的 <code>NOTES_DATA</code> 头部插入一个对象，填 date/title/desc/content</td></tr><tr><td><strong>新增语言</strong></td><td>在 <code>I18N</code> 中加一个分支，复制现有语言的键结构；在 <code>langSwitch</code> 按钮行加入新按钮；在 <code>langMap</code> 中登记映射</td></tr><tr><td><strong>改配色 / 字体</strong></td><td>修改 <code>:root</code> 中的 CSS 变量与顶部 Google Fonts 链接。全站所有颜色/字体都从变量派生，无需逐处查找替换</td></tr><tr><td><strong>改 section 顺序</strong></td><td>调整 <code>index.html</code> 中 <code>&lt;section&gt;</code> 的 DOM 顺序即可；左侧目录会自动按顺序高亮</td></tr></tbody></table>]]></description>
     </item>
 
   </channel>

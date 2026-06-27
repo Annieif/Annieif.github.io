@@ -1153,16 +1153,9 @@
 </div><!-- .page-layout -->
 
 <!-- ============ FOOTER ============ -->
-<script src="notes/data.js"></script>
+<script src="notes/core.js"></script>
 <script>
-/* =====================================================
-   🛠  CONTENT EDITOR — 编辑这里即可改变页面内容
-   修改下面的数组/对象,然后保存文件。结构:
-   - marquee:         [字符串,字符串,...]     (会以 ✦ 分隔)
-   - about:           [{label, title, text}]  (3张卡片)
-   - works:           [{title, tag, text}]    (条目列表)
-   每一项都分 zh / en 双语。
-   ===================================================== */
+/* —— 笔记解析/渲染工具由 notes/core.js 提供 —— */
 
 const I18N = {
   zh: {
@@ -1203,7 +1196,7 @@ const I18N = {
       [{ style:'reg', text:'—独立 ' }, { style:'ac', text:'造物者。' }],
       [{ style:'indent' }, { style:'reg', text:'偏爱 ' }, { style:'ac', text:'自由。' }]
     ],
-    'hero.quote': '美中不足,好事多磨。',
+    'hero.quote': '你未看此花时，此花与汝心同归于寂；你来看此花时，则此花颜色一时明白起来。',
 
     // ======== 在此编辑走马灯 ========
     'marquee.items': [
@@ -1212,7 +1205,7 @@ const I18N = {
 
     // ======== 在此编辑 About 卡片(3 张);字段为 label / title / text ========
     'about.cards': [
-      { label:'[ / label 01 ]', title:'[ 关于"我" ]', text:'[ 我終將在苦難中成長 ]' },
+      { label:'[ / label 01 ]', title:'[ 关于"我" ]', text:'美中不足，好事多磨。' },
       { label:'[ / label 02 ]', title:'[ 关于"Annieif" ]', text:'[ 无穷的远方，无数的人们，都和我有关 ]' },
       { label:'[ / label 03 ]', title:'[ 关于"你" ]', text:'[ 一身清贫怎敢入繁华，两袖清风怎敢误佳人 ]' }
     ],
@@ -1690,11 +1683,6 @@ const I18N = {
 };
 
 /* =====================================================
-   NOTES DATA — 来自 notes/data.js (单一数据源)
-   ===================================================== */
-/* NOTES_DATA 由 notes/data.js 提供 */
-
-/* =====================================================
    Rendering helpers.
    ===================================================== */
 function buildMarqueeHtml(items) {
@@ -1912,7 +1900,7 @@ function renderNotesFeed(items) {
     previewInner.textContent = (n.preview || n.desc || '') + ' …';
     const nlink = document.createElement('a');
     nlink.className = 'nlink';
-    nlink.href = 'notes/note.html#' + (n.id || '');
+    nlink.href = 'notes/note.html?slug=' + (n.slug || '');
     nlink.textContent = '→ 阅读全文';
     previewInner.appendChild(document.createElement('br'));
     previewInner.appendChild(nlink);
@@ -1941,14 +1929,11 @@ async function initNotesController() {
   const sortEl  = document.getElementById('notesSort');
   if (!feed || !search || !sortEl) return;
 
-  let autoNotes = [];
+  let notes = [];
   try {
-    const res = await fetch('notes/auto-published.json');
-    if (res.ok) autoNotes = await res.json();
-  } catch (e) { /* file may not exist yet */ }
-
-  const FULL_NOTES = [...NOTES_DATA, ...autoNotes];
-  FULL_NOTES.sort((a, b) => b.date.localeCompare(a.date));
+    const res = await fetch('notes/_index.json');
+    if (res.ok) notes = await res.json();
+  } catch (e) { /* fall through */ }
 
   const PER_PAGE = 5;
   let sortKey = 'newest';
@@ -1956,7 +1941,7 @@ async function initNotesController() {
   let visibleCount = PER_PAGE;
 
   function getSorted() {
-    const arr = [...FULL_NOTES];
+    const arr = [...notes];
     if (sortKey === 'newest')  return arr;
     if (sortKey === 'oldest')  return arr.reverse();
     if (sortKey === 'title')   return arr.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'zh'));
@@ -2029,6 +2014,10 @@ async function initNotesController() {
       render();
     });
   });
+
+  // activate default / first sort button
+  const firstSortBtn = sortEl.querySelector('button');
+  if (firstSortBtn) firstSortBtn.classList.add('active');
 
   render();
 }
