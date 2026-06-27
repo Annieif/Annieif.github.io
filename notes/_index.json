@@ -2,9 +2,9 @@
   {
     "slug": "2026-06-26-gr",
     "date": "2026-06-26",
-    "title": "GR · 让 BERT 在 GitHub 上自己长大",
+    "title": "GR · 让模型在时间里自己长大",
     "desc": "用 GitHub Actions 免费算力，每天自动微调中文 BERT。MoE + Multi-LoRA + 随机数据集，让模型随时间演化。",
-    "preview": "一直想用 GitHub 的免费 runner 做点有意思的事"
+    "preview": "我始终觉得，一个东西如果能自己运转、自己生长，哪怕每天只长一点点，也比那些一蹴而就的成品更让人安心"
   },
   {
     "slug": "2026-06-21-limbus-ch4",
