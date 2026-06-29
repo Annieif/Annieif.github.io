@@ -1,37 +1,37 @@
 [
-    {
-        "slug":  "2026-06-28-camus",
-        "date":  "2026-06-28",
-        "title":  "加缪 · 在荒诞中站立",
-        "desc":  "宇宙沉默，意义缺席——加缪的荒诞哲学不是答案，而是一种姿态。",
-        "preview":  "加缪在《西西弗神话》开篇写下这样一句话"
-    },
-    {
-        "slug":  "2026-06-26-gr",
-        "date":  "2026-06-26",
-        "title":  "Github Runner实践",
-        "desc":  "用 GitHub Actions 免费算力，每天自动微调中文 BERT。MoE + Multi-LoRA + 随机数据集，让模型随时间演化。",
-        "preview":  "我始终觉得，一个东西如果能自己运转、自己生长，哪怕每天只长一点点，也比那些一蹴而就的成品更让人安心"
-    },
-    {
-        "slug":  "2026-06-21-limbus-ch4",
-        "date":  "2026-06-21",
-        "title":  "边狱巴士第四章 · 梦、镜与花海",
-        "desc":  "从九人会到东柏、东朗、李箱，第四章讲的不是绝望，而是废墟上的嫩芽。",
-        "preview":  "Limbus Company 第四章完结后，我很久没有缓过来"
-    },
-    {
-        "slug":  "2026-06-21-react-chu-tan",
-        "date":  "2026-06-21",
-        "title":  "React 初探 · 从原生到框架",
-        "desc":  "一份提纲式的 React 速查 · 适合长时间反复翻阅",
-        "preview":  "从零写了大半年原生 JS，后来开始学 React"
-    },
-    {
-        "slug":  "2026-06-20-code-wiki",
-        "date":  "2026-06-20",
-        "title":  "code_wiki — Annieif 的个人作品集",
-        "desc":  "本站的技术架构与维护要点：HTML / CSS / 原生 JavaScript / GitHub Pages 的静态站点设计。",
-        "preview":  "一个零依赖的个人作品集站点 — 核心文件只有根目录的 index"
-    }
+  {
+    "slug": "2026-06-28-camus",
+    "date": "2026-06-28",
+    "title": "加缪 · 在荒诞中站立",
+    "desc": "宇宙沉默，意义缺席——加缪的荒诞哲学不是答案，而是一种姿态。",
+    "preview": "加缪在《西西弗神话》开篇写下这样一句话： 真正严肃的哲学问题只有一个，那就是自杀"
+  },
+  {
+    "slug": "2026-06-26-gr",
+    "date": "2026-06-26",
+    "title": "Github Runner实践",
+    "desc": "用 GitHub Actions 免费算力，每天自动微调中文 BERT。MoE + Multi-LoRA + 随机数据集，让模型随时间演化。",
+    "preview": "我始终觉得，一个东西如果能自己运转、自己生长，哪怕每天只长一点点，也比那些一蹴而就的成品更让人安心"
+  },
+  {
+    "slug": "2026-06-21-limbus-ch4",
+    "date": "2026-06-21",
+    "title": "边狱巴士第四章 · 梦、镜与花海",
+    "desc": "从九人会到东柏、东朗、李箱，第四章讲的不是绝望，而是废墟上的嫩芽。",
+    "preview": "Limbus Company 第四章完结后，我很久没有缓过来"
+  },
+  {
+    "slug": "2026-06-21-react-chu-tan",
+    "date": "2026-06-21",
+    "title": "React 初探 · 从原生到框架",
+    "desc": "一份提纲式的 React 速查 · 适合长时间反复翻阅",
+    "preview": "从零写了大半年原生 JS，后来开始学 React"
+  },
+  {
+    "slug": "2026-06-20-code-wiki",
+    "date": "2026-06-20",
+    "title": "code_wiki — Annieif 的个人作品集",
+    "desc": "本站的技术架构与维护要点：HTML / CSS / 原生 JavaScript / GitHub Pages 的静态站点设计。",
+    "preview": "一个零依赖的个人作品集站点 — 核心文件只有根目录的 index"
+  }
 ]
