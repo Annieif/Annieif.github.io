@@ -74,13 +74,13 @@
   }
   #starCanvas{display:block;width:100vw;height:100vh;position:fixed;top:0;left:0}
 
-  /* Shooting stars — kept CSS for variety, increased base count for more motion */
+  /* Shooting stars — displacement uses vw on both axes so tan(20deg)≈0.364 stays consistent */
   .shooting-star{
     position:absolute;top:0;left:0;
     width:130px;height:1px;
     background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.55) 45%, #fff 65%, rgba(244,194,208,0) 100%);
     filter:drop-shadow(0 0 6px rgba(244,194,208,.5));
-    transform:rotate(18deg);
+    transform:rotate(20deg);
     border-radius:999px;
     opacity:0;
     animation:shoot 11s linear infinite;
@@ -108,16 +108,16 @@
     animation:shootBurst 1.4s linear forwards;
   }
   @keyframes shoot{
-    0%  {transform:translate(-200px, -200px) rotate(18deg);opacity:0}
+    0%  {transform:translate(-10vw, -3.64vw) rotate(20deg);opacity:0}
     2%  {opacity:.9}
-    12% {transform:translate(125vw, 55vh) rotate(18deg);opacity:.9}
+    12% {transform:translate(110vw, 40vw) rotate(20deg);opacity:.9}
     14% {opacity:0}
     100%{opacity:0}
   }
   @keyframes shootBurst{
-    0%  {transform:translate(-200px, -200px) rotate(18deg);opacity:0}
+    0%  {transform:translate(-10vw, -3.64vw) rotate(25deg);opacity:0}
     6%  {opacity:1}
-    90% {transform:translate(130vw, 60vh) rotate(18deg);opacity:.85}
+    90% {transform:translate(60vw, 28vw) rotate(25deg);opacity:.85}
     100%{opacity:0}
   }
 
@@ -1205,7 +1205,7 @@ const I18N = {
 
     // ======== 在此编辑 About 卡片(3 张);字段为 label / title / text ========
     'about.cards': [
-      { label:'[ / label 01 ]', title:'[ 关于"我" ]', text:'美中不足，好事多磨。' },
+      { label:'[ / label 01 ]', title:'[ 关于"我" ]', text:'[ 美中不足，好事多磨。 ]' },
       { label:'[ / label 02 ]', title:'[ 关于"Annieif" ]', text:'[ 无穷的远方，无数的人们，都和我有关 ]' },
       { label:'[ / label 03 ]', title:'[ 关于"你" ]', text:'[ 一身清贫怎敢入繁华，两袖清风怎敢误佳人 ]' }
     ],
