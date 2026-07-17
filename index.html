@@ -1931,7 +1931,7 @@ async function initNotesController() {
 
   let notes = [];
   try {
-    const res = await fetch('notes/_index.json');
+    const res = await fetch('notes/_index.json?v=' + Date.now());
     if (res.ok) notes = await res.json();
   } catch (e) { /* fall through */ }
 
