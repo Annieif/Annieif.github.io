@@ -1,0 +1,43 @@
+{
+  "name": "Annieif 个人作品集",
+  "version": "1.0.0",
+  "description": "Annieif 的个人作品集与数字花园。深空暗色主题，星空氛围，温暖粉色点缀。",
+  "deviceType": "desktop",
+  "config": {
+    "brandCSS": "colors_and_type.css"
+  },
+  "data": [
+    {
+      "id": "page-index",
+      "type": "page",
+      "title": "首页",
+      "devMetadata": {
+        "htmlSrc": "pages/index.html"
+      }
+    },
+    {
+      "id": "page-note",
+      "type": "page",
+      "title": "笔记详情",
+      "devMetadata": {
+        "htmlSrc": "pages/note.html"
+      }
+    },
+    {
+      "id": "page-feed",
+      "type": "page",
+      "title": "RSS 订阅",
+      "devMetadata": {
+        "htmlSrc": "pages/feed.html"
+      }
+    },
+    {
+      "id": "page-admin",
+      "type": "page",
+      "title": "笔记管理后台",
+      "devMetadata": {
+        "htmlSrc": "pages/admin.html"
+      }
+    }
+  ]
+}

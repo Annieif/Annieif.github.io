@@ -1,0 +1,152 @@
+{
+  "project": {
+    "name": "Annieif 个人作品集",
+    "path": "d:\\yyk\\静态\\page\\annieif-portfolio",
+    "operation": "create",
+    "deviceType": "desktop",
+    "language": "zh-CN",
+    "dashboardMode": false,
+    "styleDefinitionBrief": "Deep-space dark portfolio with warm ink tones, pink accent highlights, starfield atmosphere, serif typography (Cormorant Garamond + Fraunces), monospace technical labels (JetBrains Mono). Editorial, poetic, restrained.",
+    "designRead": "showcase / developer-creator audience / poetic-editorial tone / low density / avoid generic SaaS look",
+    "designDials": {
+      "layoutVariance": 3,
+      "motionIntensity": 2,
+      "visualDensity": 2
+    },
+    "styleContinuityAnchors": {
+      "colorSystem": {
+        "primaryColorRole": "pink accent (#f4c2d0) used for emphasis, highlights, interactive states, and decorative elements",
+        "brandHuePolicy": "free-explore with single accent hue; warm blue (#7ab4d8) used only for links and secondary information",
+        "stateColors": "semantic status colors for admin: success=#7ecba1, warning=#d8a86b, error=#e06060, info=#7ab4d8"
+      },
+      "shapeSystem": "restrained radius: 4px (buttons/inputs), 8px (cards/panels), 12px (larger containers). Square accents via border-left decorations on blockquotes and section headings.",
+      "typographySystem": "Three-font system: Cormorant Garamond (italic display titles, quotes, decorative headings), Fraunces (body text, regular headings), JetBrains Mono (technical labels, timestamps, code, navigation). CJK support via Noto Serif SC fallback.",
+      "spacingSystem": "Generous whitespace with 120px section padding, 64px element spacing. Compact micro-labels at 9-11px with wide letter-spacing (.15-.28em). Editorial rhythm with relaxed line-heights (1.7-1.9).",
+      "componentLanguage": "Minimal decorative borders, no heavy shadows. Subtle border (rgba .10) and surface layering. Hover states use accent color bleed and translateY(-1-3px). Active/selected states use accent color with glow (box-shadow).",
+      "surfaceAndDepth": "Dark layered surfaces: #0a0a0a base, #13111a cards. Radial gradient backgrounds for atmosphere. Static elements use borders; only floating layers (modals/tooltips) use deeper shadows.",
+      "imageryAndIconography": "CSS-generated starfield with 3 parallax layers, shooting star animations. Noise texture overlay at 10% opacity. Diamond (◆) as list bullet. No icon library.",
+      "interactionTone": "Subtle, slow transitions (300-900ms) with custom easing curve. Typewriter text reveal for hero. Scroll-triggered fade-in for sections. Custom cursor with ring follower."
+    },
+    "sharedProjectShellContract": {
+      "navigationShell": "Minimal top bar: brand name left (Cormorant Garamond italic), navigation links right (monospace uppercase), thin bottom border",
+      "primaryColorSystem": "Single pink accent (#f4c2d0) for CTAs, active states, highlights. Blue (#7ab4d8) for links only.",
+      "typographySystem": "Cormorant Garamond italic for display, Fraunces for body, JetBrains Mono for technical/labels",
+      "radiusScale": "4px buttons/inputs, 8px cards/panels, 12px larger containers",
+      "surfaceDepthModel": "Border-first surfaces, no shadow on static cards, radial gradient atmosphere",
+      "ctaStyle": "Transparent border buttons with accent color on hover. Primary CTA uses solid accent fill.",
+      "alignmentRules": "Centered section heads with monospace labels. Left-aligned body content in narrow column (max 860px). Centered statistics/quote cards."
+    }
+  },
+  "designSource": {
+    "operatingMode": "free-explore",
+    "cssFilePath": "d:\\yyk\\静态\\page\\annieif-portfolio\\colors_and_type.css",
+    "brandPrefix": "annieif",
+    "themeMode": "dark"
+  },
+  "pages": [
+    {
+      "nodeId": "page-index",
+      "slug": "index",
+      "title": "首页",
+      "htmlSrc": "pages/index.html",
+      "pageIndex": 1,
+      "pageType": "showcase",
+      "businessScenario": "Personal portfolio homepage showcasing projects, about section, insights stats, notes list, and contact/RSS subscription",
+      "visualNorthStar": "Deep-space observatory feel: vast dark canvas with subtle starfield, poetic serif hero text with gradient colors, floating above a quiet cosmic atmosphere. The first impression should feel like looking at a night sky through a telescope — intimate, beautiful, and deeply personal.",
+      "compositionPattern": "Vertical editorial scroll: Full-viewport hero with animated title → thin marquee band → section by section (about cards, projects list, insights stats, notes, contact) → minimal footer",
+      "continuityAnchors": ["starfield atmosphere background", "monospace micro-labels", "accent pink glow on interactive elements", "Cormorant Garamond italic section headings"],
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false
+    },
+    {
+      "nodeId": "page-note",
+      "slug": "note",
+      "title": "笔记详情",
+      "htmlSrc": "pages/note.html",
+      "pageIndex": 2,
+      "pageType": "showcase",
+      "businessScenario": "Long-form note/article reading page with table of contents, scroll-spy highlighting, and rich typography",
+      "visualNorthStar": "An intimate reading room: focused single-column layout with generous margins, elegant serif typography, subtle pink accent decorations on section headings. The reading experience should feel like flipping through a beautifully typeset journal.",
+      "compositionPattern": "Single-column editorial: back link → date label → large serif title → description → full-width content with h2/h3 sections, blockquotes, code blocks, tables → scroll-spy TOC on the left side",
+      "continuityAnchors": ["dark background with starfield", "pink accent dot decorations on h2 headings", "gradient fade on blockquote left border", "monospace date/label treatment"],
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false
+    },
+    {
+      "nodeId": "page-feed",
+      "slug": "feed",
+      "title": "RSS 订阅",
+      "htmlSrc": "pages/feed.html",
+      "pageIndex": 3,
+      "pageType": "showcase",
+      "businessScenario": "RSS subscription page with feed URL copy, subscription options, and full article list",
+      "visualNorthStar": "A calm subscription portal: clean layout with breadcrumb, centered header, subscription options grid, and chronological article list. Warm and inviting without being commercial.",
+      "compositionPattern": "Centered single-column: breadcrumb → badge + title + description → subscription URL + copy button → 2-column option grid → article list (date + title + excerpt + full content) → footer",
+      "continuityAnchors": ["starfield particle background", "monospace breadcrumb and badges", "card-style subscription options with accent icon squares"],
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false
+    },
+    {
+      "nodeId": "page-admin",
+      "slug": "admin",
+      "title": "笔记管理后台",
+      "htmlSrc": "pages/admin.html",
+      "pageIndex": 4,
+      "pageType": "information-dense",
+      "businessScenario": "Notes admin panel with three-tab list (published/drafts/scheduled), search, Markdown editor with live preview",
+      "visualNorthStar": "A focused workspace: split-panel layout with note list sidebar and editor content area. Clean, functional, with the same dark theme identity but denser information layout suited for editing tasks.",
+      "compositionPattern": "Split-panel: topbar (brand + status + actions) → left sidebar (3 tabs + search + scrollable list) → right content area (editor fields + markdown textarea + live preview)",
+      "continuityAnchors": ["dark card background for sidebar", "monospace throughout for UI elements", "accent pink for active tabs and save button", "Cormorant Garamond italic for editor title"],
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false
+    }
+  ],
+  "assets": [],
+  "wiringPlan": [
+    {
+      "sourceNodeId": "page-index",
+      "domId": "nav-notes",
+      "targetPageId": "page-note"
+    },
+    {
+      "sourceNodeId": "page-index",
+      "domId": "nav-feed",
+      "targetPageId": "page-feed"
+    },
+    {
+      "sourceNodeId": "page-note",
+      "domId": "back-home",
+      "targetPageId": "page-index"
+    },
+    {
+      "sourceNodeId": "page-feed",
+      "domId": "read-more-first",
+      "targetPageId": "page-note"
+    },
+    {
+      "sourceNodeId": "page-admin",
+      "domId": "admin-home",
+      "targetPageId": "page-index"
+    }
+  ],
+  "hiddenInteractionPlan": [
+    {
+      "sourceNodeId": "page-index",
+      "domId": "nav-admin",
+      "targetPageId": "page-admin",
+      "hideEdge": true,
+      "reason": "admin access from homepage"
+    },
+    {
+      "sourceNodeId": "page-feed",
+      "domId": "breadcrumb-home",
+      "targetPageId": "page-index",
+      "hideEdge": true,
+      "reason": "breadcrumb return"
+    }
+  ]
+}
