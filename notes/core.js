@@ -102,19 +102,26 @@
       return '---INLINECODE' + (protectedCode.length - 1) + '---';
     });
 
-    // 10) bold / italic / highlight
+    // 10) links: [text](url) — parse before bold/italic/highlight so they don't interfere
+    html = html.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, function (m, text, url) {
+      const safeUrl = url.replace(/"/g, '&quot;');
+      const isExternal = /^https?:\/\//i.test(url);
+      return '<a href="' + safeUrl + '"' + (isExternal ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + text + '</a>';
+    });
+
+    // 11) bold / italic / highlight
     html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/(^|[^*])\*([^*\s][^*]*?)\*(?=[^*]|$)/g, '$1<em>$2</em>');
     html = html.replace(/==([^=\n]+)==/g, '<mark>$1</mark>');
 
-    // 11) restore protected code blocks
+    // 12) restore protected code blocks
     html = html.replace(/---INLINECODE(\d+)---/g, function (m, idx) {
       const p = protectedCode[parseInt(idx, 10)];
       if (p.tag === 'pre') return '<pre><code>' + p.body + '</code></pre>';
       return '<code>' + p.body + '</code>';
     });
 
-    // 12) paragraph wrap for remaining double-newline-separated blocks
+    // 13) paragraph wrap for remaining double-newline-separated blocks
     const BLOCK_TAG_RE = /<(?:h[23]|p|pre|blockquote|hr|ul|ol|li|table|thead|tbody|tr|th|td)\b/i;
     html = html.split(/\n{2,}/).map(function (block) {
       block = block.trim();

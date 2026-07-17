@@ -309,6 +309,37 @@
   article .content p em,
   article .content li em{font-style:italic;color:#f4c2d0 !important;letter-spacing:.005em}
 
+  /* — 链接 — 下划线渐变，无蓝色，优雅的hover */
+  article .content a{
+    color:var(--ink);
+    text-decoration:none;
+    border-bottom:1px solid rgba(244,194,208,.35);
+    padding-bottom:1px;
+    transition:all .3s var(--ease);
+    background:linear-gradient(180deg, transparent 60%, rgba(244,194,208,.18) 60%);
+    background-size:0 100%;
+    background-repeat:no-repeat;
+    background-position:left bottom;
+  }
+  article .content a:hover{
+    color:#f4c2d0;
+    border-bottom-color:rgba(244,194,208,.8);
+    background-size:100% 100%;
+    text-shadow:0 0 10px rgba(244,194,208,.3);
+  }
+  /* 外部链接右侧加图标 hint */
+  article .content a[target="_blank"]::after{
+    content:'↗';
+    font-size:.8em;
+    margin-left:3px;
+    opacity:.5;
+    transition:opacity .25s var(--ease);
+    font-style:normal;
+  }
+  article .content a[target="_blank"]:hover::after{
+    opacity:1;
+  }
+
   /* — 入场动画：逐段淡入 — */
   .content > *{opacity:0;transform:translateY(12px);animation:fadeInUp .8s var(--ease) forwards}
   .content > h2{animation-delay:.15s}
