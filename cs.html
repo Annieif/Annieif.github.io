@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS · 计算机科学知识体系</title>
+  <link rel="icon" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --ink:#e8e4dd;
+      --ink-dim:#c4bfb4;
+      --ink-faint:#6e6a62;
+      --accent:#f4c2d0;
+      --link:#7ab4d8;
+      --line:rgba(232,228,221,.10);
+      --line-strong:rgba(232,228,221,.18);
+      --green:#7ec9a0;
+      --red:#e07a7a;
+      --ease:cubic-bezier(.2,.8,.2,1);
+    }
+    html,body{background:var(--bg);color:var(--ink);margin:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    body{
+      font-family:"Fraunces",serif;font-weight:500;font-size:16px;line-height:1.7;
+      position:relative;overflow-x:hidden;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(122,180,216,.12), transparent 55%),
+        radial-gradient(ellipse at 85% 20%, rgba(244,194,208,.09), transparent 50%),
+        radial-gradient(ellipse at 50% 110%, rgba(122,180,216,.06), transparent 60%),
+        #0a0a0a;
+    }
+    .stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .stars .layer{position:absolute;inset:-20%}
+    .stars .s1{
+      background-image:
+        radial-gradient(1px 1px at 20px 30px, #fff, transparent 60%),
+        radial-gradient(1px 1px at 80px 120px, #fff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 150px 60px, #e0dcd4, transparent 60%),
+        radial-gradient(1px 1px at 220px 180px, #fff, transparent 60%),
+        radial-gradient(1px 1px at 300px 40px, #8fb9d6, transparent 60%),
+        radial-gradient(1.5px 1.5px at 380px 220px, #fff, transparent 60%);
+      background-size:540px 400px;opacity:.85
+    }
+    .stars .s2{
+      background-image:
+        radial-gradient(1.5px 1.5px at 40px 50px, #fff, transparent 60%),
+        radial-gradient(2px 2px at 180px 140px, #fff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 320px 80px, #f4c2d0, transparent 60%),
+        radial-gradient(2px 2px at 260px 240px, #8fb9d6, transparent 60%);
+      background-size:620px 600px;opacity:.55
+    }
+    .stars .s3{
+      background-image:
+        radial-gradient(2.5px 2.5px at 100px 80px, #fff, transparent 60%),
+        radial-gradient(3px 3px at 280px 180px, #8fb9d6, transparent 60%),
+        radial-gradient(2.5px 2.5px at 460px 280px, #f4c2d0, transparent 60%);
+      background-size:700px 800px;opacity:.45
+    }
+
+    .page{position:relative;z-index:1;padding:60px 28px 120px;max-width:760px;margin:0 auto}
+    .back{
+      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
+      color:var(--ink-faint);text-decoration:none;text-transform:uppercase;
+      display:inline-block;margin-bottom:60px;transition:color .3s ease
+    }
+    .back:hover{color:var(--accent)}
+
+    .meta{
+      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.25em;
+      color:var(--ink-faint);text-transform:uppercase;margin-bottom:28px;
+      display:flex;gap:18px;flex-wrap:wrap
+    }
+    .meta span{display:inline-flex;align-items:center;gap:8px}
+    .meta span::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--line-strong);display:inline-block}
+
+    h1.title{
+      font-family:"Fraunces",serif;font-weight:900;font-style:italic;
+      font-size:clamp(44px,7vw,96px);line-height:1.02;letter-spacing:-.02em;
+      margin:0 0 40px;color:var(--ink);
+    }
+    h1.title em{color:#f4c2d0;font-style:italic;font-family:"Cormorant Garamond",serif;font-weight:700}
+
+    .lede{
+      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
+      font-size:clamp(18px,2vw,24px);line-height:1.55;color:var(--ink-dim);
+      margin-bottom:56px;border-left:2px solid var(--line);padding-left:24px
+    }
+
+    .divider{height:1px;background:var(--line);margin:40px 0}
+
+    h2.sec-title{
+      font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.3em;
+      color:var(--ink-faint);text-transform:uppercase;margin:56px 0 20px;font-weight:400
+    }
+    h2.sec-title::before{content:"— "}
+
+    p.body{
+      font-family:"Fraunces",serif;font-weight:400;
+      font-size:clamp(16px,1.7vw,19px);line-height:1.75;
+      color:var(--ink-dim);margin:0 0 20px;
+      font-feature-settings:"onum","lnum"
+    }
+    p.body em{font-style:italic;color:#f4c2d0;font-weight:400}
+
+    .kv{
+      display:grid;grid-template-columns:140px 1fr;gap:14px 24px;
+      font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+      padding:28px 0;margin:32px 0 48px
+    }
+    .kv .k{color:var(--ink-faint);text-transform:uppercase}
+    .kv .v{color:var(--ink);font-family:"Fraunces",serif;font-size:15px;letter-spacing:0}
+
+    .quote-card{
+      border:1px solid var(--line);padding:36px 32px;
+      background:linear-gradient(180deg, rgba(244,194,208,.03), transparent 70%);
+      margin:48px 0;text-align:center
+    }
+    .quote-card .q-text{
+      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
+      font-size:clamp(18px,2vw,22px);line-height:1.55;color:var(--ink);
+      margin:0 0 16px
+    }
+    .quote-card .q-src{
+      font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.24em;
+      color:var(--ink-faint);text-transform:uppercase
+    }
+
+    .topic-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:32px 0 48px
+    }
+    .topic-card{
+      border:1px solid var(--line);
+      padding:28px 22px 32px;
+      background:linear-gradient(180deg, rgba(244,194,208,.03), transparent 70%);
+      transition:border-color .35s var(--ease),transform .35s var(--ease),background .35s var(--ease);
+      display:flex;flex-direction:column;gap:14px
+    }
+    .topic-card:hover{
+      border-color:rgba(244,194,208,.3);
+      transform:translateY(-3px);
+      background:linear-gradient(180deg, rgba(244,194,208,.07), transparent 70%)
+    }
+    .topic-card .tc-num{
+      font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.22em;
+      color:var(--accent);text-transform:uppercase
+    }
+    .topic-card h4{
+      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+      font-size:clamp(20px,2.2vw,28px);line-height:1.15;letter-spacing:-.01em;
+      color:var(--ink);margin:0
+    }
+    .topic-card .tc-items{
+      font-family:"Fraunces",serif;font-weight:400;font-size:13px;line-height:1.8;
+      color:var(--ink-dim);margin:0
+    }
+    .topic-card .tc-items em{font-style:italic;color:var(--accent)}
+
+    .step-list{
+      list-style:none;padding:0;margin:24px 0 48px;counter-reset:step
+    }
+    .step-list li{
+      counter-increment:step;
+      display:flex;gap:20px;padding:20px 0;
+      border-bottom:1px solid var(--line);
+      align-items:baseline
+    }
+    .step-list li::before{
+      content:"0" counter(step);
+      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
+      color:var(--accent);flex-shrink:0;min-width:28px
+    }
+    .step-list li .step-body{
+      font-family:"Fraunces",serif;font-weight:400;font-size:15px;line-height:1.65;
+      color:var(--ink-dim)
+    }
+    .step-list li .step-body strong{color:var(--ink);font-weight:600}
+    .step-list li .step-body em{font-style:italic;color:var(--accent)}
+
+    .link-list{
+      display:flex;flex-direction:column;gap:14px;margin:24px 0 48px
+    }
+    .link-item{
+      display:flex;gap:18px;align-items:center;
+      padding:18px 22px;
+      border:1px solid var(--line);
+      text-decoration:none;color:inherit;
+      transition:border-color .3s var(--ease),background .3s var(--ease),transform .3s var(--ease)
+    }
+    .link-item:hover{
+      border-color:rgba(244,194,208,.25);
+      background:rgba(244,194,208,.04);
+      transform:translateX(4px)
+    }
+    .link-item .li-ico{
+      width:40px;height:40px;flex:0 0 40px;
+      display:flex;align-items:center;justify-content:center;
+      background:var(--accent);color:#1a1018;
+      font-size:16px;font-weight:700;
+      font-family:"Cormorant Garamond",serif;
+      border-radius:8px
+    }
+    .link-item .li-text{flex:1}
+    .link-item .li-name{
+      font-size:15px;color:var(--ink);font-weight:500;margin-bottom:3px
+    }
+    .link-item .li-desc{
+      font-size:12.5px;color:var(--ink-faint);
+      font-family:"IBM Plex Mono",monospace
+    }
+    .link-item .li-arrow{
+      font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-faint);
+      transition:color .3s var(--ease)
+    }
+    .link-item:hover .li-arrow{color:var(--accent)}
+
+    /* ====== FLASH CARD SYSTEM ====== */
+    .fc-wrapper{
+      margin:40px 0 56px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(244,194,208,.025), transparent 50%);
+      padding:0
+    }
+    .fc-topbar{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:16px 20px;
+      border-bottom:1px solid var(--line);
+      flex-wrap:wrap;gap:10px
+    }
+    .fc-topbar .fc-brand{
+      font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.28em;
+      color:var(--accent);text-transform:uppercase
+    }
+    .fc-topbar .fc-actions{
+      display:flex;gap:8px;align-items:center;flex-wrap:wrap
+    }
+    .fc-btn{
+      font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.15em;
+      padding:6px 14px;border:1px solid var(--line-strong);
+      background:transparent;color:var(--ink-faint);
+      cursor:pointer;transition:all .25s var(--ease);
+      text-transform:uppercase
+    }
+    .fc-btn:hover{color:var(--ink);border-color:var(--ink-dim)}
+    .fc-btn.active{color:var(--accent);border-color:var(--accent)}
+    .fc-btn.green:hover{color:var(--green);border-color:var(--green)}
+    .fc-btn.red:hover{color:var(--red);border-color:var(--red)}
+
+    .fc-tabs{
+      display:flex;flex-wrap:wrap;gap:4px;
+      padding:12px 20px;border-bottom:1px solid var(--line)
+    }
+    .fc-tab{
+      font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
+      padding:5px 12px;border:1px solid transparent;
+      background:transparent;color:var(--ink-faint);
+      cursor:pointer;transition:all .25s var(--ease);
+      text-transform:uppercase;white-space:nowrap
+    }
+    .fc-tab:hover{color:var(--ink-dim);border-color:var(--line)}
+    .fc-tab.active{color:var(--accent);border-color:var(--accent);background:rgba(244,194,208,.06)}
+    .fc-tab .count{font-size:8.5px;color:var(--ink-faint);margin-left:4px}
+
+    .fc-progress-wrap{
+      padding:12px 20px;border-bottom:1px solid var(--line);
+      display:flex;gap:12px;align-items:center
+    }
+    .fc-progress-bar{
+      flex:1;height:3px;background:var(--line);
+      border-radius:3px;overflow:hidden
+    }
+    .fc-progress-bar .fc-progress-fill{
+      height:100%;background:var(--green);
+      border-radius:3px;transition:width .4s var(--ease)
+    }
+    .fc-progress-text{
+      font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;
+      color:var(--ink-faint);white-space:nowrap
+    }
+
+    .fc-card-stage{
+      padding:32px 24px;display:flex;flex-direction:column;align-items:center;
+      min-height:280px;justify-content:center
+    }
+    .fc-card{
+      width:100%;max-width:600px;
+      min-height:200px;
+      perspective:1000px;
+      cursor:pointer
+    }
+    .fc-card-inner{
+      position:relative;width:100%;min-height:200px;
+      transition:transform .5s cubic-bezier(.4,0,.2,1);
+      transform-style:preserve-3d
+    }
+    .fc-card.flipped .fc-card-inner{
+      transform:rotateY(180deg)
+    }
+    .fc-card-face{
+      position:absolute;inset:0;
+      backface-visibility:hidden;
+      border:1px solid var(--line);
+      padding:32px 28px;
+      display:flex;flex-direction:column;align-items:center;
+      justify-content:center;text-align:center;
+      background:rgba(10,10,10,.95)
+    }
+    .fc-card-front{
+      background:linear-gradient(135deg, rgba(244,194,208,.04), rgba(122,180,216,.04))
+    }
+    .fc-card-back{
+      transform:rotateY(180deg);
+      background:linear-gradient(135deg, rgba(122,180,216,.05), rgba(244,194,208,.03))
+    }
+    .fc-card-face .fc-card-label{
+      font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.25em;
+      color:var(--ink-faint);text-transform:uppercase;margin-bottom:20px
+    }
+    .fc-card-face .fc-card-content{
+      font-family:"Fraunces",serif;font-weight:400;
+      font-size:clamp(16px,1.8vw,20px);line-height:1.65;
+      color:var(--ink);word-break:break-word
+    }
+    .fc-card-face .fc-card-content code{
+      font-family:"IBM Plex Mono",monospace;font-size:.85em;
+      background:rgba(232,228,221,.06);padding:1px 6px;
+      border-radius:3px;color:var(--link)
+    }
+    .fc-card-face .fc-card-content pre{
+      text-align:left;white-space:pre-wrap;
+      font-family:"IBM Plex Mono",monospace;font-size:13px;
+      line-height:1.5;color:var(--link);margin:0
+    }
+    .fc-card-hint{
+      font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.2em;
+      color:var(--ink-faint);text-transform:uppercase;margin-top:16px;
+      opacity:.5
+    }
+
+    .fc-nav{
+      display:flex;justify-content:center;align-items:center;
+      gap:12px;padding:16px 20px;
+      border-top:1px solid var(--line)
+    }
+    .fc-nav-btn{
+      font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.15em;
+      padding:8px 20px;border:1px solid var(--line-strong);
+      background:transparent;color:var(--ink-dim);
+      cursor:pointer;transition:all .25s var(--ease);
+      text-transform:uppercase
+    }
+    .fc-nav-btn:hover:not(:disabled){
+      color:var(--ink);border-color:var(--ink-dim)
+    }
+    .fc-nav-btn:disabled{
+      opacity:.25;cursor:not-allowed
+    }
+    .fc-nav-btn.know{color:var(--green);border-color:rgba(126,201,160,.3)}
+    .fc-nav-btn.know:hover{background:rgba(126,201,160,.08);border-color:var(--green)}
+    .fc-nav-btn.dunno{color:var(--red);border-color:rgba(224,122,122,.3)}
+    .fc-nav-btn.dunno:hover{background:rgba(224,122,122,.08);border-color:var(--red)}
+    .fc-nav-counter{
+      font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.15em;
+      color:var(--ink-faint);min-width:80px;text-align:center
+    }
+
+    .fc-empty{
+      text-align:center;padding:40px;
+      font-family:"IBM Plex Mono",monospace;font-size:11px;
+      color:var(--ink-faint);letter-spacing:.15em
+    }
+
+    .loading-dots{
+      display:flex;gap:8px;justify-content:center;padding:60px 0
+    }
+    .loading-dots span{
+      width:6px;height:6px;border-radius:50%;background:var(--accent);
+      animation:dotPulse 1.4s ease-in-out infinite
+    }
+    .loading-dots span:nth-child(2){animation-delay:.2s}
+    .loading-dots span:nth-child(3){animation-delay:.4s}
+    @keyframes dotPulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+    .reveal.in{opacity:1;transform:none}
+
+    @media (max-width:680px){
+      .topic-grid{grid-template-columns:1fr;gap:12px}
+      .topic-card{padding:22px 18px 26px}
+      .kv{grid-template-columns:110px 1fr;gap:10px 16px;padding:20px 0}
+      .page{padding:40px 18px 80px}
+      .fc-card-stage{padding:24px 12px;min-height:240px}
+      .fc-card-face{padding:24px 16px}
+      .fc-tabs{gap:2px;padding:10px 12px}
+      .fc-tab{padding:4px 8px;font-size:8.5px}
+      .fc-topbar{padding:12px 14px}
+      .fc-nav{gap:8px;padding:12px}
+      .fc-nav-btn{padding:6px 14px;font-size:9px}
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" aria-hidden="true">
+    <div class="layer s1"></div>
+    <div class="layer s2"></div>
+    <div class="layer s3"></div>
+  </div>
+  <main class="page">
+    <a class="back" href="index.html">← 返回 / Back</a>
+    <div class="meta reveal"><span>CS</span><span>计算机科学知识体系</span><span>Inspired by jwasham</span></div>
+    <h1 class="title reveal">计算机科学<br><em>知识体系</em></h1>
+
+    <p class="lede reveal">一套从零到软件工程师的完整自学路线——<br>受 John Washam 的 Coding Interview University 启发，<br>结合间隔重复与记忆卡片，把知识真正刻进长期记忆。</p>
+
+    <div class="divider reveal"></div>
+
+    <!-- ====== FLASH CARD SECTION ====== -->
+    <h2 class="sec-title reveal">记忆卡片 / Flash Cards</h2>
+    <p class="body reveal">以下是从 jwasham 的 <em>computer-science-flash-cards</em> 项目中提取的 <em>1,228 张</em>记忆卡片，涵盖 14 个计算机科学领域。点击卡片翻转查看答案，标记「知道」或「不知道」。进度会自动保存在你的浏览器中。</p>
+
+    <div class="fc-wrapper reveal" id="fc-app">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="divider reveal"></div>
+
+    <h2 class="sec-title reveal">起源 / Origin</h2>
+    <p class="body reveal">John Washam（GitHub: <em>jwasham</em>）是一个没有计算机科学学位的人。他花了 <em>8 个月</em> 全职自学，最终拿到了 Amazon 的软件工程师 offer。他将自己的学习计划开源在 GitHub 上，成为 GitHub 上最受欢迎的 CS 自学路线图之一。</p>
+    <p class="body reveal">他的核心方法论只有四个字：<em>间隔重复</em>（Spaced Repetition）。他制作了 1,792 张电子记忆卡，在超市排队、公交车上、任何碎片时间里反复复习。一张卡片回答正确还不够——需要在一段时间内<em>多次正确</em>，才会标记为「已掌握」。</p>
+
+    <div class="quote-card reveal">
+      <div class="q-text">「 You need to successfully recall the same information<br>multiple times over increasing intervals<br>to properly commit it to long-term memory. 」</div>
+      <div class="q-src">— John Washam, Coding Interview University</div>
+    </div>
+
+    <div class="divider reveal"></div>
+
+    <h2 class="sec-title reveal">知识图谱 / CS Knowledge Map</h2>
+    <p class="body reveal">以下是计算机科学面试需要掌握的核心知识领域。每一个主题都值得花几天甚至几周深入学习。</p>
+
+    <div class="topic-grid reveal">
+      <div class="topic-card">
+        <div class="tc-num">01 / 基础</div>
+        <h4>算法复杂度</h4>
+        <div class="tc-items">
+          <em>大O表示法</em><br>
+          时间复杂度<br>
+          空间复杂度<br>
+          主定理<br>
+          摊销分析
+        </div>
+      </div>
+      <div class="topic-card">
+        <div class="tc-num">02 / 结构</div>
+        <h4>数据结构</h4>
+        <div class="tc-items">
+          <em>数组 & 链表</em><br>
+          栈 & 队列<br>
+          哈希表<br>
+          树 & 图<br>
+          堆 & 字典树
+        </div>
+      </div>
+      <div class="topic-card">
+        <div class="tc-num">03 / 算法</div>
+        <h4>核心算法</h4>
+        <div class="tc-items">
+          <em>排序 & 搜索</em><br>
+          递归 & 动态规划<br>
+          贪心 & 分治<br>
+          回溯 & BFS/DFS<br>
+          位运算 & 数学
+        </div>
+      </div>
+      <div class="topic-card">
+        <div class="tc-num">04 / 系统</div>
+        <h4>系统设计</h4>
+        <div class="tc-items">
+          <em>可扩展性</em><br>
+          负载均衡<br>
+          缓存策略<br>
+          数据库分片<br>
+          CAP 定理
+        </div>
+      </div>
+      <div class="topic-card">
+        <div class="tc-num">05 / 底层</div>
+        <h4>计算机基础</h4>
+        <div class="tc-items">
+          <em>操作系统</em><br>
+          内存管理<br>
+          进程 & 线程<br>
+          网络协议<br>
+          编译原理
+        </div>
+      </div>
+      <div class="topic-card">
+        <div class="tc-num">06 / 实践</div>
+        <h4>编程练习</h4>
+        <div class="tc-items">
+          <em>LeetCode</em><br>
+          白板编码<br>
+          口头表达思路<br>
+          测试用例设计<br>
+          代码审查
+        </div>
+      </div>
+    </div>
+
+    <div class="divider reveal"></div>
+
+    <h2 class="sec-title reveal">间隔重复 / Spaced Repetition</h2>
+    <p class="body reveal"><em>看过不等于记住。</em> 人的遗忘曲线是陡峭的——24 小时内遗忘 50%，一周后遗忘 70%。间隔重复是唯一被科学证明能对抗遗忘的学习方法。</p>
+    <p class="body reveal">核心原则：</p>
+    <ol class="step-list reveal">
+      <li>
+        <div class="step-body"><strong>制作记忆卡片</strong>——每张卡片只包含一个概念。正面是问题，背面是答案。自己制作卡片的过程本身就是一次学习。</div>
+      </li>
+      <li>
+        <div class="step-body"><strong>每天复习</strong>——每天花 5-10 分钟翻看卡片。不需要大块时间，排队、等车、吃饭前都可以。</div>
+      </li>
+      <li>
+        <div class="step-body"><strong>间隔递增</strong>——答对的卡片，下次复习间隔延长；答错的卡片，回到短间隔重新开始。典型的间隔：<em>1天 → 3天 → 7天 → 14天 → 30天 → 90天</em></div>
+      </li>
+      <li>
+        <div class="step-body"><strong>多次确认</strong>——不要一次答对就标记「已掌握」。需要多次在不同时间点正确回答，才算真正内化。</div>
+      </li>
+      <li>
+        <div class="step-body"><strong>在上下文中学习</strong>——不只是背卡片，还要动手写代码。每学完一个主题，立刻做 2-3 道相关的编程题。</div>
+      </li>
+    </ol>
+
+    <div class="quote-card reveal">
+      <div class="q-text">「 在学习这些内容的过程中不断做问题，<br>而不是之后。<br>你被雇佣的不是因为你的知识，<br>而是因为你知道如何应用这些知识。 」</div>
+      <div class="q-src">— jwasham, Coding Interview University</div>
+    </div>
+
+    <div class="divider reveal"></div>
+
+    <h2 class="sec-title reveal">学习计划 / Study Plan</h2>
+    <p class="body reveal">Jwasham 的原始计划是一个 <em>多个月的全职学习路线</em>。如果你无法全职投入，可以将它拆解为更长的周期。以下是建议的学习节奏：</p>
+
+    <div class="kv reveal">
+      <div class="k">阶段一</div><div class="v">算法复杂度 & 数据结构基础（2-3 周）</div>
+      <div class="k">阶段二</div><div class="v">排序、搜索、递归（2-3 周）</div>
+      <div class="k">阶段三</div><div class="v">树、图、动态规划（3-4 周）</div>
+      <div class="k">阶段四</div><div class="v">系统设计 & 操作系统（2-3 周）</div>
+      <div class="k">阶段五</div><div class="v">面向对象编程 & 设计模式（1-2 周）</div>
+      <div class="k">阶段六</div><div class="v">网络、数据库、安全（2-3 周）</div>
+      <div class="k">阶段七</div><div class="v">模拟面试 & 综合复习（2-4 周）</div>
+    </div>
+
+    <p class="body reveal">每天的学习流程：<em>看视频/阅读 → 做笔记 → 制作记忆卡片 → 写代码实现 → 做编程题</em>。每天结束时花 5 分钟翻看当天的卡片。</p>
+
+    <div class="divider reveal"></div>
+
+    <h2 class="sec-title reveal">推荐工具 / Tools</h2>
+    <p class="body reveal">以下工具和平台可以帮助你实践间隔重复和编程练习：</p>
+
+    <div class="link-list reveal">
+      <a class="link-item" href="https://apps.ankiweb.net/" target="_blank" rel="noopener">
+        <div class="li-ico">A</div>
+        <div class="li-text">
+          <div class="li-name">Anki</div>
+          <div class="li-desc">开源间隔重复记忆软件，支持多平台，云端同步</div>
+        </div>
+        <span class="li-arrow">→</span>
+      </a>
+      <a class="link-item" href="https://github.com/jwasham/computer-science-flash-cards" target="_blank" rel="noopener">
+        <div class="li-ico">F</div>
+        <div class="li-text">
+          <div class="li-name">CS Flash Cards</div>
+          <div class="li-desc">jwasham 的计算机科学记忆卡片项目（含 1200+ 卡片）</div>
+        </div>
+        <span class="li-arrow">→</span>
+      </a>
+      <a class="link-item" href="https://github.com/jwasham/coding-interview-university" target="_blank" rel="noopener">
+        <div class="li-ico">U</div>
+        <div class="li-text">
+          <div class="li-name">Coding Interview University</div>
+          <div class="li-desc">完整的软件工程师面试自学路线图</div>
+        </div>
+        <span class="li-arrow">→</span>
+      </a>
+      <a class="link-item" href="https://leetcode.com/" target="_blank" rel="noopener">
+        <div class="li-ico">L</div>
+        <div class="li-text">
+          <div class="li-name">LeetCode</div>
+          <div class="li-desc">最受欢迎的算法练习平台，含数千道编程题</div>
+        </div>
+        <span class="li-arrow">→</span>
+      </a>
+      <a class="link-item" href="https://startupnextdoor.com/retaining-computer-science-knowledge/" target="_blank" rel="noopener">
+        <div class="li-ico">R</div>
+        <div class="li-text">
+          <div class="li-name">Retaining CS Knowledge</div>
+          <div class="li-desc">jwasham 关于如何保持计算机科学知识的博客文章</div>
+        </div>
+        <span class="li-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="divider reveal"></div>
+
+    <h2 class="sec-title reveal">常见错误 / Common Mistakes</h2>
+    <p class="body reveal">Jwasham 在回顾自己的学习历程时，总结了几个关键教训：</p>
+    <p class="body reveal"><em>1. 你不可能记住所有东西。</em> 看了数小时的视频和笔记，几个月后大部分都忘了。记忆卡片是唯一的解决方案。</p>
+    <p class="body reveal"><em>2. 不要用别人的记忆卡片。</em> 制作卡片的过程本身就是学习。别人的卡片包含太多你不需要的细枝末节。</p>
+    <p class="body reveal"><em>3. 在学习过程中做编程题。</em> 不要等到学完所有知识点才开始做题。每学完一个主题，立刻做 2-3 道相关的题目。</p>
+    <p class="body reveal"><em>4. 专注。</em> 学习过程中会有很多干扰。放点纯音乐，关掉手机通知，每天保持固定的学习时间。</p>
+
+    <div class="quote-card reveal">
+      <div class="q-text">「 我不是天才。<br>我只是花了比别人更多的时间<br>在正确的方法上。 」</div>
+      <div class="q-src">— John Washam</div>
+    </div>
+
+    <div class="divider reveal"></div>
+
+    <h2 class="sec-title reveal">延伸阅读 / Further Reading</h2>
+    <p class="body reveal">以下书籍是 jwasham 推荐的核心参考书目：</p>
+
+    <div class="kv reveal">
+      <div class="k">算法</div><div class="v">《算法导论》CLRS / 《算法》Sedgewick</div>
+      <div class="k">面试</div><div class="v">《Cracking the Coding Interview》第6版</div>
+      <div class="k">设计</div><div class="v">《Designing Data-Intensive Applications》</div>
+      <div class="k">系统</div><div class="v">《Computer Systems: A Programmer's Perspective》</div>
+      <div class="k">网络</div><div class="v">《Computer Networking: A Top-Down Approach》</div>
+      <div class="k">C++</div><div class="v">《C++数据结构与算法》Goodrich / Tamassia</div>
+    </div>
+
+    <div class="divider reveal"></div>
+
+    <p class="body reveal" style="text-align:center;margin-top:48px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase">
+      本页面内容整理自 <em>jwasham</em> 的开源项目<br>
+      coding-interview-university & computer-science-flash-cards<br>
+      遵循 CC-BY-SA-4.0 许可
+    </p>
+  </main>
+
+  <script>
+    // ========== REVEAL ON SCROLL ==========
+    var els = document.querySelectorAll('.reveal');
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.02 });
+    els.forEach(function(el) { io.observe(el); });
+
+    // ========== FLASH CARD APP ==========
+    (function() {
+      var wrapper = document.getElementById('fc-app');
+      if (!wrapper) return;
+
+      var STORAGE_KEY = 'cs_flashcards_progress';
+      var allCards = [];
+      var currentCategory = 'all';
+      var currentIndex = 0;
+      var progress = {}; // { cardId: 'known'|'unknown'|null }
+
+      function loadProgress() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          progress = raw ? JSON.parse(raw) : {};
+        } catch(e) {
+          progress = {};
+        }
+      }
+
+      function saveProgress() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+        } catch(e) {}
+      }
+
+      function filterCards() {
+        if (currentCategory === 'all') return allCards;
+        return allCards.filter(function(c) { return c.cat === currentCategory; });
+      }
+
+      function getCategoryStats() {
+        var stats = { all: { total: allCards.length, known: 0 } };
+        allCards.forEach(function(c) {
+          if (!stats[c.cat]) stats[c.cat] = { total: 0, known: 0 };
+          stats[c.cat].total++;
+          if (progress[c.id] === 'known') {
+            stats[c.cat].known++;
+            stats.all.known++;
+          }
+        });
+        return stats;
+      }
+
+      function buildUI() {
+        var cats = {}, catOrder = [];
+        allCards.forEach(function(c) {
+          if (!cats[c.cat]) { cats[c.cat] = c.catName; catOrder.push(c.cat); }
+        });
+
+        var stats = getCategoryStats();
+
+        var tabsHtml = '<button class="fc-tab active" data-cat="all">ALL<span class="count">' + stats.all.total + '</span></button>';
+        catOrder.forEach(function(key) {
+          tabsHtml += '<button class="fc-tab" data-cat="' + key + '">' + cats[key] + '<span class="count">' + stats[key].total + '</span></button>';
+        });
+
+        var progressPercent = stats.all.total > 0 ? Math.round(stats.all.known / stats.all.total * 100) : 0;
+
+        wrapper.innerHTML =
+          '<div class="fc-topbar">' +
+            '<span class="fc-brand">⚡ Jwasham CS Flash Cards</span>' +
+            '<div class="fc-actions">' +
+              '<button class="fc-btn" id="fc-shuffle" title="随机打乱">Shuffle</button>' +
+              '<button class="fc-btn red" id="fc-reset" title="重置所有进度">Reset</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="fc-tabs" id="fc-tabs">' + tabsHtml + '</div>' +
+          '<div class="fc-progress-wrap">' +
+            '<div class="fc-progress-bar"><div class="fc-progress-fill" style="width:' + progressPercent + '%"></div></div>' +
+            '<span class="fc-progress-text">' + stats.all.known + '/' + stats.all.total + '</span>' +
+          '</div>' +
+          '<div class="fc-card-stage" id="fc-stage"></div>' +
+          '<div class="fc-nav" id="fc-nav"></div>';
+
+        document.getElementById('fc-tabs').addEventListener('click', function(e) {
+          var tab = e.target.closest('.fc-tab');
+          if (!tab) return;
+          currentCategory = tab.dataset.cat;
+          currentIndex = 0;
+          renderTab();
+          renderCard();
+        });
+
+        document.getElementById('fc-shuffle').addEventListener('click', shuffle);
+        document.getElementById('fc-reset').addEventListener('click', resetProgress);
+
+        renderCard();
+      }
+
+      function renderTab() {
+        var tabs = document.querySelectorAll('.fc-tab');
+        tabs.forEach(function(t) {
+          t.classList.toggle('active', t.dataset.cat === currentCategory);
+        });
+      }
+
+      function renderCard() {
+        var cards = filterCards();
+        var stage = document.getElementById('fc-stage');
+        var nav = document.getElementById('fc-nav');
+        if (!stage || !nav) return;
+
+        if (cards.length === 0) {
+          stage.innerHTML = '<div class="fc-empty">该分类暂无卡片</div>';
+          nav.innerHTML = '';
+          return;
+        }
+
+        if (currentIndex >= cards.length) currentIndex = 0;
+        if (currentIndex < 0) currentIndex = cards.length - 1;
+
+        var card = cards[currentIndex];
+        var isKnown = progress[card.id] === 'known';
+
+        var backHtml = card.back
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/```(\w*)\n?([\s\S]*?)```/g, function(m, lang, code) {
+            return '<pre><code>' + code.trim() + '</code></pre>';
+          });
+
+        stage.innerHTML =
+          '<div class="fc-card" id="fc-card" onclick="document.getElementById(\'fc-card\').classList.toggle(\'flipped\')">' +
+            '<div class="fc-card-inner">' +
+              '<div class="fc-card-face fc-card-front">' +
+                '<div class="fc-card-label">Question</div>' +
+                '<div class="fc-card-content">' + card.front + '</div>' +
+                '<div class="fc-card-hint">Click to flip · 点击翻转</div>' +
+              '</div>' +
+              '<div class="fc-card-face fc-card-back">' +
+                '<div class="fc-card-label">Answer</div>' +
+                '<div class="fc-card-content">' + backHtml + '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+
+        var stats = getCategoryStats();
+        var catStats = stats[currentCategory] || stats.all;
+        var progressPercent = catStats.total > 0 ? Math.round(catStats.known / catStats.total * 100) : 0;
+        var progressFill = document.querySelector('.fc-progress-fill');
+        var progressText = document.querySelector('.fc-progress-text');
+        if (progressFill) progressFill.style.width = progressPercent + '%';
+        if (progressText) progressText.textContent = catStats.known + '/' + catStats.total;
+
+        nav.innerHTML =
+          '<button class="fc-nav-btn" id="fc-prev" ' + (currentIndex === 0 ? 'disabled' : '') + '>← Prev</button>' +
+          '<button class="fc-nav-btn dunno" id="fc-dunno">Don\'t Know</button>' +
+          '<span class="fc-nav-counter">' + (currentIndex + 1) + ' / ' + cards.length + '</span>' +
+          '<button class="fc-nav-btn know" id="fc-know">' + (isKnown ? '✓ Known' : 'I Know') + '</button>' +
+          '<button class="fc-nav-btn" id="fc-next" ' + (currentIndex === cards.length - 1 ? 'disabled' : '') + '>Next →</button>';
+
+        var prevBtn = document.getElementById('fc-prev');
+        var nextBtn = document.getElementById('fc-next');
+        var knowBtn = document.getElementById('fc-know');
+        var dunnoBtn = document.getElementById('fc-dunno');
+
+        if (prevBtn) prevBtn.addEventListener('click', function() { navigate(-1); });
+        if (nextBtn) nextBtn.addEventListener('click', function() { navigate(1); });
+        if (knowBtn) knowBtn.addEventListener('click', function() { markKnown(true); });
+        if (dunnoBtn) dunnoBtn.addEventListener('click', function() { markKnown(false); });
+      }
+
+      function navigate(dir) {
+        var cards = filterCards();
+        currentIndex += dir;
+        if (currentIndex < 0) currentIndex = cards.length - 1;
+        if (currentIndex >= cards.length) currentIndex = 0;
+        renderCard();
+      }
+
+      function markKnown(known) {
+        var cards = filterCards();
+        if (cards.length === 0) return;
+        var card = cards[currentIndex];
+        progress[card.id] = known ? 'known' : 'unknown';
+        saveProgress();
+        renderCard();
+      }
+
+      function shuffle() {
+        var cards = filterCards();
+        for (var i = cards.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = cards[i];
+          cards[i] = cards[j];
+          cards[j] = tmp;
+        }
+        var catCards = allCards.filter(function(c) { return currentCategory === 'all' || c.cat === currentCategory; });
+        for (var k = 0; k < catCards.length; k++) {
+          catCards[k] = cards[k];
+        }
+        currentIndex = 0;
+        renderCard();
+      }
+
+      function resetProgress() {
+        if (!confirm('确定要重置所有卡片的学习进度吗？此操作不可撤销。')) return;
+        progress = {};
+        saveProgress();
+        currentIndex = 0;
+        renderCard();
+      }
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        var cards = filterCards();
+        if (cards.length === 0) return;
+        switch(e.key) {
+          case ' ': case 'Space':
+            e.preventDefault();
+            var cardEl = document.getElementById('fc-card');
+            if (cardEl) cardEl.classList.toggle('flipped');
+            break;
+          case 'ArrowLeft':
+            e.preventDefault();
+            if (currentIndex > 0) navigate(-1);
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            if (currentIndex < cards.length - 1) navigate(1);
+            break;
+          case '1': case 'k':
+            e.preventDefault();
+            markKnown(true);
+            break;
+          case '2': case 'd':
+            e.preventDefault();
+            markKnown(false);
+            break;
+          case 'r':
+            e.preventDefault();
+            shuffle();
+            break;
+        }
+      });
+
+      // Load data and init
+      loadProgress();
+      fetch('cards_data.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          allCards = data;
+          buildUI();
+        })
+        .catch(function() {
+          wrapper.innerHTML = '<div class="fc-empty">卡片数据加载失败。请确保 cards_data.json 文件存在于同一目录下。</div>';
+        });
+    })();
+  </script>
+</body>
+</html>
