@@ -607,8 +607,8 @@
    ======================================================================== */
 (function initGiscus() {
   const REPO = 'Annieif/Annieif.github.io';
-  const REPO_ID = 'R_kgxxxxxxxx';          /* TODO: 替换为真实 repo-id */
-  const CATEGORY_ID = 'DIC_xxxxxxxxxxxxx'; /* TODO: 替换为真实 category-id */
+  const REPO_ID = 'R_kgDOS-6tNQ';
+  const CATEGORY_ID = 'DIC_kwDOS-6tNc4DCb4x';
   const CATEGORY = 'Announcements';
 
   const currentTheme = 'dark'; /* 本项目固定暗色主题 */
@@ -617,19 +617,7 @@
     const wrap = document.getElementById('giscus-wrap');
     if (!wrap || wrap.querySelector('script[data-giscus]')) return;
 
-    /* 如果占位符未替换，不加载脚本，但提示仍可见 */
-    if (/^R_kgx/.test(REPO_ID) || /^DIC_x/.test(CATEGORY_ID)) {
-      wrap.innerHTML =
-        '<div style="font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.1em;color:var(--ink-faint);padding:24px 0 0;border-top:1px dashed var(--line)">' +
-        '尚未配置 <code style="color:var(--accent)">repo-id</code> / ' +
-        '<code style="color:var(--accent)">category-id</code>。请访问 ' +
-        '<a href="https://giscus.app" target="_blank" rel="noopener" ' +
-        'style="color:inherit;border-bottom:1px dashed rgba(244,194,208,.3);text-decoration:none">giscus.app</a> ' +
-        '生成配置后填入 notes/note.html 底部脚本。' +
-        '</div>';
-      return;
-    }
-
+    /* 占位符已被替换，直接加载 */
     const s = document.createElement('script');
     s.src = 'https://giscus.app/client.js';
     s.setAttribute('data-giscus', '1');
