@@ -605,10 +605,10 @@
         data-category-id → DIC_xxx...（分类 ID，需先创建一个 Discussion 分类）
    ======================================================================== */
 (function initGiscus() {
-  const REPO = 'Annieif/Annieif.github.io';
-  const REPO_ID = 'R_kgDOS-6tNQ';
-  const CATEGORY_ID = 'DIC_kwDOS-6tNc4DCb4x';
-  const CATEGORY = 'Announcements';
+  var REPO = 'Annieif/Annieif.github.io';
+  var REPO_ID = 'R_kgDOS-6tNQ';
+  var CATEGORY_ID = 'DIC_kwDOS-6tNc4DCb4x';
+  var CATEGORY = 'Announcements';
 
   /* 从 URL 提取 slug 作为 data-term，确保每篇笔记有独立 Discussion */
   function getTerm() {
@@ -635,12 +635,15 @@
     /* specific + data-term：每篇笔记按 slug 映射到独立 Discussion */
     s.setAttribute('data-mapping', 'specific');
     s.setAttribute('data-term', getTerm());
-    s.setAttribute('data-strict', '1');
+    /* strict=0：使用标题模糊搜索，允许自动创建 Discussion */
+    s.setAttribute('data-strict', '0');
     s.setAttribute('data-reactions-enabled', '1');
     s.setAttribute('data-emit-metadata', '0');
     s.setAttribute('data-input-position', 'bottom');
     s.setAttribute('data-theme', 'dark');
     s.setAttribute('data-lang', 'zh-CN');
+    /* Giscus 内置懒加载 */
+    s.setAttribute('data-loading', 'lazy');
     s.setAttribute('crossorigin', 'anonymous');
     s.async = true;
     wrap.appendChild(s);
@@ -656,27 +659,10 @@
     );
   };
 
-  /* 懒加载：滚动到评论区附近再加载 Giscus，减少初始请求 */
-  function setupLazyLoad() {
-    var wrap = document.getElementById('giscus-wrap');
-    if (!wrap) { loadGiscus(); return; }
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) {
-          io.disconnect();
-          loadGiscus();
-        }
-      }, { rootMargin: '300px' });
-      io.observe(wrap);
-    } else {
-      loadGiscus();
-    }
-  }
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupLazyLoad);
+    document.addEventListener('DOMContentLoaded', loadGiscus);
   } else {
-    setupLazyLoad();
+    loadGiscus();
   }
 })();
 </script>
