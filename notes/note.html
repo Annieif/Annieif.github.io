@@ -385,65 +385,7 @@
   .not-found em{color:var(--accent);font-style:normal}
   .footer{text-align:center;padding:0 28px 40px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--ink-faint);text-transform:uppercase}
 
-  /* — 评论区 — */
-  .comments{
-    margin-top:64px;
-    padding-top:56px;
-    border-top:1px solid var(--line);
-    position:relative;
-  }
-  .comments::before{
-    content:'';position:absolute;left:0;top:-1px;
-    width:80px;height:1px;background:var(--accent);
-    box-shadow:0 0 10px rgba(244,194,208,.45);
-  }
-  .comments-label{
-    display:flex;align-items:center;gap:12px;
-    margin-bottom:32px;
-  }
-  .comments-label .label-dot{
-    width:7px;height:7px;border-radius:50%;
-    background:var(--accent);
-    box-shadow:0 0 10px rgba(244,194,208,.8);
-    animation:pulseDot 2.2s ease-in-out infinite;
-  }
-  .comments-label .label-text{
-    font-family:var(--mono);font-size:10px;letter-spacing:.28em;
-    color:var(--ink-faint);text-transform:uppercase;
-  }
-  @keyframes pulseDot{
-    0%,100%{transform:scale(1);opacity:1}
-    50%{transform:scale(1.35);opacity:.55}
-  }
-  .giscus-wrap{
-    min-height:160px;
-    animation:fadeInUp .9s var(--ease) .1s both;
-  }
-  .giscus-wrap iframe.giscus-frame{
-    width:100%;min-height:300px;border:0;
-  }
-  .giscus-hint{
-    margin-top:18px;
-    font-family:var(--mono);font-size:10.5px;
-    color:var(--ink-faint);
-    letter-spacing:.02em;
-    line-height:1.7;
-    opacity:.65;
-  }
-  .giscus-hint code{
-    background:rgba(244,194,208,.1);
-    color:var(--accent);
-    padding:1px 5px;
-    border-radius:3px;
-    font-size:10px;
-  }
-  .giscus-hint a{
-    color:inherit;
-    border-bottom:1px dashed rgba(244,194,208,.3);
-    text-decoration:none;
-    transition:all .3s var(--ease);
-  }
-  .giscus-hint a:hover{color:var(--accent);border-color:var(--accent)}
+
 </style>
 </head>
 <body>
@@ -458,14 +400,7 @@
     <div class="not-found">加载中…</div>
   </article>
 
-  <!-- 评论区：Giscus (GitHub Discussions) -->
-  <section class="comments">
-    <div class="comments-label">
-      <span class="label-dot"></span>
-      <span class="label-text">DISCUSSIONS</span>
-    </div>
-    <div id="giscus-wrap" class="giscus-wrap"></div>
-  </section>
+
 </div>
 
 <div class="footer">Annieif · notes</div>
@@ -591,78 +526,6 @@
     var article = document.getElementById('noteArticle');
     if (!article) return;
     article.innerHTML = '<div class="not-found">' + msg + '</div>';
-  }
-})();
-</script>
-
-<script>
-/* ========================================================================
-   Giscus 评论系统 — 基于 GitHub Discussions
-   ⚠️  使用前配置：
-   1) 打开 https://github.com/Annieif/Annieif.github.io → Settings → 启用 Discussions
-   2) 打开 https://giscus.app 获取以下两项后替换下方占位符：
-        data-repo-id        → R_xxx...（仓库 ID）
-        data-category-id → DIC_xxx...（分类 ID，需先创建一个 Discussion 分类）
-   ======================================================================== */
-(function initGiscus() {
-  var REPO = 'Annieif/Annieif.github.io';
-  var REPO_ID = 'R_kgDOS-6tNQ';
-  var CATEGORY_ID = 'DIC_kwDOS-6tNc4DCb4x';
-  var CATEGORY = 'Announcements';
-
-  /* 从 URL 提取 slug 作为 data-term，确保每篇笔记有独立 Discussion */
-  function getTerm() {
-    var params = new URLSearchParams(location.search);
-    var slug = params.get('slug');
-    if (!slug) {
-      var hash = location.hash.replace('#', '');
-      if (hash) slug = hash;
-    }
-    return slug || 'default';
-  }
-
-  function loadGiscus() {
-    var wrap = document.getElementById('giscus-wrap');
-    if (!wrap || wrap.querySelector('script[data-giscus]')) return;
-
-    var s = document.createElement('script');
-    s.src = 'https://giscus.app/client.js';
-    s.setAttribute('data-giscus', '1');
-    s.setAttribute('data-repo', REPO);
-    s.setAttribute('data-repo-id', REPO_ID);
-    s.setAttribute('data-category', CATEGORY);
-    s.setAttribute('data-category-id', CATEGORY_ID);
-    /* specific + data-term：每篇笔记按 slug 映射到独立 Discussion */
-    s.setAttribute('data-mapping', 'specific');
-    s.setAttribute('data-term', getTerm());
-    /* strict=0：使用标题模糊搜索，允许自动创建 Discussion */
-    s.setAttribute('data-strict', '0');
-    s.setAttribute('data-reactions-enabled', '1');
-    s.setAttribute('data-emit-metadata', '0');
-    s.setAttribute('data-input-position', 'bottom');
-    s.setAttribute('data-theme', 'dark');
-    s.setAttribute('data-lang', 'zh-CN');
-    /* Giscus 内置懒加载 */
-    s.setAttribute('data-loading', 'lazy');
-    s.setAttribute('crossorigin', 'anonymous');
-    s.async = true;
-    wrap.appendChild(s);
-  }
-
-  /* 切主题时通过 postMessage 与 iframe 通信（预留多主题支持） */
-  window.changeGiscusTheme = function changeGiscusTheme(theme) {
-    var iframe = document.querySelector('iframe.giscus-frame');
-    if (!iframe) return;
-    iframe.contentWindow.postMessage(
-      { giscus: { setConfig: { theme: theme || 'dark' } } },
-      'https://giscus.app'
-    );
-  };
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadGiscus);
-  } else {
-    loadGiscus();
   }
 })();
 </script>
