@@ -630,7 +630,7 @@
     s.setAttribute('data-reactions-enabled', '1');
     s.setAttribute('data-emit-metadata', '0');
     s.setAttribute('data-input-position', 'bottom');
-    s.setAttribute('data-theme', 'dark');
+    s.setAttribute('data-theme', location.origin + location.pathname.replace(/\/[^/]*$/, '') + '/giscus-theme.css');
     s.setAttribute('data-lang', 'zh-CN');
     s.setAttribute('crossorigin', 'anonymous');
     s.async = true;
