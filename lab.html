@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tech Lab · 技术实验室</title>
+  <link rel="icon" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --ink:#e8e4dd;
+      --ink-dim:#c4bfb4;
+      --ink-faint:#6e6a62;
+      --accent:#f4c2d0;
+      --link:#7ab4d8;
+      --line:rgba(232,228,221,.10);
+      --line-strong:rgba(232,228,221,.18);
+      --ease:cubic-bezier(.2,.8,.2,1);
+    }
+    html,body{background:var(--bg);color:var(--ink);margin:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    body{
+      font-family:"Fraunces",serif;font-weight:500;font-size:16px;line-height:1.7;
+      position:relative;overflow-x:hidden;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(122,180,216,.12), transparent 55%),
+        radial-gradient(ellipse at 85% 20%, rgba(244,194,208,.09), transparent 50%),
+        radial-gradient(ellipse at 50% 110%, rgba(122,180,216,.06), transparent 60%),
+        #0a0a0a;
+    }
+    .stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .stars .layer{position:absolute;inset:-20%}
+    .stars .s1{
+      background-image:
+        radial-gradient(1px 1px at 20px 30px, #fff, transparent 60%),
+        radial-gradient(1px 1px at 80px 120px, #fff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 150px 60px, #e0dcd4, transparent 60%),
+        radial-gradient(1px 1px at 220px 180px, #fff, transparent 60%),
+        radial-gradient(1px 1px at 300px 40px, #8fb9d6, transparent 60%),
+        radial-gradient(1.5px 1.5px at 380px 220px, #fff, transparent 60%);
+      background-size:540px 400px;opacity:.85
+    }
+    .stars .s2{
+      background-image:
+        radial-gradient(1.5px 1.5px at 40px 50px, #fff, transparent 60%),
+        radial-gradient(2px 2px at 180px 140px, #fff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 320px 80px, #f4c2d0, transparent 60%),
+        radial-gradient(2px 2px at 260px 240px, #8fb9d6, transparent 60%);
+      background-size:620px 600px;opacity:.55
+    }
+    .stars .s3{
+      background-image:
+        radial-gradient(2.5px 2.5px at 100px 80px, #fff, transparent 60%),
+        radial-gradient(3px 3px at 280px 180px, #8fb9d6, transparent 60%),
+        radial-gradient(2.5px 2.5px at 460px 280px, #f4c2d0, transparent 60%);
+      background-size:700px 800px;opacity:.45
+    }
+
+    .page{position:relative;z-index:1;padding:60px 28px 120px;max-width:760px;margin:0 auto}
+    .back{
+      font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
+      color:var(--ink-faint);text-decoration:none;text-transform:uppercase;
+      display:inline-block;margin-bottom:60px;transition:color .3s ease
+    }
+    .back:hover{color:var(--accent)}
+
+    h1.title{
+      font-family:"Fraunces",serif;font-weight:900;font-style:italic;
+      font-size:clamp(44px,7vw,96px);line-height:1.02;letter-spacing:-.02em;
+      margin:0 0 40px;color:var(--ink);
+    }
+    h1.title em{color:#f4c2d0;font-style:italic;font-family:"Cormorant Garamond",serif;font-weight:700}
+
+    .lede{
+      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;
+      font-size:clamp(18px,2vw,24px);line-height:1.55;color:var(--ink-dim);
+      margin-bottom:56px;border-left:2px solid var(--line);padding-left:24px
+    }
+
+    .divider{height:1px;background:var(--line);margin:40px 0}
+
+    /* ---- lab stage ---- */
+    .lab-stage{
+      border:1px dashed var(--line);
+      border-radius:10px;
+      min-height:100px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(10,10,10,.3);
+      transition:border-color .4s var(--ease);
+      margin-bottom:40px;
+    }
+    .lab-placeholder{
+      display:flex;align-items:center;gap:14px;
+      font-family:"JetBrains Mono",monospace;font-size:12px;
+      color:var(--ink-faint);
+    }
+    .lab-pulse{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--accent);
+      animation:labPulse 2s var(--ease) infinite;
+    }
+    @keyframes labPulse{
+      0%,100%{opacity:.4;box-shadow:0 0 6px rgba(244,194,208,.3)}
+      50%{opacity:1;box-shadow:0 0 16px rgba(244,194,208,.7)}
+    }
+
+    h2.sec-title{
+      font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.3em;
+      color:var(--ink-faint);text-transform:uppercase;margin:56px 0 20px;font-weight:400
+    }
+    h2.sec-title::before{content:"— "}
+
+    /* ---- toolbar ---- */
+    .lab-toolbar{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:16px;margin-bottom:0;flex-wrap:wrap;
+    }
+    .lab-search{
+      position:relative;flex:1;min-width:200px;
+    }
+    .lab-search .s-prefix{
+      position:absolute;left:0;top:50%;transform:translateY(-50%);
+      font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.08em;
+      color:var(--accent);pointer-events:none;
+      transition:opacity .25s;
+    }
+    .lab-search input{
+      width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);
+      padding:14px 0 14px 36px;
+      font-family:"Fraunces",serif;font-size:clamp(18px,2.2vw,28px);
+      font-weight:600;color:var(--ink);outline:none;
+      transition:border-color .35s var(--ease);
+      caret-color:var(--accent);
+    }
+    .lab-search input::placeholder{color:var(--ink-faint);font-style:italic}
+    .lab-search input:focus{border-color:var(--accent)}
+    .lab-search input:focus ~ .s-prefix{opacity:.5}
+    .lab-search .s-count{
+      position:absolute;right:0;top:50%;transform:translateY(-50%);
+      font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;
+      color:var(--ink-faint);pointer-events:none;
+    }
+    .lab-sort{
+      display:flex;gap:0;
+      border:1px solid var(--line);border-radius:3px;
+      overflow:hidden;flex-shrink:0;
+    }
+    .lab-sort button{
+      background:transparent;border:none;
+      font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.16em;
+      color:var(--ink-faint);text-transform:uppercase;
+      padding:10px 16px;cursor:pointer;
+      transition:background .25s var(--ease),color .25s var(--ease);
+      position:relative;
+    }
+    .lab-sort button:not(:last-child){border-right:1px solid var(--line)}
+    .lab-sort button:hover{color:var(--ink);background:rgba(244,194,208,.06)}
+    .lab-sort button.active{
+      background:var(--accent);color:var(--bg);font-weight:500;
+      box-shadow:0 0 20px rgba(244,194,208,.25);
+    }
+
+    /* ---- experiment feed ---- */
+    .lab-feed{
+      border-top:1px solid var(--line);
+      position:relative;
+    }
+    .lab-row{
+      display:grid;
+      grid-template-columns:28px 1fr auto;
+      gap:16px;
+      padding:22px 0;
+      border-bottom:1px solid var(--line);
+      transition:padding .35s var(--ease),background .35s var(--ease);
+      position:relative;
+      cursor:pointer;
+    }
+    .lab-row::before{
+      content:'';
+      position:absolute;
+      left:0;top:0;bottom:0;
+      width:3px;
+      background:transparent;
+      transition:background .35s var(--ease);
+      border-radius:0 2px 2px 0;
+    }
+    .lab-row:hover{
+      padding-left:12px;
+      background:rgba(244,194,208,.04);
+    }
+    .lab-row:hover::before{
+      background:var(--accent);
+    }
+    .lab-row .chevron{
+      font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);
+      display:flex;align-items:flex-start;padding-top:4px;
+      transition:color .3s var(--ease);
+      user-select:none;
+    }
+    .lab-row:hover .chevron{color:var(--accent)}
+    .lab-body{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .lab-title{
+      font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+      font-size:clamp(20px,2.2vw,28px);line-height:1.2;letter-spacing:-.01em;
+      color:var(--ink);transition:color .35s var(--ease);
+    }
+    .lab-row:hover .lab-title{color:var(--accent)}
+    .lab-desc{
+      font-family:"Fraunces",serif;font-weight:400;font-size:13.5px;line-height:1.55;
+      color:var(--ink-dim);
+    }
+    .lab-tag{
+      font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.12em;
+      color:var(--ink-faint);text-transform:uppercase;
+      padding:3px 10px;border:1px solid var(--line);
+      border-radius:4px;white-space:nowrap;align-self:center;
+      transition:border-color .3s var(--ease),color .3s var(--ease);
+    }
+    .lab-row:hover .lab-tag{color:var(--accent);border-color:rgba(244,194,208,.3)}
+
+    @media (max-width:900px){
+      .page{padding:40px 20px 80px}
+      .lab-stage{min-height:80px}
+      .lab-row{gap:12px;padding:18px 0}
+    }
+  </style>
+</head>
+<body>
+  <div class="stars">
+    <div class="layer s1"></div>
+    <div class="layer s2"></div>
+    <div class="layer s3"></div>
+  </div>
+
+  <div class="page">
+    <a class="back" href="index.html">← 返回首页 / Back</a>
+
+    <h1 class="title">技术<br><em>实验室</em></h1>
+
+    <div class="lede">
+      以 Java 为核心研究本体，通过 WebAssembly 在浏览器中运行 JVM 字节码。<br>
+      探索编译原理、运行时优化与跨平台技术。
+    </div>
+
+    <div class="lab-stage" id="labWasmStage">
+      <div class="lab-placeholder">
+        <span class="lab-pulse"></span>
+        <span>Wasm 运行时就绪，等待加载模块…</span>
+      </div>
+    </div>
+
+    <h2 class="sec-title">实验列表</h2>
+
+    <div class="lab-toolbar" id="labToolbar">
+      <div class="lab-search">
+        <span class="s-prefix">//</span>
+        <input type="text" id="labSearch" placeholder="搜索实验…" autocomplete="off">
+        <span class="s-count" id="labCount"></span>
+      </div>
+      <div class="lab-sort" id="labSort">
+        <button data-sort="default" class="active">DEFAULT</button>
+        <button data-sort="title">TITLE</button>
+        <button data-sort="status">STATUS</button>
+      </div>
+    </div>
+
+    <div class="lab-feed" id="labFeed">
+      <div class="lab-empty" style="padding:80px 0;text-align:center;color:var(--ink-faint);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,2vw,20px)">
+        — 实验列表为空 —
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const stage = document.getElementById('labWasmStage');
+    if (!stage) return;
+
+    window.Lab = {
+      async load(wasmUrl, imports = {}) {
+        const placeholder = stage.querySelector('.lab-placeholder');
+        if (placeholder) {
+          placeholder.querySelector('span:last-child').textContent = 'Loading Wasm module…';
+        }
+        try {
+          const env = {
+            memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }),
+            ...imports
+          };
+          const { instance } = await WebAssembly.instantiateStreaming(
+            fetch(wasmUrl), { env }
+          );
+          stage.innerHTML = '';
+          stage.style.border = '1px solid var(--line-strong)';
+          const info = document.createElement('div');
+          info.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-dim);text-align:center';
+          info.innerHTML = 'Wasm module loaded<br><span style="color:var(--accent);font-size:10px">' + wasmUrl + '</span>';
+          stage.appendChild(info);
+          return instance;
+        } catch (e) {
+          if (placeholder) {
+            placeholder.querySelector('span:last-child').textContent = 'Failed: ' + e.message;
+          }
+          throw e;
+        }
+      }
+    };
+  })();
+  </script>
+
+  <script>
+  (function(){
+    const feed   = document.getElementById('labFeed');
+    const search = document.getElementById('labSearch');
+    const countEl= document.getElementById('labCount');
+    const sortEl = document.getElementById('labSort');
+    if (!feed || !search || !sortEl) return;
+
+    const rows = [...feed.querySelectorAll('.lab-row')];
+    let sortKey = 'default';
+    let query = '';
+
+    function getText(row) {
+      const title = (row.querySelector('.lab-title')?.textContent || '').toLowerCase();
+      const desc  = (row.querySelector('.lab-desc')?.textContent || '').toLowerCase();
+      const tag   = (row.querySelector('.lab-tag')?.textContent || '').toLowerCase();
+      return { title, desc, tag };
+    }
+
+    function getSorted() {
+      const arr = [...rows];
+      if (sortKey === 'default') return arr;
+      if (sortKey === 'title') return arr.sort((a, b) => {
+        return getText(a).title.localeCompare(getText(b).title, 'zh');
+      });
+      if (sortKey === 'status') return arr.sort((a, b) => {
+        const order = { 'wip': 0, 'plan': 1, 'done': 2 };
+        const ta = getText(a).tag;
+        const tb = getText(b).tag;
+        return (order[ta] ?? 3) - (order[tb] ?? 3);
+      });
+      return arr;
+    }
+
+    function filter(list) {
+      if (!query.trim()) return list;
+      const q = query.toLowerCase();
+      return list.filter(r => {
+        const t = getText(r);
+        return t.title.includes(q) || t.desc.includes(q) || t.tag.includes(q);
+      });
+    }
+
+    function render() {
+      const sorted = getSorted();
+      const filtered = filter(sorted);
+      feed.innerHTML = '';
+
+      if (!filtered.length) {
+        const d = document.createElement('div');
+        d.style.cssText = 'padding:60px 0;text-align:center;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:16px;color:var(--ink-faint)';
+        d.textContent = query ? '没有匹配 "' + query + '" 的实验' : '— 暂无实验 —';
+        feed.appendChild(d);
+      } else {
+        filtered.forEach(r => feed.appendChild(r));
+      }
+
+      if (countEl) countEl.textContent = filtered.length + '/' + rows.length;
+    }
+
+    search.addEventListener('input', () => {
+      query = search.value;
+      render();
+    });
+
+    sortEl.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sortEl.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        sortKey = btn.dataset.sort;
+        render();
+      });
+    });
+
+    render();
+  })();
+  </script>
+</body>
+</html>
