@@ -563,6 +563,102 @@
     .proj-item .p-desc{grid-area:desc}
   }
 
+  /* ============ LAB (tech laboratory) ============ */
+  .lab-stage{
+    border:1px dashed var(--line);
+    border-radius:10px;
+    min-height:100px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(10,10,10,.3);
+    transition:border-color .4s var(--ease);
+    margin-bottom:32px;
+  }
+  .lab-placeholder{
+    display:flex;align-items:center;gap:14px;
+    font-family:"JetBrains Mono",monospace;font-size:12px;
+    color:var(--ink-faint);
+  }
+  .lab-pulse{
+    width:10px;height:10px;border-radius:50%;
+    background:var(--accent);
+    animation:labPulse 2s var(--ease) infinite;
+  }
+  @keyframes labPulse{
+    0%,100%{opacity:.4;box-shadow:0 0 6px rgba(244,194,208,.3)}
+    50%{opacity:1;box-shadow:0 0 16px rgba(244,194,208,.7)}
+  }
+  /* ---- feed (matching notes style) ---- */
+  .lab-feed{
+    border-top:1px solid var(--line);
+    position:relative;
+  }
+  .lab-row-link{text-decoration:none;color:inherit;display:block}
+  .lab-row-link:hover .lab-title{color:var(--accent)}
+  .lab-row-link:hover .lab-tag{color:var(--accent);border-color:rgba(244,194,208,.3)}
+  .lab-row-link:hover .chevron{color:var(--accent)}
+  .lab-row{
+    display:grid;
+    grid-template-columns:28px 1fr auto;
+    gap:16px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+    transition:padding .35s var(--ease),background .35s var(--ease);
+    position:relative;
+    cursor:pointer;
+  }
+  .lab-row::before{
+    content:'';
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:3px;
+    background:transparent;
+    transition:background .35s var(--ease);
+    border-radius:0 2px 2px 0;
+  }
+  .lab-row-link:hover .lab-row{
+    padding-left:12px;
+    background:rgba(244,194,208,.04);
+  }
+  .lab-row-link:hover .lab-row::before{
+    background:var(--accent);
+  }
+  .lab-row .chevron{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);
+    display:flex;align-items:flex-start;padding-top:4px;
+    transition:color .3s var(--ease);
+    user-select:none;
+  }
+  .lab-body{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .lab-title{
+    font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+    font-size:clamp(20px,2.2vw,28px);line-height:1.2;letter-spacing:-.01em;
+    color:var(--ink);transition:color .35s var(--ease);
+  }
+  .lab-desc{
+    font-family:"Fraunces",serif;font-weight:400;font-size:13.5px;line-height:1.55;
+    color:var(--ink-dim);
+  }
+  .lab-tag{
+    font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.12em;
+    color:var(--ink-faint);text-transform:uppercase;
+    padding:3px 10px;border:1px solid var(--line);
+    border-radius:4px;white-space:nowrap;align-self:center;
+    transition:border-color .3s var(--ease),color .3s var(--ease);
+  }
+  .lab-view-all{
+    padding:18px 0;text-align:center;
+  }
+  .lab-view-all a{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.2em;
+    color:var(--ink-faint);text-transform:uppercase;text-decoration:none;
+    transition:color .3s var(--ease);
+  }
+  .lab-view-all a:hover{color:var(--accent)}
+  @media (max-width:900px){
+    .lab-stage{min-height:80px}
+    .lab-row{gap:12px;padding:18px 0}
+  }
+
   /* ============ INSIGHTS (stats) ============ */
   .insights-grid{
     display:grid;grid-template-columns:1fr 1fr;gap:18px;
@@ -879,11 +975,27 @@
   #page-toc.toc-enter a:nth-child(3){animation-delay:.16s}
   #page-toc.toc-enter a:nth-child(4){animation-delay:.24s}
   #page-toc.toc-enter a:nth-child(5){animation-delay:.32s}
+  #page-toc.toc-enter a:nth-child(6){animation-delay:.40s}
   @keyframes tocEnter{
     from{opacity:0;transform:translateX(-10px)}
     to{opacity:1;transform:translateX(0)}
   }
-  .page-main{width:100%}
+  /* ============ PAGE MAIN — 2-COLUMN GRID ============ */
+  .page-main{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 48px;
+  }
+  /* 所有现有 section 默认全宽，视觉上与原来完全一致 */
+  .page-main > section{
+    grid-column:1 / -1;
+  }
+  /* 新增板块加 .half 即可占据半宽，与相邻板块并排 */
+  .page-main > section.half{
+    grid-column:span 1;
+  }
+  /* 连续两个 .half 自动并排成一行 */
   @media (max-width:1000px){
     #page-toc{display:none}
     .page-layout{padding:0 24px}
@@ -892,6 +1004,8 @@
   @media (max-width:900px){
     .page-layout{padding:0 18px}
     .hero{padding:130px 18px 60px}
+    .page-main{grid-template-columns:1fr;gap:0}
+    .page-main > section.half{grid-column:1 / -1}
   }
 
   /* ============ LOAD MORE ============ */
@@ -960,6 +1074,7 @@
       <div class="nav">
         <a href="#about" data-i18n="nav.about">关于</a>
         <a href="#projects" data-i18n="nav.works">作品</a>
+        <a href="#lab" data-i18n="nav.lab">实验室</a>
         <a href="#insights" data-i18n="nav.insights">数据</a>
         <a href="#notes" data-i18n="nav.notes">笔记</a>
         <a href="cs.html" data-i18n="nav.cs">CS</a>
@@ -979,9 +1094,10 @@
       <div class="right">
         <span>01&nbsp;/&nbsp;<span data-i18n="sec.about">ABOUT</span></span>
         <span>02&nbsp;/&nbsp;<span data-i18n="sec.works">WORKS</span></span>
-        <span>03&nbsp;/&nbsp;<span data-i18n="sec.insights">INSIGHTS</span></span>
-        <span>04&nbsp;/&nbsp;<span data-i18n="sec.notes">NOTES</span></span>
-        <span>05&nbsp;/&nbsp;<span data-i18n="sec.contact">CONTACT</span></span>
+        <span>03&nbsp;/&nbsp;<span data-i18n="sec.lab">LAB</span></span>
+        <span>04&nbsp;/&nbsp;<span data-i18n="sec.insights">INSIGHTS</span></span>
+        <span>05&nbsp;/&nbsp;<span data-i18n="sec.notes">NOTES</span></span>
+        <span>06&nbsp;/&nbsp;<span data-i18n="sec.contact">CONTACT</span></span>
       </div>
     </div>
   </nav>
@@ -1003,19 +1119,24 @@
     <span class="toc-num">02</span>
     <span class="toc-label">Works</span>
   </a>
-  <a href="#insights" data-toc="insights">
+  <a href="#lab" data-toc="lab">
     <span class="toc-dot"></span>
     <span class="toc-num">03</span>
+    <span class="toc-label">Lab</span>
+  </a>
+  <a href="#insights" data-toc="insights">
+    <span class="toc-dot"></span>
+    <span class="toc-num">04</span>
     <span class="toc-label">Insights</span>
   </a>
   <a href="#notes" data-toc="notes">
     <span class="toc-dot"></span>
-    <span class="toc-num">04</span>
+    <span class="toc-num">05</span>
     <span class="toc-label">Notes</span>
   </a>
   <a href="#contact" data-toc="contact">
     <span class="toc-dot"></span>
-    <span class="toc-num">05</span>
+    <span class="toc-num">06</span>
     <span class="toc-label">Contact</span>
   </a>
 </nav>
@@ -1045,10 +1166,72 @@
   <div class="proj-list" id="projList"><!-- populated by JS --></div>
 </section>
 
+<!-- LAB -->
+<section id="lab">
+  <div class="sec-head">
+    <div class="label-left"><span class="num">03</span><span data-i18n="sec.lab">Tech Lab</span></div>
+    <div class="sub" data-i18n-html="sec.labSub"></div>
+  </div>
+  <div class="lab-stage" id="labWasmStage">
+    <div class="lab-placeholder">
+      <span class="lab-pulse"></span>
+      <span data-i18n="lab.wasmIdle">Wasm 运行时就绪，等待加载模块…</span>
+    </div>
+  </div>
+  <div class="lab-feed" id="labExpList">
+    <div class="lab-view-all">
+      <a href="lab.html" data-i18n="lab.viewAll">查看全部实验 →</a>
+    </div>
+  </div>
+</section>
+
+<script>
+/* =====================================================
+   Lab Wasm Loader — 加载 Java → Wasm 编译产物
+   用法:
+     Lab.load('/lab/my_module.wasm', { imports... })
+       .then(instance => { ... });
+   ===================================================== */
+(function(){
+  const stage = document.getElementById('labWasmStage');
+  if (!stage) return;
+
+  window.Lab = {
+    async load(wasmUrl, imports = {}) {
+      const placeholder = stage.querySelector('.lab-placeholder');
+      if (placeholder) {
+        placeholder.querySelector('span:last-child').textContent = 'Loading Wasm module…';
+      }
+      try {
+        const env = {
+          memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }),
+          ...imports
+        };
+        const { instance } = await WebAssembly.instantiateStreaming(
+          fetch(wasmUrl), { env }
+        );
+        stage.innerHTML = '';
+        stage.style.border = '1px solid var(--line-strong)';
+        const info = document.createElement('div');
+        info.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-dim);text-align:center';
+        info.innerHTML = 'Wasm module loaded<br><span style="color:var(--accent);font-size:10px">' + wasmUrl + '</span>';
+        stage.appendChild(info);
+        return instance;
+      } catch (e) {
+        if (placeholder) {
+          placeholder.querySelector('span:last-child').textContent = 'Failed: ' + e.message;
+        }
+        throw e;
+      }
+    }
+  };
+})();
+</script>
+
 <!-- INSIGHTS -->
 <section id="insights">
   <div class="sec-head">
-    <div class="label-left"><span class="num">03</span><span data-i18n="sec.insights">Insights</span></div>
+    <div class="label-left"><span class="num">04</span><span data-i18n="sec.insights">Insights</span></div>
     <div class="sub" data-i18n-html="sec.insightsSub"></div>
   </div>
   <div class="insights-grid">
@@ -1070,7 +1253,7 @@
 <!-- NOTES -->
 <section id="notes">
   <div class="sec-head">
-    <div class="label-left"><span class="num">04</span><span data-i18n="sec.notes">Notes</span></div>
+    <div class="label-left"><span class="num">05</span><span data-i18n="sec.notes">Notes</span></div>
     <div class="sub" data-i18n-html="sec.notesSub"></div>
   </div>
   <div class="notes-toolbar" id="notesToolbar">
@@ -1091,7 +1274,7 @@
 <!-- CONTACT -->
 <section id="contact" class="contact">
   <div class="sec-head center">
-    <div><span class="num">05</span><span data-i18n="sec.contact">Get in touch</span></div>
+    <div><span class="num">06</span><span data-i18n="sec.contact">Get in touch</span></div>
   </div>
   <h3 data-i18n-html="contact.title"></h3>
 
@@ -1164,6 +1347,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': '关于',
     'nav.works': '作品',
+    'nav.lab': '实验室',
     'nav.insights': '数据',
     'nav.notes': '笔记',
     'nav.cs': 'CS',
@@ -1179,6 +1363,10 @@ const I18N = {
     'sec.aboutSub': '关于 / <em>About me</em>',
     'sec.works': 'Selected Works',
     'sec.worksSub': '泼墨<em>造物</em>,笔下<em>生花</em>。',
+    'sec.lab': 'Tech Lab',
+    'sec.labSub': '技术<em>实验室</em>',
+    'lab.wasmIdle': 'Wasm 运行时就绪，等待加载模块…',
+    'lab.viewAll': '查看全部实验 →',
     'sec.contact': 'Get in touch',
     'sec.insights': 'Insights',
     'sec.insightsSub': '数据里的<em>光与影</em>',
@@ -1239,6 +1427,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': 'About',
     'nav.works': 'Works',
+    'nav.lab': 'Lab',
     'nav.insights': 'Insights',
     'nav.notes': 'Notes',
     'nav.cs': 'CS',
@@ -1254,6 +1443,10 @@ const I18N = {
     'sec.aboutSub': '<em>关于</em> / About me',
     'sec.works': 'Selected Works',
     'sec.worksSub': 'Ink-splashed worlds,<br>pen-breath flowers bloom.',
+    'sec.lab': 'Tech Lab',
+    'sec.labSub': '<em>Tech Lab</em>',
+    'lab.wasmIdle': 'Wasm runtime ready, awaiting module load…',
+    'lab.viewAll': 'View All Experiments →',
     'sec.contact': 'Get in touch',
     'sec.insights': 'Insights',
     'sec.insightsSub': '<em>Light</em> and <em>shadows</em> in the data',
@@ -1311,6 +1504,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': 'プロフィール',
     'nav.works': '作品',
+    'nav.lab': 'ラボ',
     'nav.insights': 'データ',
     'nav.notes': 'ノート',
     'nav.cs': 'CS',
@@ -1326,6 +1520,10 @@ const I18N = {
     'sec.aboutSub': '私について / <em>About me</em>',
     'sec.works': 'Selected Works',
     'sec.worksSub': '<em>墨</em>をはじき、<em>筆</em>より花が咲く。',
+    'sec.lab': 'Tech Lab',
+    'sec.labSub': '<em>技術ラボ</em>',
+    'lab.wasmIdle': 'Wasm ランタイム準備完了、モジュールのロード待ち…',
+    'lab.viewAll': 'すべての実験を見る →',
     'sec.contact': 'Get in touch',
     'sec.insights': 'Insights',
     'sec.insightsSub': 'データに宿る<em>光と影</em>',
@@ -1375,6 +1573,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': '프로필',
     'nav.works': '작품',
+    'nav.lab': '연구실',
     'nav.insights': '데이터',
     'nav.notes': '노트',
     'nav.cs': 'CS',
@@ -1390,6 +1589,10 @@ const I18N = {
     'sec.aboutSub': '나에 대해 / <em>About me</em>',
     'sec.works': 'Selected Works',
     'sec.worksSub': '먹물 튄 세상,<br>붓숨으로 꽃 피우리.',
+    'sec.lab': 'Tech Lab',
+    'sec.labSub': '<em>기술 연구실</em>',
+    'lab.wasmIdle': 'Wasm 런타임 준비 완료, 모듈 로드 대기 중…',
+    'lab.viewAll': '모든 실험 보기 →',
     'sec.contact': 'Get in touch',
     'sec.insights': 'Insights',
     'sec.insightsSub': '데이터 속의<em>빛과 그림자</em>',
@@ -1439,6 +1642,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': 'Perfil',
     'nav.works': 'Obras',
+    'nav.lab': 'Lab',
     'nav.insights': 'Datos',
     'nav.notes': 'Notas',
     'nav.contact': 'Contacto',
@@ -1453,6 +1657,10 @@ const I18N = {
     'sec.aboutSub': 'Acerca de mí / <em>About me</em>',
     'sec.works': 'Selected Works',
     'sec.worksSub': 'Mundos hechos de gotas de tinta,<br>flores que brotan del aliento del pincel.',
+    'sec.lab': 'Tech Lab',
+    'sec.labSub': '<em>Laboratorio</em> Técnico',
+    'lab.wasmIdle': 'Runtime Wasm listo, esperando carga del módulo…',
+    'lab.viewAll': 'Ver Todos los Experimentos →',
     'sec.contact': 'Get in touch',
     'sec.insights': 'Insights',
     'sec.insightsSub': '<em>Luz y sombra</em> entre los números',
@@ -1502,6 +1710,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': 'Profil',
     'nav.works': 'Œuvres',
+    'nav.lab': 'Labo',
     'nav.insights': 'Données',
     'nav.notes': 'Notes',
     'nav.cs': 'CS',
@@ -1517,6 +1726,10 @@ const I18N = {
     'sec.aboutSub': 'À mon sujet / <em>About me</em>',
     'sec.works': 'Selected Works',
     'sec.worksSub': 'Des mondes faits de gouttes d\'encre,<br>des fleurs naissent du souffle du pinceau.',
+    'sec.lab': 'Tech Lab',
+    'sec.labSub': '<em>Laboratoire</em> Technique',
+    'lab.wasmIdle': 'Runtime Wasm prêt, en attente du chargement du module…',
+    'lab.viewAll': 'Voir Toutes les Expériences →',
     'sec.contact': 'Get in touch',
     'sec.insights': 'Insights',
     'sec.insightsSub': '<em>Lumière et ombre</em> au cœur des chiffres',
@@ -1566,6 +1779,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': 'نبذة',
     'nav.works': 'أعمال',
+    'nav.lab': 'مختبر',
     'nav.insights': 'رؤى',
     'nav.notes': 'مدوّنات',
     'nav.cs': 'CS',
@@ -1581,6 +1795,10 @@ const I18N = {
     'sec.aboutSub': 'عنّي / <em>About me</em>',
     'sec.works': 'أعمال مختارة',
     'sec.worksSub': 'عوالمٌ تتناثر بها الحبر،<br>وأزهارٌ تنبت من أنفاسِ القلم.',
+    'sec.lab': 'Tech Lab',
+    'sec.labSub': '<em>مختبر</em> تقني',
+    'lab.wasmIdle': 'بيئة Wasm جاهزة، في انتظار تحميل الوحدة…',
+    'lab.viewAll': 'عرض جميع التجارب →',
     'sec.contact': 'تواصل معي',
     'sec.insights': 'رؤى',
     'sec.insightsSub': '<em>نور وظلّ</em> في تدفّق البيانات',
@@ -1630,6 +1848,7 @@ const I18N = {
     'nav.year': '2026',
     'nav.about': 'Обо мне',
     'nav.works': 'Работы',
+    'nav.lab': 'Лаб',
     'nav.insights': 'Данные',
     'nav.notes': 'Заметки',
     'nav.cs': 'CS',
@@ -1645,6 +1864,10 @@ const I18N = {
     'sec.aboutSub': 'Обо мне / <em>About me</em>',
     'sec.works': 'Selected Works',
     'sec.worksSub': 'Миры, окроплённые чернилами,<br>цветы расцветают от дыхания кисти.',
+    'sec.lab': 'Tech Lab',
+    'sec.labSub': '<em>Техническая</em> Лаборатория',
+    'lab.wasmIdle': 'Среда Wasm готова, ожидание загрузки модуля…',
+    'lab.viewAll': 'Все Эксперименты →',
     'sec.contact': 'Get in touch',
     'sec.insights': 'Insights',
     'sec.insightsSub': '<em>Свет и тень</em> в потоке данных',
