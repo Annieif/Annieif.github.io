@@ -1075,7 +1075,6 @@
         <a href="#about" data-i18n="nav.about">关于</a>
         <a href="#projects" data-i18n="nav.works">作品</a>
         <a href="#lab" data-i18n="nav.lab">实验室</a>
-        <a href="#insights" data-i18n="nav.insights">数据</a>
         <a href="#notes" data-i18n="nav.notes">笔记</a>
         <a href="cs.html" data-i18n="nav.cs">CS</a>
         <a href="#contact" data-i18n="nav.contact">联系</a>
@@ -1095,9 +1094,8 @@
         <span>01&nbsp;/&nbsp;<span data-i18n="sec.about">ABOUT</span></span>
         <span>02&nbsp;/&nbsp;<span data-i18n="sec.works">WORKS</span></span>
         <span>03&nbsp;/&nbsp;<span data-i18n="sec.lab">LAB</span></span>
-        <span>04&nbsp;/&nbsp;<span data-i18n="sec.insights">INSIGHTS</span></span>
-        <span>05&nbsp;/&nbsp;<span data-i18n="sec.notes">NOTES</span></span>
-        <span>06&nbsp;/&nbsp;<span data-i18n="sec.contact">CONTACT</span></span>
+        <span>04&nbsp;/&nbsp;<span data-i18n="sec.notes">NOTES</span></span>
+        <span>05&nbsp;/&nbsp;<span data-i18n="sec.contact">CONTACT</span></span>
       </div>
     </div>
   </nav>
@@ -1124,19 +1122,14 @@
     <span class="toc-num">03</span>
     <span class="toc-label">Lab</span>
   </a>
-  <a href="#insights" data-toc="insights">
-    <span class="toc-dot"></span>
-    <span class="toc-num">04</span>
-    <span class="toc-label">Insights</span>
-  </a>
   <a href="#notes" data-toc="notes">
     <span class="toc-dot"></span>
-    <span class="toc-num">05</span>
+    <span class="toc-num">04</span>
     <span class="toc-label">Notes</span>
   </a>
   <a href="#contact" data-toc="contact">
     <span class="toc-dot"></span>
-    <span class="toc-num">06</span>
+    <span class="toc-num">05</span>
     <span class="toc-label">Contact</span>
   </a>
 </nav>
@@ -1228,32 +1221,10 @@
 })();
 </script>
 
-<!-- INSIGHTS -->
-<section id="insights">
-  <div class="sec-head">
-    <div class="label-left"><span class="num">04</span><span data-i18n="sec.insights">Insights</span></div>
-    <div class="sub" data-i18n-html="sec.insightsSub"></div>
-  </div>
-  <div class="insights-grid">
-    <div class="insights-stat">
-      <div class="k" data-i18n="insights.pvLabel">本站总访问量</div>
-      <div class="big"><span id="pvDisplay">—</span></div>
-      <div class="sub" data-i18n="insights.pvSub">次页面浏览</div>
-    </div>
-    <div class="insights-stat">
-      <div class="k" data-i18n="insights.uvLabel">本站总访客数</div>
-      <div class="big"><span id="uvDisplay">—</span></div>
-      <div class="sub" data-i18n="insights.uvSub">位独立访客</div>
-    </div>
-  </div>
-  <span id="busuanzi_value_site_pv" style="display:none">—</span>
-  <span id="busuanzi_value_site_uv" style="display:none">—</span>
-</section>
-
 <!-- NOTES -->
 <section id="notes">
   <div class="sec-head">
-    <div class="label-left"><span class="num">05</span><span data-i18n="sec.notes">Notes</span></div>
+    <div class="label-left"><span class="num">04</span><span data-i18n="sec.notes">Notes</span></div>
     <div class="sub" data-i18n-html="sec.notesSub"></div>
   </div>
   <div class="notes-toolbar" id="notesToolbar">
@@ -1274,63 +1245,9 @@
 <!-- CONTACT -->
 <section id="contact" class="contact">
   <div class="sec-head center">
-    <div><span class="num">06</span><span data-i18n="sec.contact">Get in touch</span></div>
+    <div><span class="num">05</span><span data-i18n="sec.contact">Get in touch</span></div>
   </div>
   <h3 data-i18n-html="contact.title"></h3>
-
-  <div class="contact-links">
-    <a href="https://github.com/Annieif" target="_blank" rel="noopener"><span data-i18n="contact.github">GitHub · @Annieif</span></a>
-    <span class="sep">/</span>
-    <a href="mailto:Qianlovean@outlook.com"><span data-i18n="contact.email">Email · Qianlovean@outlook.com</span></a>
-    <span class="sep">/</span>
-    <a href="#"><span data-i18n="contact.site">Website · annieif.dev</span></a>
-    <span class="sep">/</span>
-    <a href="https://github.com/Annieif/Annieif.github.io/issues/new?title=New+Subscription&labels=subscription&body=Name%3A+%0AEmail%3A+"
-       target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;color:var(--ink-dim);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:13px;transition:color .3s"
-       onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color=''">
-      <span style="font-size:16px">@</span>
-      <span>Subscribe</span>
-    </a>
-  </div>
-
-  <div class="rss-block">
-    <div class="rss-head">
-      <span class="ico">01 / feed</span>
-      <h3 data-i18n="rss.title">RSS · 订阅更新</h3>
-    </div>
-    <p class="rss-desc" data-i18n="rss.desc">选择你的订阅方式 — 所有内容均来自本站笔记区。</p>
-    <div class="rss-rows">
-      <a class="rss-row" href="#" id="rssCopyBtn">
-        <div class="ico">✦</div>
-        <div class="text">
-          <div class="name" data-i18n="rss.rssLabel">RSS 2.0 订阅</div>
-          <div class="meta">annieif.github.io/feed.xml</div>
-        </div>
-      </a>
-      <a class="rss-row" href="feed.html">
-        <div class="ico">◎</div>
-        <div class="text">
-          <div class="name" data-i18n="rss.htmlLabel">网页版 · 浏览器</div>
-          <div class="meta">annieif.github.io/feed.html</div>
-        </div>
-      </a>
-      <a class="rss-row" href="mailto:Qianlovean@outlook.com?subject=%E8%AE%A2%E9%98%85%20Annieif%20%E7%AC%94%E8%AE%B0%E6%9B%B4%E6%96%B0">
-        <div class="ico">✉</div>
-        <div class="text">
-          <div class="name" data-i18n="rss.emailLabel">邮件订阅</div>
-          <div class="meta">Qianlovean@outlook.com</div>
-        </div>
-      </a>
-      <a class="rss-row" href="https://github.com/Annieif" target="_blank" rel="noopener">
-        <div class="ico">⌬</div>
-        <div class="text">
-          <div class="name" data-i18n="rss.githubLabel">GitHub · 关注更新</div>
-          <div class="meta">github.com/Annieif</div>
-        </div>
-      </a>
-    </div>
-    <div class="rss-footer" data-i18n="rss.footer">no ads · no tracking · statically hosted</div>
-  </div>
 </section>
 
   </div><!-- .page-main -->
@@ -1401,9 +1318,7 @@ const I18N = {
     ],
 
     // ======== 在此编辑 Selected Works 条目(会指向 works/001.html 等) ========
-    'works.items': [
-      { title: 'Annieif · 个人作品集', tag: '个人作品集 / PORTFOLIO · 2026', text: '泼墨造物, 笔下生花 — 用单个 HTML 文件搭建的 Annieif 的作品集与数字花园。' },
-    ],
+    'works.items': [],
 
     'contact.title': '想说点什么?<br><em>随时 联系。</em>',
     'contact.github': 'GitHub · @Annieif',
@@ -1478,9 +1393,7 @@ const I18N = {
     ],
 
     // ======== Selected Works (links to works/001.html, works/002.html...) ========
-    'works.items': [
-      { title: 'Annieif · Portfolio', tag: 'PERSONAL PORTFOLIO · 2026', text: 'Ink-splashed worlds, pen-breath flowers bloom — a single-file portfolio and digital garden by Annieif.' },
-    ],
+    'works.items': [],
 
     'contact.title': 'Got something to say?<br><em>Just reach out.</em>',
     'contact.github': 'GitHub · @Annieif',
