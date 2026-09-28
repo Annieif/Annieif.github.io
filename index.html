@@ -563,102 +563,6 @@
     .proj-item .p-desc{grid-area:desc}
   }
 
-  /* ============ LAB (tech laboratory) ============ */
-  .lab-stage{
-    border:1px dashed var(--line);
-    border-radius:10px;
-    min-height:100px;
-    display:flex;align-items:center;justify-content:center;
-    background:rgba(10,10,10,.3);
-    transition:border-color .4s var(--ease);
-    margin-bottom:32px;
-  }
-  .lab-placeholder{
-    display:flex;align-items:center;gap:14px;
-    font-family:"JetBrains Mono",monospace;font-size:12px;
-    color:var(--ink-faint);
-  }
-  .lab-pulse{
-    width:10px;height:10px;border-radius:50%;
-    background:var(--accent);
-    animation:labPulse 2s var(--ease) infinite;
-  }
-  @keyframes labPulse{
-    0%,100%{opacity:.4;box-shadow:0 0 6px rgba(244,194,208,.3)}
-    50%{opacity:1;box-shadow:0 0 16px rgba(244,194,208,.7)}
-  }
-  /* ---- feed (matching notes style) ---- */
-  .lab-feed{
-    border-top:1px solid var(--line);
-    position:relative;
-  }
-  .lab-row-link{text-decoration:none;color:inherit;display:block}
-  .lab-row-link:hover .lab-title{color:var(--accent)}
-  .lab-row-link:hover .lab-tag{color:var(--accent);border-color:rgba(244,194,208,.3)}
-  .lab-row-link:hover .chevron{color:var(--accent)}
-  .lab-row{
-    display:grid;
-    grid-template-columns:28px 1fr auto;
-    gap:16px;
-    padding:22px 0;
-    border-bottom:1px solid var(--line);
-    transition:padding .35s var(--ease),background .35s var(--ease);
-    position:relative;
-    cursor:pointer;
-  }
-  .lab-row::before{
-    content:'';
-    position:absolute;
-    left:0;top:0;bottom:0;
-    width:3px;
-    background:transparent;
-    transition:background .35s var(--ease);
-    border-radius:0 2px 2px 0;
-  }
-  .lab-row-link:hover .lab-row{
-    padding-left:12px;
-    background:rgba(244,194,208,.04);
-  }
-  .lab-row-link:hover .lab-row::before{
-    background:var(--accent);
-  }
-  .lab-row .chevron{
-    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);
-    display:flex;align-items:flex-start;padding-top:4px;
-    transition:color .3s var(--ease);
-    user-select:none;
-  }
-  .lab-body{display:flex;flex-direction:column;gap:6px;min-width:0}
-  .lab-title{
-    font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
-    font-size:clamp(20px,2.2vw,28px);line-height:1.2;letter-spacing:-.01em;
-    color:var(--ink);transition:color .35s var(--ease);
-  }
-  .lab-desc{
-    font-family:"Fraunces",serif;font-weight:400;font-size:13.5px;line-height:1.55;
-    color:var(--ink-dim);
-  }
-  .lab-tag{
-    font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.12em;
-    color:var(--ink-faint);text-transform:uppercase;
-    padding:3px 10px;border:1px solid var(--line);
-    border-radius:4px;white-space:nowrap;align-self:center;
-    transition:border-color .3s var(--ease),color .3s var(--ease);
-  }
-  .lab-view-all{
-    padding:18px 0;text-align:center;
-  }
-  .lab-view-all a{
-    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.2em;
-    color:var(--ink-faint);text-transform:uppercase;text-decoration:none;
-    transition:color .3s var(--ease);
-  }
-  .lab-view-all a:hover{color:var(--accent)}
-  @media (max-width:900px){
-    .lab-stage{min-height:80px}
-    .lab-row{gap:12px;padding:18px 0}
-  }
-
   /* ============ INSIGHTS (stats) ============ */
   .insights-grid{
     display:grid;grid-template-columns:1fr 1fr;gap:18px;
@@ -1074,7 +978,6 @@
       <div class="nav">
         <a href="#about" data-i18n="nav.about">关于</a>
         <a href="#projects" data-i18n="nav.works">作品</a>
-        <a href="#lab" data-i18n="nav.lab">实验室</a>
         <a href="#notes" data-i18n="nav.notes">笔记</a>
         <a href="cs.html" data-i18n="nav.cs">CS</a>
         <a href="#contact" data-i18n="nav.contact">联系</a>
@@ -1093,9 +996,8 @@
       <div class="right">
         <span>01&nbsp;/&nbsp;<span data-i18n="sec.about">ABOUT</span></span>
         <span>02&nbsp;/&nbsp;<span data-i18n="sec.works">WORKS</span></span>
-        <span>03&nbsp;/&nbsp;<span data-i18n="sec.lab">LAB</span></span>
-        <span>04&nbsp;/&nbsp;<span data-i18n="sec.notes">NOTES</span></span>
-        <span>05&nbsp;/&nbsp;<span data-i18n="sec.contact">CONTACT</span></span>
+        <span>03&nbsp;/&nbsp;<span data-i18n="sec.notes">NOTES</span></span>
+        <span>04&nbsp;/&nbsp;<span data-i18n="sec.contact">CONTACT</span></span>
       </div>
     </div>
   </nav>
@@ -1117,19 +1019,14 @@
     <span class="toc-num">02</span>
     <span class="toc-label">Works</span>
   </a>
-  <a href="#lab" data-toc="lab">
-    <span class="toc-dot"></span>
-    <span class="toc-num">03</span>
-    <span class="toc-label">Lab</span>
-  </a>
   <a href="#notes" data-toc="notes">
     <span class="toc-dot"></span>
-    <span class="toc-num">04</span>
+    <span class="toc-num">03</span>
     <span class="toc-label">Notes</span>
   </a>
   <a href="#contact" data-toc="contact">
     <span class="toc-dot"></span>
-    <span class="toc-num">05</span>
+    <span class="toc-num">04</span>
     <span class="toc-label">Contact</span>
   </a>
 </nav>
@@ -1159,72 +1056,10 @@
   <div class="proj-list" id="projList"><!-- populated by JS --></div>
 </section>
 
-<!-- LAB -->
-<section id="lab">
-  <div class="sec-head">
-    <div class="label-left"><span class="num">03</span><span data-i18n="sec.lab">Tech Lab</span></div>
-    <div class="sub" data-i18n-html="sec.labSub"></div>
-  </div>
-  <div class="lab-stage" id="labWasmStage">
-    <div class="lab-placeholder">
-      <span class="lab-pulse"></span>
-      <span data-i18n="lab.wasmIdle">Wasm 运行时就绪，等待加载模块…</span>
-    </div>
-  </div>
-  <div class="lab-feed" id="labExpList">
-    <div class="lab-view-all">
-      <a href="lab.html" data-i18n="lab.viewAll">查看全部实验 →</a>
-    </div>
-  </div>
-</section>
-
-<script>
-/* =====================================================
-   Lab Wasm Loader — 加载 Java → Wasm 编译产物
-   用法:
-     Lab.load('/lab/my_module.wasm', { imports... })
-       .then(instance => { ... });
-   ===================================================== */
-(function(){
-  const stage = document.getElementById('labWasmStage');
-  if (!stage) return;
-
-  window.Lab = {
-    async load(wasmUrl, imports = {}) {
-      const placeholder = stage.querySelector('.lab-placeholder');
-      if (placeholder) {
-        placeholder.querySelector('span:last-child').textContent = 'Loading Wasm module…';
-      }
-      try {
-        const env = {
-          memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }),
-          ...imports
-        };
-        const { instance } = await WebAssembly.instantiateStreaming(
-          fetch(wasmUrl), { env }
-        );
-        stage.innerHTML = '';
-        stage.style.border = '1px solid var(--line-strong)';
-        const info = document.createElement('div');
-        info.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-dim);text-align:center';
-        info.innerHTML = 'Wasm module loaded<br><span style="color:var(--accent);font-size:10px">' + wasmUrl + '</span>';
-        stage.appendChild(info);
-        return instance;
-      } catch (e) {
-        if (placeholder) {
-          placeholder.querySelector('span:last-child').textContent = 'Failed: ' + e.message;
-        }
-        throw e;
-      }
-    }
-  };
-})();
-</script>
-
 <!-- NOTES -->
 <section id="notes">
   <div class="sec-head">
-    <div class="label-left"><span class="num">04</span><span data-i18n="sec.notes">Notes</span></div>
+    <div class="label-left"><span class="num">03</span><span data-i18n="sec.notes">Notes</span></div>
     <div class="sub" data-i18n-html="sec.notesSub"></div>
   </div>
   <div class="notes-toolbar" id="notesToolbar">
@@ -1245,7 +1080,7 @@
 <!-- CONTACT -->
 <section id="contact" class="contact">
   <div class="sec-head center">
-    <div><span class="num">05</span><span data-i18n="sec.contact">Get in touch</span></div>
+    <div><span class="num">04</span><span data-i18n="sec.contact">Get in touch</span></div>
   </div>
   <h3 data-i18n-html="contact.title"></h3>
 </section>
